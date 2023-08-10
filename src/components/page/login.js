@@ -66,7 +66,6 @@ const LoginAuth = () => {
 
 // function to encrypt the username and password using CryptoJS
 function encryptedCredentials(user, password, SECRET_KEY) {
-  console.log('enter2')
   var key = CryptoJS.enc.Utf8.parse(SECRET_KEY);
   var iv = CryptoJS.enc.Utf8.parse('testVarTreeFlowe');
   let encryptedUser = CryptoJS.AES.encrypt(user, key, { iv: iv }).toString();
@@ -82,8 +81,6 @@ function encryptedCredentials(user, password, SECRET_KEY) {
 
     // checking if login credentials are correct
     if(username != null && password !== null && captcha === captchaValue){
-
-      console.log('enter')
 
       // signing the username, password with secret key
       // using jwt to create a authentication token
