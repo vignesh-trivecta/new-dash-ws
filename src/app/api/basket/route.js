@@ -459,3 +459,60 @@ export const getCustomers = async() => {
         return console.log(error);
     }
 }
+
+// get basket investment value and basket value
+export const getBasketValue = async(basketName, adminId) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "basketName": basketName,
+                "adminId": adminId,
+            })
+        }
+        const response = await fetch("http://localhost:8083/basket/details", requestOptions);
+
+        if(response.ok) {
+            const responseText = await response.text();
+            return JSON.parse(responseText);
+        } else {
+            const errorText = await response.text();
+            console.log(errorText);
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+// API to map a basket to a customer
+export const mapBasket = async(basketName, adminId, customerId, brokerName) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "basketName": basketName,
+                "adminId": adminId,
+                "customerId": customerId,
+                "brokerName": brokerName,
+            })
+        }
+        const response = await fetch("http://localhost:8083/customer/map", requestOptions);
+        console.log(basketName, adminId, customerId, brokerName)
+        console.log(response)
+        if(response.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}

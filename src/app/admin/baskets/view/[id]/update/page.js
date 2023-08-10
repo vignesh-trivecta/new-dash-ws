@@ -1,6 +1,6 @@
 'use client';
 
-import { getRecords, getSpecificBasket } from '@/app/api/basket/route';
+import { getBasketValue, getRecords, getSpecificBasket } from '@/app/api/basket/route';
 import BasketRecords from '@/components/admin/basketRecords';
 import { segregate } from '@/utils/priceSegregator';
 import React, {useState, useEffect} from 'react';
@@ -8,12 +8,14 @@ import { useSelector } from 'react-redux';
 import { usePathname, useSearchParams } from 'next/navigation';
 import AddRecord from '@/components/admin/addRecord';
 import SubmitBasket from '@/components/admin/submitBasket';
-
+import { Alert, Button, Tooltip } from 'flowbite-react';
+import { HiInformationCircle, HiCheck, HiCheckCircle } from 'react-icons/hi';
 
 const UpdateBasket = ({ params }) => {
 
     const msg1 = "Enter Basket Name and Investment Value";
     const msg2 = "Add records to the table";
+    const msg4 = "Basket Saved Successfully!";
     const adminId = useSelector((state) => state.user.username);
     let value;
 
@@ -22,37 +24,37 @@ const UpdateBasket = ({ params }) => {
     const [records, setRecords] = useState([]);
     const [handleFetch, setHandleFetch] = useState(false);
     const [message, setMessage] = useState('');
+    const [transType, setTransType] = useState('');
     
     const pathname = usePathname();
     
-    // useEffect to fetch the table records
+    const [investmentVal, setInvestmentVal] = useState('');
+    // useEffect to fetch 
     useEffect( () => {
       const gettingRecords = async () => {
-        const response = await getSpecificBasket( params.id );
-        setRecords(response);
-        console.log(response)
-        value = records.map((record) => { return record.basketInvestAmt});
-        console.log(value)
+        const response = await getBasketValue(params.id, adminId);
+        setInvestmentVal(response[0].basketInvestAmt);
+        setTransType(response[0].transactionType);
       };
       gettingRecords();
     }, []);
     
-    const [investmentVal, setInvestmentVal] = useState((value));
       // useEffect for getting records after basket save clicked
-  const [saved, setSaved] = useState('');
-  useEffect(() => {
-    setRecords([]);
-  }, [saved])
+    const [saved, setSaved] = useState('');
+    useEffect(() => {
+      setRecords([]);
+      setMessage(msg4);
+    }, [saved])
 
     // useEffect to set the message at center of table
-    // useEffect(() => {
-    //     if(basketName !== '' && basketAmount !== ''){
-    //       setMessage(msg2);
-    //     }
-    //     else {
-    //       setMessage(msg1);
-    //     }
-    //   }, [basketAmount, basketName]);
+    useEffect(() => {
+        if(investmentVal !== ''){
+          setMessage(msg2);
+        }
+        else {
+          setMessage(msg1);
+        }
+      }, [investmentVal]);
 
     // useffect for add record, update record, delete record
     useEffect(() => {
@@ -115,14 +117,14 @@ const UpdateBasket = ({ params }) => {
             </div>
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">Investment</label>
-          <input disabled type="text" value={(investmentVal)} className="border border-gray-200 rounded-lg w-44 text-right" />
+          <input type="text" value={(investmentVal)} className="border border-gray-200 rounded-lg w-44 text-right" onChange={(e) => setInvestmentVal(e.target.value)} />
         </div>
 
         {/* Basket Type listbox */}
         <div className="">
           <p className="text-black text-sm dark:text-white mr-2">Transaction Type</p>
-          <select name="transactionType" id="transactionType" className='border border-gray-200 rounded-md w-32'>
-            <option value="BUY" selected>BUY</option>
+          <select name="transactionType" id="transactionType" value={transType} onChange={e => setTransType(e.target.value)} className='border border-gray-200 rounded-md w-32'>
+            <option value="BUY">BUY</option>
             <option value="SELL">SELL</option>
         </select> 
       </div>
@@ -173,16 +175,64 @@ const UpdateBasket = ({ params }) => {
         </div>
       </div>
 
-      <div className='flex justify-end items-center mt-8'>
+      <div className='flex justify-between items-center mt-2'>
 
           {/* Buttons Component */}
+
+          {
+            (message !== msg4) 
+              ? 
+                <div>
+                  <Alert
+                    color="warning"
+                    icon={HiInformationCircle}
+                    rounded
+                  >
+                    <span className='w-4 h-4'>
+                      {message}
+                    </span>
+                  </Alert>
+                </div>
+              :
+                <div>
+                  <Alert
+                    className='bg-green-200 text-green-500'
+                    icon={HiCheckCircle}
+                    rounded
+                  >
+                    <span className='w-4 h-4 text-green-500'>
+                      {message}
+                    </span>
+                  </Alert>
+                </div>  
+            }
           
           {/* Conditional rendering based on comparison and records.length */}
-            <>
+          { comparison && (investmentVal !== '')
+            ? 
+            <div className='flex justify-center'>
               {/* <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button> */}
-              <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch}/>
-              <SubmitBasket saved={saved} setSaved={setSaved} />
-            </>
+              <div>
+                <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} />
+              </div>
+              <div>
+                <SubmitBasket saved={saved} setSaved={setSaved} />              
+              </div>
+            </div>
+
+            : <div className='flex justify-center'>
+                {/* <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
+                  <Button disabled className='mr-8'>Map to Customer</Button>
+                </Tooltip> */}
+                
+                <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
+                  <Button disabled className=''>Add Record</Button>
+                </Tooltip>
+                <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
+                  <Button disabled className='ml-8'>Save</Button>
+                </Tooltip>
+              </div>
+          }
 
         </div>
 

@@ -19,11 +19,7 @@ const CreateBasket = () => {
   // const [openModal, setOpenModal] = useState(false);
   // const props = { openModal, setOpenModal };
 
-  const msg1 = "Enter Basket Name and Investment Value";
-  const msg2 = "Add records to the table";
-  const msg3 = "Basket name exists!";
-  const msg4 = "Basket Saved Successfully!";
-
+  
   let [namecheck, setNameCheck] = useState(true);
   
   const dispatch = useDispatch();
@@ -41,7 +37,8 @@ const CreateBasket = () => {
   const [handleFetch, setHandleFetch] = useState(false);
   const [message, setMessage] = useState('');
   const [transType, setTransType] = useState('BUY');
-
+  const [count, setCount] = useState(0);
+  
   // useEffect for getting records after basket save clicked
   const [saved, setSaved] = useState(false);
   useEffect(() => {
@@ -50,17 +47,20 @@ const CreateBasket = () => {
     dispatch(setBasketName(''));
     setMessage(msg4);
   }, [saved])
-
+  
   // useEffect to set the message at center of table
   useEffect(() => {
     if(basketName !== '' && basketAmount !== ''){
       setMessage(msg2);
     }
+    else if(count > 1){
+      setMessage(msg5);
+    }
     else {
       setMessage(msg1);
     }
   }, [basketAmount, basketName]);
-
+  
   // useEffect to check the basketname
   useEffect(() => {
     const check = async () => {
@@ -69,23 +69,23 @@ const CreateBasket = () => {
     }
     check();
   }, [basketName])
-
+  
   // useEffect to clear the basket name and amount
   useEffect(() => {
     dispatch(setBasketName(""));
     dispatch(setBasketAmount(""));
     // props.setOpenModal("form-elements");
   }, [])
-
+  
   // useffect for add record, update record, delete record
   useEffect(() => {
-  const fetchData = async () => {
-    const response = await getRecords(adminId, basketName);
-    setRecords(response || []);
-  }
-  fetchData();
+    const fetchData = async () => {
+      const response = await getRecords(adminId, basketName);
+      setRecords(response || []);
+    }
+    fetchData();
   }, [handleFetch]);
-
+  
   // comparison to check whether basketVal is greater than investmentVal
   const [comparison, setComparison] = useState(true);
   const investmentVal = basketAmount.toString();   // formatting input amount
@@ -94,6 +94,10 @@ const CreateBasket = () => {
   const [total, setTotal] = useState(0);
   useEffect(()=> {
 
+    // getting total basket stocks count
+    setCount((records.map((record, index) => index)) + 2 );
+    console.log(count);
+    
     // checking url and records to prevent user from navigating
     if(pathname == '/admin/baskets/create' && records.length !== 0){
       dispatch(setBasketState(true));
@@ -101,15 +105,15 @@ const CreateBasket = () => {
     else{
       dispatch(setBasketState(false));
     }
-
+    
     let total = 0;
     
     records.forEach((record) => {
       total += (record.priceValue * record.quantityValue);
     })
     setTotal(total);
-
-
+    
+    
     if(total > basketAmount){
       setComparison(false);
     }
@@ -117,19 +121,25 @@ const CreateBasket = () => {
       setComparison(true);
     }
   }, [records]);
-
-// Conditional rendering for buttons based on comparison and existence of total/basketAmount
-let isButtonDisabled;
-if(basketAmount !== '' && basketName !== ''){
-  isButtonDisabled = true;
-}
-else {
-  isButtonDisabled = false;
-}
+  
+  // Conditional rendering for buttons based on comparison and existence of total/basketAmount
+  let isButtonDisabled;
+  if(basketAmount !== '' && basketName !== ''){
+    isButtonDisabled = true;
+  }
+  else {
+    isButtonDisabled = false;
+  }
   
   
   const isTableEmpty = !records || records.length === 0; // checking if table is empty
   const basketVal = segregate(total);
+  
+  const msg1 = "Enter Basket Name and Investment Value";
+  const msg2 = "Add records to the table";
+  const msg3 = "Basket name exists!";
+  const msg4 = "Basket Saved Successfully!";
+  const msg5 = `${basketVal} is lesser than ${investmentVal}`;
 
   return (
     <div className='container mx-auto mt-4' style={{width: '90%'}}>

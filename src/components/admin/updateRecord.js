@@ -131,16 +131,6 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
         // dispatch(setOrderType(type)); // Update Redux state with the selected orderType
     }
 
-    // handling transaction type toggle button
-    const handleTransType = () => {
-        if(toggle == 'BUY'){
-            setToggle('SELL');
-        }
-        else if(toggle == 'SELL'){
-            setToggle('BUY')
-        }
-    }
-
 
     // // Set localOrderType based on orderType when the component mounts
     // useEffect(() => {
@@ -302,7 +292,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                             type='number'
                             value={localWeightage}
                             onChange={handleWeightage}
-                            className='w-full border border-gray-200 rounded-md'
+                            className='w-full border border-gray-200 rounded-md text-right'
                             autoFocus
                         />
                     </div>
@@ -369,7 +359,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
 
                 {/* Modal Butttons */}
                 <div className="flex justify-end mt-4">
-                    <button type='submit'  onClick={handleUpdate} className={`${toggle == 'SELL' ? "bg-orange-500 hover:bg-orange-600" : "bg-cyan-800 hover:bg-cyan-700"} border p-2 rounded-md text-white w-20`}>Update</button>
+                    <button type='submit'  onClick={handleUpdate} className={`bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20`}>Update</button>
                     <Button color="gray" 
                     onClick={() => { 
                         props.setOpenModal(undefined); 

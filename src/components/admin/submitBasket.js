@@ -2,14 +2,17 @@ import { getRecords, submitBasket } from '@/app/api/basket/route';
 import ValiditySelector from '@/utils/validitySelector';
 import { Button, Modal } from 'flowbite-react';
 import React, {useState} from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import MapAlert from './mapAlert';
+import { setBasketAmount } from '@/store/basketSlice';
 
 const SubmitBasket = ({ saved, setSaved }) => {
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
+
+  const dispatch = useDispatch();
 
   // local state variables
   const [popup, setPopup] = useState(false);
@@ -18,6 +21,7 @@ const SubmitBasket = ({ saved, setSaved }) => {
   // redux state
   const adminName = useSelector((state) => state.user.username);
   const basketName = useSelector((state) => state.basket.basketName);
+  const basketAmount = useSelector((state) => state.basket.basketAmount);
   const basketValidity = useSelector((state) => state.basket.basketValidity);
 
   // function to submit all the records
@@ -26,6 +30,7 @@ const SubmitBasket = ({ saved, setSaved }) => {
     const basketRequests = await getRecords(adminName, basketName);
     const response = await submitBasket(adminName, basketName, modelBasket, basketValidity, basketRequests);
     // setPopup(!popup); // Close the MapAlert after saving
+    dispatch(setBasketAmount(''));
     setSaved(!saved);
   }
 

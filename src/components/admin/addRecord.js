@@ -110,7 +110,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType }) => {
             }
         }
         postData();
-        (setWeightage(''));
+        setWeightage('');
+        setLimitPrice('');
     }
     
     return (
