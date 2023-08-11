@@ -204,8 +204,8 @@ const ViewTable = ({ params }) => {
               </tr>
             </thead>
             <tbody>
-            {records && records.length > 0 
-              ? (records.map((record, index) => (
+            {records && records?.length > 0 
+              ? (records?.map((record, index) => (
                 <tr className='border-t border-b hover:bg-gray-50'>
                   <th className="text-left text-sm text-black ">
                       <div className="ml-4">

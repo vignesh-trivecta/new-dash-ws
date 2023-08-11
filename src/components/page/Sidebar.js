@@ -18,6 +18,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { useRouter } from "next/navigation";
 import { setBasketAmount, setBasketName } from "@/store/basketSlice";
 import { usePathname, useSearchParams } from 'next/navigation';
+import { setBasketState } from "@/store/eventSlice";
 
 const ExampleSidebar = function () {
 
@@ -41,37 +42,56 @@ const ExampleSidebar = function () {
   const pageNavigator = () => {
     switch(tab) {
       case 1:
+        console.log("entered dashboard");
         router.push('/admin/dashboard');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
         break;
       case 2:
+        console.log("entered customers")
         router.push('/admin/customers');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
         break;
       case 3:
+        console.log("entered create", tab);
         router.push('/admin/baskets/create');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
         break;
       case 4:
+        console.log("entered view page");
         router.push('/admin/baskets/view');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
         break;
       case 5:
-        router.push('/admin/baskets/create#');
+        console.log("entered customer mapping")
+        router.push('/admin/baskets/customerMapping');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
         break;
       case 6:
         router.push('/admin/baskets/create#');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
         break;
       case 7:
         router.push('/admin/baskets/create#');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
         break;
@@ -217,20 +237,20 @@ const ExampleSidebar = function () {
                           }
                       >
                         {isLinkDisabled 
-                          ? ( <button onClick={() => {setOpen(true); setTab(3);}}>View</button> ) 
+                          ? ( <button onClick={() => {setOpen(true); setTab(4);}}>View</button> ) 
                           : ( <Link href="/admin/baskets/view">View</Link> )
                         }
                       </Sidebar.Item>
                       <Sidebar.Item 
                           icon={AiOutlineUserAdd}
                           className={
-                            "/admin/baskets/" === pathname
+                            "/admin/baskets/customerMapping" === pathname
                               ? "bg-gray-100 dark:bg-gray-700"
                               : ""
                           }
                       >
                         {isLinkDisabled 
-                          ? ( <button onClick={() => {setOpen(true); setTab(3);}}>Map Customer</button> ) 
+                          ? ( <button onClick={() => {setOpen(true); setTab(5);}}>Map Customer</button> ) 
                           : ( <Link href="/admin/baskets/customerMapping">Map Customer</Link> )
                         }
                       </Sidebar.Item>
@@ -243,7 +263,7 @@ const ExampleSidebar = function () {
                       icon={CgFileDocument}
                   >
                     {isLinkDisabled 
-                      ? ( <button onClick={() => {setOpen(true); setTab(4);}}>Report 1</button> ) 
+                      ? ( <button onClick={() => {setOpen(true); setTab(6);}}>Report 1</button> ) 
                       : ( <Link href="#">Report 1</Link> )
                     }
                   </Sidebar.Item>
@@ -251,7 +271,7 @@ const ExampleSidebar = function () {
                       icon={CgFileDocument}
                   >
                     {isLinkDisabled 
-                      ? ( <button onClick={() => {setOpen(true); setTab(5);}}>Report 2</button> ) 
+                      ? ( <button onClick={() => {setOpen(true); setTab(7);}}>Report 2</button> ) 
                       : ( <Link href="#">Report 2</Link> )
                     }
                   </Sidebar.Item>
@@ -259,7 +279,7 @@ const ExampleSidebar = function () {
                       icon={CgFileDocument}
                   >
                     {isLinkDisabled 
-                      ? ( <button onClick={() => {setOpen(true); setTab(5);}}>Report 3</button> ) 
+                      ? ( <button onClick={() => {setOpen(true); setTab(8);}}>Report 3</button> ) 
                       : ( <Link href="#">Report 3</Link> )
                     }
                   </Sidebar.Item>

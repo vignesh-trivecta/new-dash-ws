@@ -13,95 +13,104 @@ import { HiInformationCircle, HiCheck, HiCheckCircle } from 'react-icons/hi';
 
 const UpdateBasket = ({ params }) => {
 
-    const msg1 = "Enter Basket Name and Investment Value";
-    const msg2 = "Add records to the table";
-    const msg4 = "Basket Saved Successfully!";
-    const adminId = useSelector((state) => state.user.username);
-    let value;
+  const adminId = useSelector((state) => state.user.username);
+  let value;
 
     
-    // local state variables
-    const [records, setRecords] = useState([]);
-    const [handleFetch, setHandleFetch] = useState(false);
-    const [message, setMessage] = useState('');
-    const [transType, setTransType] = useState('');
-    
-    const pathname = usePathname();
-    
-    const [investmentVal, setInvestmentVal] = useState('');
-    // useEffect to fetch 
-    useEffect( () => {
-      const gettingRecords = async () => {
-        const response = await getBasketValue(params.id, adminId);
-        setInvestmentVal(response[0].basketInvestAmt);
-        setTransType(response[0].transactionType);
-      };
-      gettingRecords();
-    }, []);
-    
-      // useEffect for getting records after basket save clicked
-    const [saved, setSaved] = useState('');
-    useEffect(() => {
-      setRecords([]);
-      setMessage(msg4);
-    }, [saved])
+  // local state variables
+  const [records, setRecords] = useState([]);
+  const [handleFetch, setHandleFetch] = useState(false);
+  const [message, setMessage] = useState('');
+  const [transType, setTransType] = useState('');
+  
+  const pathname = usePathname();
+  
+  const [investmentVal, setInvestmentVal] = useState('');
+  // useEffect to fetch 
+  useEffect( () => {
+    const gettingRecords = async () => {
+      const response = await getBasketValue(params.id, adminId);
+      setInvestmentVal(response[0].basketInvestAmt);
+      setTransType(response[0].transactionType);
+    };
+    gettingRecords();
+  }, []);
+  
+  // useEffect for getting records after basket save clicked
+  const [saved, setSaved] = useState('');
+  useEffect(() => {
+    setRecords([]);
+    setMessage(msg4);
+  }, [saved])
 
     // useEffect to set the message at center of table
     useEffect(() => {
-        if(investmentVal !== ''){
-          setMessage(msg2);
-        }
-        else {
-          setMessage(msg1);
-        }
-      }, [investmentVal]);
-
+      if(investmentVal !== ''){
+        setMessage(msg2);
+      }
+      else {
+        setMessage(msg1);
+      }
+    }, [investmentVal]);
+    
     // useffect for add record, update record, delete record
     useEffect(() => {
-        const fetchData = async () => {
-          const response = await getSpecificBasket( params.id);
-          console.log(response)
-          setRecords(response || []);
-        }
-        fetchData();
+      const fetchData = async () => {
+        const response = await getSpecificBasket( params.id);
+        console.log(response)
+        setRecords(response || []);
+      }
+      fetchData();
     }, [handleFetch]);
-
+    
     // getting basket total value
     const [total, setTotal] = useState(0);
     const [basketState, setBasketState] = useState(false);
     const [comparison, setComparison] = useState(true);
     useEffect(()=> {
-
+      
       // checking url and records to prevent user from navigating
-      if(pathname == '/admin/baskets/create' && records.length !== 0){
+      if(pathname == '/admin/baskets/create' && records?.length !== 0){
         (setBasketState(true));
       }
       else{
         (setBasketState(false));
       }
-
-      let total = 0;
       
-      records.forEach((record) => {
+      // setting the basket value
+      let total = 0;
+      records?.forEach((record) => {
         total += (record.priceValue * record.quantityValue);
       })
       setTotal(total);
-
-
+      
+      // condition to compare investment and basket value
       if(total > investmentVal){
         setComparison(false);
       }
       else{
         setComparison(true);
       }
+
+      // condition to set msg5
+      if(records?.length !== 0){
+        setMessage(msg5);
+      }
     }, [records]);
-
+    
     // getting investment amount 
-
+    
     const basketVal = segregate(total);
 
-  return (
-    <div className='container mx-auto mt-4' style={{width: '90%'}}>
+    const msg1 = "Enter Basket Name and Investment Amount";
+    const msg2 = "Add scripts to the basket";
+    const msg3 = "Basket name exists!";
+    const msg4 = "Basket Saved Successfully!";
+    const msg5 = `Basket Value is lesser than Investment Amount`;
+    const msg6 = "Basket Value is higher than Investment Amount. Delete some scripts!"
+    
+    return (
+      <div className='container mx-auto mt-4' style={{width: '90%'}}>
       <h3 className='mb-2 font-bold'>Update {params.id}</h3>
 
             {/* Investment details row */}
@@ -155,7 +164,7 @@ const UpdateBasket = ({ params }) => {
               <tbody>
 
                 {/* Component for showing table records */}
-                {records && records.length > 0 ? (records.map((record, index) => (
+                {records && records?.length > 0 ? (records?.map((record, index) => (
                   <BasketRecords
                     key={record.recId} 
                     record={record} 
@@ -163,6 +172,8 @@ const UpdateBasket = ({ params }) => {
                     handleFetch={handleFetch} 
                     setHandleFetch={setHandleFetch}
                     basketName={params.id}
+                    investmentVal={investmentVal}
+                    basketVal={basketVal}
                   />
                   ))) : <td colSpan="8" style={{ height: '250px', textAlign: 'center' }}>
                           {message}
@@ -213,7 +224,7 @@ const UpdateBasket = ({ params }) => {
             <div className='flex justify-center'>
               {/* <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button> */}
               <div>
-                <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} />
+                <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} investmentVal={investmentVal} />
               </div>
               <div>
                 <SubmitBasket saved={saved} setSaved={setSaved} />              

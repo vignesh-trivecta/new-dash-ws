@@ -96,7 +96,6 @@ const CustomerMapping = () => {
                 {/* Basket Names listbox */}
                 <div className="">
                     <p className="text-black text-sm dark:text-white mr-2">Select Basket</p>
-                    {records.length > 0 && (
                         <select
                             name="transactionType"
                             id="transactionType"
@@ -105,13 +104,12 @@ const CustomerMapping = () => {
                             onChange={(e) => {handleSelection(e.target.value)}}
                         >
                             <option value="select">-Select -</option>
-                                {records.map((record) => (
+                                {records?.map((record) => (
                                     <option key={record.basketName} value={record.basketName}>
                                         {record.basketName}
                                     </option>
                                 ))}
                         </select>
-                    )}
 
                 </div>
                 <div className="flex flex-col items-left mb-6">

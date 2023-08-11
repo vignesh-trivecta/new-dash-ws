@@ -37,7 +37,7 @@ const CreateBasket = () => {
   const [handleFetch, setHandleFetch] = useState(false);
   const [message, setMessage] = useState('');
   const [transType, setTransType] = useState('BUY');
-  const [count, setCount] = useState(0);
+  // const [count, setCount] = useState(0);
   
   // useEffect for getting records after basket save clicked
   const [saved, setSaved] = useState(false);
@@ -46,15 +46,13 @@ const CreateBasket = () => {
     dispatch(setBasketAmount(''));
     dispatch(setBasketName(''));
     setMessage(msg4);
+    setSaved(false);
   }, [saved])
   
   // useEffect to set the message at center of table
   useEffect(() => {
     if(basketName !== '' && basketAmount !== ''){
       setMessage(msg2);
-    }
-    else if(count > 1){
-      setMessage(msg5);
     }
     else {
       setMessage(msg1);
@@ -88,37 +86,38 @@ const CreateBasket = () => {
   
   // comparison to check whether basketVal is greater than investmentVal
   const [comparison, setComparison] = useState(true);
-  const investmentVal = basketAmount.toString();   // formatting input amount
-  
+  // const investmentVal = basketAmount.toString();   // formatting input amount
+
   // getting basket total value
   const [total, setTotal] = useState(0);
   useEffect(()=> {
-
-    // getting total basket stocks count
-    setCount((records.map((record, index) => index)) + 2 );
-    console.log(count);
-    
     // checking url and records to prevent user from navigating
-    if(pathname == '/admin/baskets/create' && records.length !== 0){
+    if(pathname == '/admin/baskets/create' && records?.length !== 0){
       dispatch(setBasketState(true));
     }
     else{
       dispatch(setBasketState(false));
     }
     
+    // setting the basket value
     let total = 0;
-    
-    records.forEach((record) => {
+    records?.forEach((record) => {
       total += (record.priceValue * record.quantityValue);
     })
     setTotal(total);
     
-    
+    // condition to compare investment and basket value
     if(total > basketAmount){
       setComparison(false);
+      setMessage(msg6);
     }
     else{
       setComparison(true);
+    }
+
+    // condition to set msg5
+    if(records?.length !== 0){
+      setMessage(msg5);
     }
   }, [records]);
   
@@ -131,15 +130,14 @@ const CreateBasket = () => {
     isButtonDisabled = false;
   }
   
-  
-  const isTableEmpty = !records || records.length === 0; // checking if table is empty
   const basketVal = segregate(total);
   
-  const msg1 = "Enter Basket Name and Investment Value";
-  const msg2 = "Add records to the table";
+  const msg1 = "Enter Basket Name and Investment Amount";
+  const msg2 = "Add scripts to the basket";
   const msg3 = "Basket name exists!";
   const msg4 = "Basket Saved Successfully!";
-  const msg5 = `${basketVal} is lesser than ${investmentVal}`;
+  const msg5 = `Basket Value is lesser than Investment Amount`;
+  const msg6 = "Basket Value is higher than Investment Amount. Delete some scripts!"
 
   return (
     <div className='container mx-auto mt-4' style={{width: '90%'}}>
@@ -172,7 +170,7 @@ const CreateBasket = () => {
         }
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">Investment &#8377;</label>
-          <input type="text" value={segregate(investmentVal)} onChange={(e) => {
+          <input type="text" value={segregate(basketAmount)} onChange={(e) => {
             // Remove commas from the input value before updating state
             const newValue = e.target.value.replace(/,/g, "");
             dispatch(setBasketAmount(newValue));
@@ -215,7 +213,7 @@ const CreateBasket = () => {
               <tbody>
 
                 {/* Component for showing table records */}
-                {records && records.length > 0 ? (records.map((record, index) => (
+                {records && records?.length > 0 ? (records?.map((record, index) => (
                   <BasketRecords
                     key={record.recId} 
                     record={record} 
@@ -223,6 +221,7 @@ const CreateBasket = () => {
                     handleFetch={handleFetch} 
                     setHandleFetch={setHandleFetch}
                   />
+                  
                   ))) : <td colSpan="8" style={{ height: '250px', textAlign: 'center' }}>
                           
                         </td>  

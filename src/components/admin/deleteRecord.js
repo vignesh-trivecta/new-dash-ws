@@ -1,17 +1,30 @@
-import { deleteRecord } from '@/app/api/basket/route';
+import { deleteRecord, deleteRecordMainAPI } from '@/app/api/basket/route';
 import Link from 'next/link'
 import React from 'react'
 import { useSelector } from 'react-redux';
+import { usePathname, useSearchParams } from 'next/navigation';
 
-const DeleteRecord = ({ recId, handleFetch, setHandleFetch }) => {
+const DeleteRecord = ({ recId, mainBasketName, handleFetch, setHandleFetch }) => {
+
+    let pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const basketName = useSelector((state) => state.basket.basketName);
     const adminId = useSelector((state) => state.user.username);
 
     const handleDelete = async() => {
-        const response = await deleteRecord(recId, basketName, adminId );
-        console.log(response);
-        setHandleFetch(!handleFetch);
+        console.log(recId, mainBasketName, adminId)
+        if(pathname == `/admin/baskets/view/${mainBasketName}/update`){
+            const response = await deleteRecordMainAPI(recId, mainBasketName, adminId );
+            console.log(response); 
+            setHandleFetch(!handleFetch);           
+        }
+        else{
+            const response = await deleteRecord(recId, basketName, adminId );
+            console.log(response);
+            setHandleFetch(!handleFetch);
+        }
+        // setHandleFetch(!handleFetch);
     }
   return (
     <div>

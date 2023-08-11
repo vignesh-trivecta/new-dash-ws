@@ -12,9 +12,8 @@ import { getInstrumentDetails } from "@/app/api/basket/route";
 import { usePathname, useSearchParams } from 'next/navigation';
 
 
-const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, weightage, price, quantity, handleFetch, setHandleFetch, mainBasketName }) => {
+const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, weightage, price, lp, quantity, handleFetch, setHandleFetch, mainBasketName, investmentVal, basketVal }) => {
 
-    console.log(recId, instrumentName, exchange, transType, orderType, weightage, price, quantity, handleFetch, setHandleFetch, mainBasketName)
     // modal state
     const [openModal, setOpenModal] = useState(false);
     const props = { openModal, setOpenModal };
@@ -25,7 +24,6 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     // redux store variables
     const dispatch = useDispatch();
     const basketName = useSelector((state) => state.basket.basketName);
-    const basketAmount = useSelector((state) => state.basket.basketAmount);
     const adminId = useSelector((state) => state.user.username);
     const selectedStock = useSelector((state) => state.add.selectedStock);
     // let exchange = useSelector((state) => state.update.exchange);
@@ -41,7 +39,8 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     let [localQuantity, setLocalQuantity] = useState(quantity);
     let [localWeightage, setLocalWeightage] = useState(weightage);
     const [toggle, setToggle] = useState(transType);
-    const [limitPrice, setLimitPrice] = useState('');
+    const [limitPrice, setLimitPrice] = useState(lp);
+    const [fetch, setFetch] = useState(false);
     // let [localTransType, setLocalTransType] = useState(transType);
 
     //search dropdown
@@ -69,8 +68,8 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     }, []);
 
     const handleChange = (value) => {
-        console.log(value);
         dispatch(setSelectedStock(value));
+        setFetch(!fetch);
         setLocalStock(value);
       }
     
@@ -79,15 +78,16 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
         const localtransType = toggle;
         const postDataAPI = async() => {
             if(pathname == '/admin/baskets/create'){
-                console.log('temp')
-                const data = await updateRecordAPI(recId, basketName, adminId, selectedStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, basketAmount);
+                let val1 = String(investmentVal).split(',').join('');
+                let val2 = String(basketVal).split(',').join('');
+                const data = await updateRecordAPI(recId, basketName, adminId, localStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, val1, val2, limitPrice);
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
             }
             else{
-                console.log('main')
-                console.log(recId, mainBasketName, adminId, selectedStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, basketAmount)
-                const data = await updateRecordMainAPI(recId, mainBasketName, adminId, selectedStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, basketAmount);
+                let val1 = String(investmentVal).split(',').join('');
+                let val2 = String(basketVal).split(',').join('');
+                const data = await updateRecordMainAPI(recId, mainBasketName, adminId, localStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, val1, val2, limitPrice);
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
             }
@@ -99,30 +99,31 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     const handleExchange = (exchange) => {
         setLocalExchange(exchange);
         const fetchPrice = async () => {
-            const data = await getEquityPrice(selectedStock, localExchange);
+            console.log(localStock, exchange)
+            const data = await getEquityPrice(localStock, exchange);
             setLocalPrice(data);
-            console.log(selectedStock, localExchange);
         }
         fetchPrice();
     }
 
-    // Weightage event handler
-    const handleWeightage = (e) => {
-        const newValue = (e.target.value);
+    useEffect(() => {
+        handleExchange(localExchange);
+    }, [fetch]);
 
-        if(newValue < 1){
-            setLocalWeightage(1);
-        }
-        else{
-            setLocalWeightage(newValue);
-        }
-        quantityAPI();
+    // Weightage event handler
+    const handleWeightage = async (e) => {
+        const newValue = (e.target.value);
+        console.log(newValue);
+        console.log(newValue, investmentVal, localPrice)
+        setLocalWeightage(newValue);
+        const quantity = await sendWeightage(newValue, investmentVal, localPrice);
+        console.log(quantity)
+        setLocalQuantity(quantity);
     };
 
     //function to get the quantity of stocks based on weightage
     const quantityAPI = async () => {
-        const quantity = await sendWeightage(localWeightage, basketAmount, localPrice);
-        (setLocalQuantity(quantity));
+
     }
 
     // handling orderType radio button selection
@@ -264,10 +265,9 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                         name="exchange" 
                         type='radio' 
                         value="BSE"
-                        checked={localExchange === "BSE"}
+                        defaultChecked={localExchange === "BSE"}
                         onClick={() => {
                             handleExchange("BSE");
-                            console.log('bse')
                         }} 
                     />                                    
                         <label htmlFor='bse' className='ml-1'>BSE</label>
@@ -277,10 +277,9 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                             type='radio' 
                             value="NSE" 
                             className='ml-1' 
-                            checked={localExchange === "NSE"}
+                            defaultChecked={localExchange === "NSE"}
                             onClick={() => {
                                 handleExchange("NSE");
-                                console.log('nse')
                             }} />
                         <label htmlFor='nse' className='ml-1'>NSE</label>
                     </div>
@@ -289,11 +288,10 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-sm' />
                     <div className='rounded-md col-start-2 row-start-3 h-10'>
                         <input
-                            type='number'
+                            type='text'
                             value={localWeightage}
                             onChange={handleWeightage}
                             className='w-full border border-gray-200 rounded-md text-right'
-                            autoFocus
                         />
                     </div>
                     {/* <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-md' />
@@ -327,9 +325,9 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     {/* Order type element */}
                     <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
                     <div className='col-start-2'>
-                        <input id="market" name="orderType" type='radio' value="MARKET" checked={localOrderType === "MARKET"} onClick={() => handleOrderType("MARKET")} />
+                        <input id="market" name="orderType" type='radio' value="MARKET" defaultChecked={localOrderType === "MARKET"} onClick={() => handleOrderType("MARKET")} />
                         <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
-                        <input id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' checked={localOrderType === "LIMIT"} onClick={() => handleOrderType("LIMIT")} />
+                        <input id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' defaultChecked={localOrderType === "LIMIT"} onClick={() => handleOrderType("LIMIT")} />
                         <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
                     </div>
                                 {/* {orderType === "LIMIT" && (
@@ -370,7 +368,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                         setLocalQuantity(quantity);
                         setLocalWeightage(weightage);
                         setToggle(transType); 
-                        setLimitPrice('')
+                        dispatch(setSelectedStock(instrumentName));
                     }} 
                     className='ml-2 text-md'>Cancel</Button>
                 </div>

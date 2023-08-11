@@ -3,7 +3,7 @@ import UpdateRecord from './updateRecord';
 import { segregate } from '@/utils/priceSegregator';
 import DeleteRecord from './deleteRecord';
 
-const BasketRecords = ({ record, index, handleFetch, setHandleFetch, basketName }) => {
+const BasketRecords = ({ record, index, handleFetch, setHandleFetch, basketName, investmentVal, basketVal }) => {
   console.log(basketName)
   return (
     <tr className='border-t border-b hover:bg-gray-50'>
@@ -40,15 +40,18 @@ const BasketRecords = ({ record, index, handleFetch, setHandleFetch, basketName 
           orderType={record.orderType}
           weightage={record.weightValue}
           price={record.priceValue}
-          limitPrice={record.limitPrice}
+          lp={record.limitPrice}
           quantity={record.quantityValue}
           handleFetch={handleFetch} 
           setHandleFetch={setHandleFetch}
           mainBasketName={basketName}
+          investmentVal={investmentVal}
+          basketVal={basketVal}
         />
 
         < DeleteRecord 
           recId={record.recId} 
+          mainBasketName={basketName}
           handleFetch={handleFetch} 
           setHandleFetch={setHandleFetch}
         />

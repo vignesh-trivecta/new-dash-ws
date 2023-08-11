@@ -15,7 +15,7 @@ const SubmitBasket = ({ saved, setSaved }) => {
   const dispatch = useDispatch();
 
   // local state variables
-  const [popup, setPopup] = useState(false);
+  // const [popup, setPopup] = useState(false);
   const [modelBasket, setModelBasket] = useState(true); 
 
   // redux state
@@ -30,8 +30,7 @@ const SubmitBasket = ({ saved, setSaved }) => {
     const basketRequests = await getRecords(adminName, basketName);
     const response = await submitBasket(adminName, basketName, modelBasket, basketValidity, basketRequests);
     // setPopup(!popup); // Close the MapAlert after saving
-    dispatch(setBasketAmount(''));
-    setSaved(!saved);
+    setSaved(true);
   }
 
   // function to handle check input 
@@ -58,7 +57,7 @@ const SubmitBasket = ({ saved, setSaved }) => {
               <input id="default-checkbox" type="checkbox" checked={modelBasket} onChange={handleCheckboxChange} className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
             </div>
             <div className="flex justify-center mt-10 gap-4">
-              <Button onClick={(e) => {props.setOpenModal(undefined); setPopup(true); handleSubmit(e);}}>
+              <Button onClick={(e) => {props.setOpenModal(undefined);  handleSubmit(e);}}>
                 Save
               </Button>
               <Button color="gray" onClick={() => props.setOpenModal(undefined)}>

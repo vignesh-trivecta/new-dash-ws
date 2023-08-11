@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedStock } from "@/store/addRecordSlice";
 
-export default function SearchDropdown({ id }) {
+export default function SearchDropdown({ id, fetch, setFetch }) {
   const [stocksList, setStocksList] = useState([]);
   const [query, setQuery] = useState("");
 
@@ -35,7 +35,7 @@ export default function SearchDropdown({ id }) {
   }, []);
 
   const handleChange = (value) => {
-    console.log(value);
+    setFetch(!fetch);
     dispatch(setSelectedStock(value));
   }
   

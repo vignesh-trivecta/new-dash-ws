@@ -36,7 +36,7 @@ const CustomerDetails = () => {
                 <th className='text-left font-medium text-sm '>Name</th>
                 <th className='text-left font-medium text-sm'>Contact 1</th>
                 <th className='text-left font-medium text-sm'>Contact 2</th>
-                <th className='text-center font-medium text-sm'>Email</th>
+                <th className='text-left font-medium text-sm'>Email</th>
 
               </tr>
             </thead>
@@ -68,7 +68,9 @@ const CustomerDetails = () => {
                                         </div>
                                     </td>
                                     <td className="p-2 text-sm text-black">
-                                        {data.email}
+                                        <div className="-ml-10">
+                                            {data.email}
+                                        </div>
                                     </td>
                                 </tr>
                             )

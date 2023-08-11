@@ -1,19 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Label, Modal } from 'flowbite-react';
 import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
 import { setSelectedStock} from '@/store/addRecordSlice';
 
-const AddRecord = ({ handleFetch, setHandleFetch, transType }) => {
+const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal }) => {
 
     // modal variables
     const [openModal, setOpenModal] = useState(false);
     const props = { openModal, setOpenModal };
-
-
     
     // redux state variables
     const dispatch = useDispatch();
@@ -30,14 +28,13 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType }) => {
     
     // local state variables
     const [limitPrice, setLimitPrice] = useState('');
-
     const [weightage, setWeightage] = useState('');
     const [price, setPrice] = useState('');
     const [exchange, setExchange] = useState('');
     const [orderType, setOrderType] = useState('');
     const [quantity, setQuantity] = useState('');
 
-    // const [fectch, setFetch] = useState(false);
+    const [fetch, setFetch] = useState(false);
 
     // const [record, setRecord] = useState({
     //     instrumentName: "",
@@ -53,10 +50,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType }) => {
         const fetchPrice = async () => {
             const data = await getEquityPrice(selectedStock, exchange);
             (setPrice(data));
-            console.log(selectedStock, exchange);
         }
         fetchPrice();
-        console.log(price);
     }
 
     // function to handle the limit price input
@@ -64,25 +59,20 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType }) => {
         setLimitPrice(e.target.value);
     }
 
-    // Event handler
-    const handleChange = (e) => {
-        const newValue = (e.target.value);
+    useEffect(() => {
+        handleExchange(exchange);
+    }, [fetch])
 
-        if(newValue < 1){
-            setWeightage(1);
-        }
-        else{
-            setWeightage(newValue);
-        }
-        quantityAPI();
+    // Event handler //function to get the quantity of stocks based on weightage
+    const handleChange = async (e) => {
+        const newValue = (e.target.value);
+        setWeightage(newValue);
+        console.log(newValue, basketAmount || investmentVal, price);
+        const quantity = await sendWeightage(newValue, basketAmount || investmentVal, price);
+        console.log(quantity);
+        setQuantity(quantity);
     };
 
-    //function to get the quantity of stocks based on weightage
-    const quantityAPI = async () => {
-        const quantity = await sendWeightage(weightage, basketAmount, price);
-        (setQuantity(quantity));
-        console.log(quantity)
-    }
 
     // function to submit the modal values and add record to the table
     const handleSubmit = (e) => {
@@ -154,7 +144,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType }) => {
                 <div className='grid grid-rows-4 grid-cols-3 gap-x- gap-y-4 mt-4'>
                     <Label htmlFor="stock" value="Stock" className='text-sm' />
                     <div className=''>
-                        <SearchDropdown id="stock" />
+                        <SearchDropdown id={"stock"} fetch={fetch} setFetch={setFetch} />
                     </div>
 
                     {/* Price element */}
@@ -171,17 +161,20 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType }) => {
                             name="exchange" 
                             type='radio' 
                             value="BSE"
-                            checked={exchange === "BSE"}
+                            defaultChecked={exchange === "BSE"}
                             onClick={() => {
-                            handleExchange("BSE");
-                            console.log('bse')
+                                handleExchange("BSE");
                         }} />
                         <label htmlFor='bse' className='ml-1 text-sm'>BSE</label>
-                        <input id="nse" name="exchange" type='radio' value="NSE" className='ml-1' 
-                        checked={exchange === "NSE"}
-                        onClick={() => {
-                            handleExchange("NSE");
-                            console.log('nse')
+                        <input 
+                            id="nse" 
+                            name="exchange" 
+                            type='radio' 
+                            value="NSE" 
+                            className='ml-1' 
+                            defaultChecked={exchange === "NSE"}
+                            onClick={() => {
+                                handleExchange("NSE");
                         }} />
                         <label htmlFor='nse' className='ml-1 text-sm'>NSE</label>
                     </div>
@@ -190,7 +183,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType }) => {
                     <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-sm' />
                     <div className='rounded-md col-start-2 row-start-3 h-10'>
                         <input
-                            type='number'
+                            type='text'
                             value={weightage}
                             onChange={handleChange}
                             className='w-full border border-gray-200 rounded-md text-right'

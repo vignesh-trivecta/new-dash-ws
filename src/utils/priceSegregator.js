@@ -1,7 +1,7 @@
 export const segregate = (num) => {
     // checking whether input is empty or undefined
     if (num === "" || num === undefined || num === null) {
-      return null;
+      return '';
     }
   
     // Convert the input to a number (if it's not already)
