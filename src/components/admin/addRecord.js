@@ -4,10 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { Button, Label, Modal } from 'flowbite-react';
 import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
-import { addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
+import { AddRecordMainAPI, addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
 import { setSelectedStock} from '@/store/addRecordSlice';
+import { usePathname, useSearchParams } from 'next/navigation';
 
-const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal }) => {
+
+const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, mainBasketName }) => {
+
+    const pathname = usePathname();
 
     // modal variables
     const [openModal, setOpenModal] = useState(false);
@@ -16,14 +20,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal }) =>
     // redux state variables
     const dispatch = useDispatch();
     const selectedStock = useSelector((state) => state.add.selectedStock);
-    // const weightage = useSelector((state) => state.add.weightage);
     const basketName = useSelector((state) => state.basket.basketName);
     const basketAmount = useSelector((state) => state.basket.basketAmount);
-    // const price = useSelector((state) => state.add.price);
-    // const exchange = useSelector((state) => state.add.exchange);
-    // // const transType = useSelector((state) => state.add.transType);
-    // const orderType = useSelector((state) => state.add.orderType);
-    // const quantity = useSelector((state) => state.add.quantity);
     const adminName = useSelector((state) => state.user.username);
     
     // local state variables
@@ -36,27 +34,18 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal }) =>
 
     const [fetch, setFetch] = useState(false);
 
-    // const [record, setRecord] = useState({
-    //     instrumentName: "",
-    //     exchange: "",
-    //     weightage: "",
-    //     orderType: "",
-    //     quantity: "",
-    // });
-
     // function to handle the exchange radio button
     const handleExchange = (exchange) => {
+        console.log(exchange);
         (setExchange(exchange));
         const fetchPrice = async () => {
             const data = await getEquityPrice(selectedStock, exchange);
             (setPrice(data));
         }
-        fetchPrice();
-    }
-
-    // function to handle the limit price input
-    const handleLimitPrice = (e) => {
-        setLimitPrice(e.target.value);
+        if(exchange){
+            console.log('called');
+            fetchPrice();
+        }
     }
 
     useEffect(() => {
@@ -65,36 +54,31 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal }) =>
 
     // Event handler //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
-        const newValue = (e.target.value);
-        setWeightage(newValue);
-        console.log(newValue, basketAmount || investmentVal, price);
-        const quantity = await sendWeightage(newValue, basketAmount || investmentVal, price);
-        console.log(quantity);
+        const newValue = (e?.target.value);
+        setWeightage(newValue || weightage);
+        const quantity = await sendWeightage(newValue || weightage, basketAmount || investmentVal, price);
         setQuantity(quantity);
     };
+
+    useEffect(() => {
+        handleChange();
+    }, [price])
 
 
     // function to submit the modal values and add record to the table
     const handleSubmit = (e) => {
         e.preventDefault();
-        // setRecord({
-        //     "adminId": adminId,
-        //     "basketName": basketName,
-        //     "instrumentName": selectedStock,
-        //     "exchangeUsed": exchange,
-        //     "orderType": "Limit",
-        //     "transType": orderType,
-        //     "quantity": quantity,
-        //     "weightage": Number(weightage),
-        //     "price": price,
-        //     "basketInvAmount": Number(basketAmount)           
-        // })
-        // need to make the api call here
-        // by removing setRecord or can use directly
-        // the response received needs to be mapped to Table
         const postData = async() => {
-            const data = await addRecord(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount, limitPrice);
-            if(data.status == 200){
+            let data;
+            if(pathname == '/admin/baskets/create'){
+                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount, limitPrice);
+                if(data === true){
+                    setHandleFetch(!handleFetch);
+                    props.setOpenModal(undefined);
+                }
+            }
+            else {
+                data = await AddRecordMainAPI(adminName, mainBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, basketVal);
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
             }
@@ -111,12 +95,6 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal }) =>
         onClick={() => {
             props.setOpenModal('form-elements');
             dispatch(setSelectedStock(''));
-            // dispatch(setExchange(''));
-            // dispatch(setPrice(null));
-            // dispatch(setWeightage(null));
-            // dispatch(setQuantity(null));
-            // dispatch(setOrderType(''));
-            // dispatch(setTransType(''));
             setWeightage('');
             setPrice('');
             setQuantity('');
@@ -192,14 +170,6 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal }) =>
                         {/* <input type='text' id="weightage" placeholder='Enter...' /> */}
                     </div>
 
-                    {/* <Label value="Transaction Type" className='col-start-1 row-start-4 text-sm'/> */}
-                    {/* <div className='col-start-2'>
-                        <input id="buy" name="transType" type='radio' value="BUY" checked={transType === "BUY"} onClick={() => dispatch(setTransType("BUY"))} />
-                        <label htmlFor='buy' className='ml-1 text-sm'>BUY</label>
-                        <input id="sell" name="transType" type='radio' value="SELL" className='ml-1' checked={transType === "SELL"} onClick={() => dispatch(setTransType("SELL"))} />
-                        <label htmlFor='sell' className='ml-1 text-sm'>SELL</label>
-                    </div> */}
-
                     {/* Order Type element */}
                     <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
                     <div className='col-start-2'>
@@ -232,12 +202,6 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal }) =>
                         onClick={() => {
                             props.setOpenModal(undefined);
                             dispatch(setSelectedStock(''));
-                            // dispatch(setExchange(''));
-                            // dispatch(setPrice(null));
-                            // dispatch(setWeightage(null));
-                            // dispatch(setQuantity(null));
-                            // dispatch(setTransType(''));
-                            // dispatch(setOrderType(''));
                             setWeightage('');
                             setPrice('');
                             setLimitPrice('');

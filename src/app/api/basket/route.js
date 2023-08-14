@@ -1,4 +1,4 @@
-// API call to fetch all records of a basket in temp table
+// API call to fetch all records of a basket in temporary table
 export const getRecords = async(adminName, basketName) => {
     try{
         const requestOptions = {
@@ -31,8 +31,8 @@ export const getRecords = async(adminName, basketName) => {
 }
 
 
-// API call to add a new record
-export const addRecord = async(adminName, basketName,selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount, limitPrice ) => {
+// API call to add a new record in temporary table
+export const addRecord = async(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount, limitPrice ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -57,11 +57,7 @@ export const addRecord = async(adminName, basketName,selectedStock, exchange, or
         const response = await fetch("http://localhost:8083/basket/temp", requestOptions);
 
         if (response.ok) {
-            const responseText = await response.text();
-            let data = JSON.parse(responseText);
-            console.log(orderType);
-            console.log(data)
-            return data;
+            return true;
         } else {
             const errorText = await response.text();
             throw new Error(`Failed to fetch data: ${errorText}`);
@@ -101,9 +97,7 @@ export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, 
         const response = await fetch("http://localhost:8083/basket/temp/up", requestOptions);
 
         if (response.ok) {
-            const responseText = await response.text();
-            console.log(responseText);
-            return responseText;
+            return true;
         } else {
             const errorText = await response.text();
             throw new Error(`Failed to fetch data: ${errorText}`);
@@ -144,7 +138,7 @@ export const deleteRecord = async(recId, basketName, adminName) => {
 }
 
 // API call to submit the whole basket to backend
-export const submitBasket = async (adminName, basketName, modelBasket, basketValidity, basketRequests) => {
+export const submitBasket = async (adminName, basketName, modelBasket, basketValidity, basketRequests, transType, investmentAmount, basketActualValue) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -157,9 +151,13 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
                 "basketModel": modelBasket,
                 "basketValidity": basketValidity, 
                 "basketRequests": basketRequests,
+                "transType": transType,
+                "basketInvestAmt": Number(investmentAmount),
+                "basketActualValue": Number(basketActualValue),
             })
         }
         const response = await fetch('http://localhost:8083/basket/create', requestOptions);
+        console.log(adminName, basketName, modelBasket, basketValidity, transType, Number(investmentAmount), Number(basketActualValue))
         if(response.ok){
             return true;
         }
@@ -173,7 +171,7 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
 }
 
 // API call to get the list of basket details
-export const getBasketList = async() => {
+export const getBasketList = async(filteredBasket) => {
     try{
         const requestOptions = {
             method: 'GET',
@@ -181,10 +179,33 @@ export const getBasketList = async() => {
                 'Content-Type': 'application/json'
             }
         }
-        const response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
+        let response;
+        switch(filteredBasket){
+            case 'ALL':
+                response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
+                console.log(response);
+                break;
+            case 'MODEL':
+                response = await fetch("http://localhost:8083/view/basketlist/model", requestOptions);
+                console.log(response);
+                break;
+            case 'BUY':
+                response = await fetch("http://localhost:8083/view/basketlist/buy", requestOptions);
+                console.log(response);
+                break;
+            case 'SELL':
+                response = await fetch("http://localhost:8083/view/basketlist/sell", requestOptions);
+                console.log(response);
+                break;
+            default:
+                response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
+                console.log(response);
+                break;
+        }
 
         if(response.ok){
             const jsonData = await response.json();
+            console.log(jsonData)
             return jsonData;
         }
         else {
@@ -214,7 +235,6 @@ export const getSpecificBasket = async(basketName) => {
 
         if(response.ok){
             const jsonData = await response.json();
-            console.log(jsonData)
             return jsonData;
         }
         else {
@@ -257,6 +277,43 @@ export const deleteBasket = async(basketName, adminId) => {
     }
 }
 
+// API call to add a record in Main table
+export const AddRecordMainAPI = async( adminId, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, basketVal ) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "adminName": adminId,
+                "basketName": String(basketName),
+                "instrumentName": selectedStock,
+                "exchangeUsed": exchange,
+                "orderType": orderType,
+                "transType": transType,
+                "quantityValue": quantity,
+                "weightValue": Number(weightage),
+                "priceValue": price,
+                "limitPrice": limitPrice , 
+                "basketInvestAmt": Number(investmentVal),       
+                "basketActualValue" : Number(basketVal),
+            })
+        };
+
+        const response = await fetch("http://localhost:8083/basket/add-a-row", requestOptions);
+        if (response.ok) {
+            return true;
+        } else {
+            const errorText = await response.text();
+            throw new Error(`Failed to fetch data: ${errorText}`);
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
 // API call to update a record in Main table
 export const updateRecordMainAPI = async(recId, basketName, adminId, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, basketVal, limitPrice ) => {
     try{
@@ -286,9 +343,7 @@ export const updateRecordMainAPI = async(recId, basketName, adminId, selectedSto
         console.log(recId, basketName, adminId, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, basketVal, limitPrice)
 
         if (response.ok) {
-            const responseText = await response.text();
-            console.log('response sent')
-            return responseText;
+            return true;
         } else {
             const errorText = await response.text();
             throw new Error(`Failed to fetch data: ${errorText}`);
@@ -400,7 +455,6 @@ export const getEquityPrice = async (instrumentName, exchange) => {
         if (response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
-            console.log("Response ok", data);
             return data.price;
         } else {
             const errorText = await response.text();
@@ -453,7 +507,6 @@ export const sendWeightage = async(weightage, totalAmount, priceofAsset) => {
         if(response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
-            console.log(data.quantity)
             return data.quantity;
         } else {
             const errorText = await response.text();
@@ -478,7 +531,6 @@ export const getCustomers = async() => {
 
         if(response.ok){
             const jsonData = await response.json();
-            console.log(jsonData)
             return jsonData;
         }
         else {
@@ -508,6 +560,7 @@ export const getBasketValue = async(basketName, adminId) => {
 
         if(response.ok) {
             const responseText = await response.text();
+            console.log(JSON.parse(responseText))
             return JSON.parse(responseText);
         } else {
             const errorText = await response.text();
@@ -535,8 +588,6 @@ export const mapBasket = async(basketName, adminId, customerId, brokerName) => {
             })
         }
         const response = await fetch("http://localhost:8083/customer/map", requestOptions);
-        console.log(basketName, adminId, customerId, brokerName)
-        console.log(response)
         if(response.ok) {
             return true;
         } else {

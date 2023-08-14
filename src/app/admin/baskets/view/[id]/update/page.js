@@ -224,7 +224,7 @@ const UpdateBasket = ({ params }) => {
             <div className='flex justify-center'>
               {/* <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button> */}
               <div>
-                <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} investmentVal={investmentVal} />
+                <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} transType={transType} investmentVal={investmentVal} basketVal={basketVal} mainBasketName={params.id} />
               </div>
               <div>
                 <SubmitBasket saved={saved} setSaved={setSaved} />              

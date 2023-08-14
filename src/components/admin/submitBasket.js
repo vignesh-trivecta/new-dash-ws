@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import MapAlert from './mapAlert';
 import { setBasketAmount } from '@/store/basketSlice';
 
-const SubmitBasket = ({ saved, setSaved }) => {
+const SubmitBasket = ({ saved, setSaved, transType, investmentAmount, actualValue }) => {
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
+
+  let basketActualValue = actualValue?.split(',').join('')
 
   const dispatch = useDispatch();
 
@@ -28,7 +30,7 @@ const SubmitBasket = ({ saved, setSaved }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const basketRequests = await getRecords(adminName, basketName);
-    const response = await submitBasket(adminName, basketName, modelBasket, basketValidity, basketRequests);
+    const response = await submitBasket(adminName, basketName, modelBasket, basketValidity, basketRequests, transType, investmentAmount, basketActualValue);
     // setPopup(!popup); // Close the MapAlert after saving
     setSaved(true);
   }

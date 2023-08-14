@@ -19,11 +19,11 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     const props = { openModal, setOpenModal };
 
     const pathname = usePathname()
-    const searchParams = useSearchParams()
     
     // redux store variables
     const dispatch = useDispatch();
     const basketName = useSelector((state) => state.basket.basketName);
+    const basketAmount = useSelector((state) => state.basket.basketAmount);
     const adminId = useSelector((state) => state.user.username);
     const selectedStock = useSelector((state) => state.add.selectedStock);
     // let exchange = useSelector((state) => state.update.exchange);
@@ -81,8 +81,10 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                 let val1 = String(investmentVal).split(',').join('');
                 let val2 = String(basketVal).split(',').join('');
                 const data = await updateRecordAPI(recId, basketName, adminId, localStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, val1, val2, limitPrice);
-                setHandleFetch(!handleFetch);
-                props.setOpenModal(undefined);
+                if(data === true){
+                    setHandleFetch(!handleFetch);
+                    props.setOpenModal(undefined);
+                }
             }
             else{
                 let val1 = String(investmentVal).split(',').join('');
@@ -112,19 +114,15 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
 
     // Weightage event handler
     const handleWeightage = async (e) => {
-        const newValue = (e.target.value);
-        console.log(newValue);
-        console.log(newValue, investmentVal, localPrice)
-        setLocalWeightage(newValue);
-        const quantity = await sendWeightage(newValue, investmentVal, localPrice);
-        console.log(quantity)
+        const newValue = (e?.target.value);
+        setLocalWeightage(newValue || localWeightage);
+        const quantity = await sendWeightage(newValue || localWeightage, basketAmount, localPrice);
         setLocalQuantity(quantity);
     };
 
-    //function to get the quantity of stocks based on weightage
-    const quantityAPI = async () => {
-
-    }
+    useEffect(() => {
+        handleWeightage();
+    }, [localPrice])
 
     // handling orderType radio button selection
     const handleOrderType = (type) => {
@@ -280,6 +278,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                             defaultChecked={localExchange === "NSE"}
                             onClick={() => {
                                 handleExchange("NSE");
+                                console.log('nse')
                             }} />
                         <label htmlFor='nse' className='ml-1'>NSE</label>
                     </div>

@@ -13,13 +13,14 @@ const Customers = () => {
   // local state
   const [records, setRecords] = useState([]);
   const [handleFetch, setHandleFetch] = useState(false);
+  const [filteredBasket, setFilteredBasket] = useState('ALL');
 
   const username = useSelector((state) => state.user.username);
 
   // useEffect to fetch the view table baskets
   useEffect(() => {
     const fetchBaskets = async() => {
-      const response = await getBasketList();
+      const response = await getBasketList(filteredBasket);
       setRecords(response);
     }
     fetchBaskets();
@@ -28,12 +29,11 @@ const Customers = () => {
   // useEffect to update table after deletion
   useEffect(() => {
     const fetchBaskets = async() => {
-        const response = await getBasketList();
+        const response = await getBasketList(filteredBasket);
         setRecords(response);
-        console.log(response)
     }
     fetchBaskets();
-  }, [handleFetch])
+  }, [handleFetch, filteredBasket])
 
   return (
     <div className='container mx-auto mt-4' style={{width: '90%'}}>
@@ -41,9 +41,10 @@ const Customers = () => {
             <h1 className="font-bold">View Baskets</h1>
             <div className="flex items-center">
                 <p className="text-black text-sm dark:text-white mr-2">Filter</p>
-                <select name="transactionType" id="transactionType" className='border border-gray-200 rounded-md w-32 h-8 text-xs'>
-                    <option value="BUY" className='' selected>Model</option>
-                    <option value="SELL">Buy</option>
+                <select name="basketType" id="basketType" value={filteredBasket} onChange={e => {setFilteredBasket(e.target.value)}} className='border border-gray-200 rounded-md w-32 h-8 text-xs'>
+                    <option value="ALL" className=''>All</option>
+                    <option value="MODEL" className=''>Model</option>
+                    <option value="BUY">Buy</option>
                     <option value="SELL">Sell</option>
                 </select> 
             </div>
@@ -104,7 +105,7 @@ const Customers = () => {
                           <div className='text-sm text-black p-2 ml-2'>{record.totalNoOrders}</div>
                       </td>
                       <td className='text-center'>
-                          <div className='text-sm text-black p-2 mr-20'>{segregate(record.basketInvAmount)}</div>
+                          <div className='text-sm text-black p-2 mr-20'>{(record.basketInvAmount)}</div>
                       </td>
                       <td className='text-left'>
                           <div className='text-sm text-black p-2'>{record.createdBy}</div>    

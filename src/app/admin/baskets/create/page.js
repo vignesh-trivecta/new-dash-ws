@@ -275,7 +275,7 @@ const CreateBasket = () => {
                 <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} transType={transType} />
               </div>
               <div>
-                <SubmitBasket saved={saved} setSaved={setSaved} />              
+                <SubmitBasket saved={saved} setSaved={setSaved} transType={transType} investmentAmount={basketAmount} actualValue={basketVal} />              
               </div>
             </div>
 
