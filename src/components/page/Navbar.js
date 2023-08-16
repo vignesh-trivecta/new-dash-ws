@@ -2,7 +2,7 @@ import { Navbar, Dropdown, Avatar } from "flowbite-react";
 import logo from "@/../../public/logo1.png";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { setLoggedIn } from "@/store/userSlice";
+import { setAdminLoginStatus, setLoggedIn } from "@/store/userSlice";
 import { useRouter } from "next/navigation";
 
 const DashNavbar = function () {
@@ -42,6 +42,7 @@ const DashNavbar = function () {
             onClick={() => { 
                 router.push('/');
                 dispatch(setLoggedIn(false));
+                dispatch(setAdminLoginStatus(false));
             }}
             >            
                 Sign out

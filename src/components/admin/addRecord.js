@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AddRecordMainAPI, addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
 import { setSelectedStock} from '@/store/addRecordSlice';
 import { usePathname, useSearchParams } from 'next/navigation';
-
+import { Formik } from "formik";
+import * as Yup from "yup";
 
 const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, mainBasketName }) => {
 
@@ -119,101 +120,106 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             </Modal.Header>
             <Modal.Body>
                 {/* <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-10">Add new record</h3> */}
-                <div className='grid grid-rows-4 grid-cols-3 gap-x- gap-y-4 mt-4'>
-                    <Label htmlFor="stock" value="Stock" className='text-sm' />
-                    <div className=''>
-                        <SearchDropdown id={"stock"} fetch={fetch} setFetch={setFetch} />
-                    </div>
+                <form onSubmit={handleSubmit}>
+                    <div className='grid grid-rows-4 grid-cols-3 gap-x- gap-y-4 mt-4'>
+                        <Label htmlFor="stock" value="Stock" className='text-sm' />
+                        <div className=''>
+                            <SearchDropdown id={"stock"} fetch={fetch} setFetch={setFetch} />
+                        </div>
 
-                    {/* Price element */}
-                    <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
-                        <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                        <input disabled id='price' name="price" value={price} type="number" className=' text-right absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
-                    </div>
+                        {/* Price element */}
+                        <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
+                            <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                            <input disabled id='price' name="price" value={price} type="number" className=' text-right absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
+                        </div>
 
-                    {/* Exchange element */}
-                    <Label value="Exchange" className='col-start-1 row-start-2 text-sm' />
-                    <div className=' col-start-2 row-start-2'>
-                        <input 
-                            id="bse" 
-                            name="exchange" 
-                            type='radio' 
-                            value="BSE"
-                            defaultChecked={exchange === "BSE"}
-                            onClick={() => {
-                                handleExchange("BSE");
-                        }} />
-                        <label htmlFor='bse' className='ml-1 text-sm'>BSE</label>
-                        <input 
-                            id="nse" 
-                            name="exchange" 
-                            type='radio' 
-                            value="NSE" 
-                            className='ml-1' 
-                            defaultChecked={exchange === "NSE"}
-                            onClick={() => {
-                                handleExchange("NSE");
-                        }} />
-                        <label htmlFor='nse' className='ml-1 text-sm'>NSE</label>
-                    </div>
-                    
-                    {/* Weightage element */}
-                    <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-sm' />
-                    <div className='rounded-md col-start-2 row-start-3 h-10'>
-                        <input
-                            type='text'
-                            value={weightage}
-                            onChange={handleChange}
-                            className='w-full border border-gray-200 rounded-md text-right'
-                            
-                        />
-                        {/* <input type='text' id="weightage" placeholder='Enter...' /> */}
-                    </div>
-
-                    {/* Order Type element */}
-                    <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
-                    <div className='col-start-2'>
-                        <input id="market" name="orderType" type='radio' value="MARKET" checked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
-                        <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
-                        <input id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' checked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
-                        <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
-                    </div>
-
-                    {/* Limit value element */}    
-                    {orderType === "LIMIT" && (   
-                        <span className='relative ml-8'>
-                            <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                            <input id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className=' text-right absolute w-32 rounded-md border border-gray-200' />                                             
-                        </span>                             
-                    )}
-
+                        {/* Exchange element */}
+                        <Label value="Exchange" className='col-start-1 row-start-2 text-sm' />
+                        <div className=' col-start-2 row-start-2'>
+                            <input 
+                            required
+                                id="bse" 
+                                name="exchange" 
+                                type='radio' 
+                                value="BSE"
+                                defaultChecked={exchange === "BSE"}
+                                onClick={() => {
+                                    handleExchange("BSE");
+                            }} />
+                            <label htmlFor='bse' className='ml-1 text-sm'>BSE</label>
+                            <input 
+                            required
+                                id="nse" 
+                                name="exchange" 
+                                type='radio' 
+                                value="NSE" 
+                                className='ml-1' 
+                                defaultChecked={exchange === "NSE"}
+                                onClick={() => {
+                                    handleExchange("NSE");
+                            }} />
+                            <label htmlFor='nse' className='ml-1 text-sm'>NSE</label>
+                        </div>
                         
-                    {/* Quantity element */}
-                    <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
-                        <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                        <input disabled id='quantity' name='quantity' value={quantity} type="string" className=' text-right absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
-                    </div>
-                </div>
+                        {/* Weightage element */}
+                        <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-sm' />
+                        <div className='rounded-md col-start-2 row-start-3 h-10'>
+                            <input
+                            required
+                                type='text'
+                                value={weightage}
+                                onChange={handleChange}
+                                className='w-full border border-gray-200 rounded-md text-right'
+                                
+                            />
+                            {/* <input type='text' id="weightage" placeholder='Enter...' /> */}
+                        </div>
 
-                {/* Buttons group */}
-                <div className="flex justify-end mt-4">
-                    <button type='submit' onClick={handleSubmit} className="bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20">Add</button>
-                    <Button color="gray"                
-                        onClick={() => {
-                            props.setOpenModal(undefined);
-                            dispatch(setSelectedStock(''));
-                            setWeightage('');
-                            setPrice('');
-                            setLimitPrice('');
-                            setQuantity('');
-                            setExchange('');
-                            setOrderType('');
-                        }}
-                        className="ml-2 text-md" 
-                    >
-                        Cancel
-                    </Button>
-                </div>
+                        {/* Order Type element */}
+                        <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
+                        <div className='col-start-2'>
+                            <input required id="market" name="orderType" type='radio' value="MARKET" checked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
+                            <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
+                            <input required id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' checked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
+                            <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
+                        </div>
+
+                        {/* Limit value element */}    
+                        {orderType === "LIMIT" && (   
+                            <span className='relative ml-8'>
+                                <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                                <input required id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className=' text-right absolute w-32 rounded-md border border-gray-200' />                                             
+                            </span>                             
+                        )}
+
+                            
+                        {/* Quantity element */}
+                        <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
+                            <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
+                            <input disabled id='quantity' name='quantity' value={quantity} type="string" className=' text-right absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
+                        </div>
+                    </div>
+
+                    {/* Buttons group */}
+                    <div className="flex justify-end mt-4">
+                        <button type='submit' className="bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20">Add</button>
+                        <Button color="gray"                
+                            onClick={() => {
+                                props.setOpenModal(undefined);
+                                dispatch(setSelectedStock(''));
+                                setWeightage('');
+                                setPrice('');
+                                setLimitPrice('');
+                                setQuantity('');
+                                setExchange('');
+                                setOrderType('');
+                            }}
+                            className="ml-2 text-md" 
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </form>
             </Modal.Body>
         </Modal>
     </>

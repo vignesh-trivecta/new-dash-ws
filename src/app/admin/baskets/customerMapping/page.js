@@ -77,11 +77,9 @@ const CustomerMapping = () => {
 
     // handle basket selection
     const handleSelection = async (value) => {
-        console.log(value)
         setBasket(value);
         const response = await getBasketValue(value, adminId);
         console.log(response)
-        console.log(response[0].basketActualValue)
         setInvestmentVal(response[0]?.basketInvestAmt);
         setTransType(response[0]?.transactionType);
         setBasketVal(response[0].basketActualValue);
@@ -129,7 +127,7 @@ const CustomerMapping = () => {
 
                 <div className="flex flex-col items-left mb-6">
                     <p className="text-black text-sm dark:text-white mr-2">Basket value &#8377;</p>
-                    <input disabled type="text" value={(basketVal)} className="border border-gray-200 rounded-lg w-44 text-right bg-gray-50" />
+                    <input disabled type="text" value={segregate(basketVal)} className="border border-gray-200 rounded-lg w-44 text-right bg-gray-50" />
                 </div>
             </div>       
 

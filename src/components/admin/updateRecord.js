@@ -74,7 +74,8 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
       }
     
     // handling update button click to update the records
-    const handleUpdate = () => {
+    const handleUpdate = (e) => {
+        e.preventDefault();
         const localtransType = toggle;
         const postDataAPI = async() => {
             if(pathname == '/admin/baskets/create'){
@@ -172,6 +173,8 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
 
             </Modal.Header>            
             <Modal.Body>
+                <form onSubmit={handleUpdate}>
+
                 <div className='grid grid-rows-4 grid-cols-3 gap-x- gap-y-4 mt-4'>
 
                     {/* Search Dropdown */}
@@ -356,7 +359,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
 
                 {/* Modal Butttons */}
                 <div className="flex justify-end mt-4">
-                    <button type='submit'  onClick={handleUpdate} className={`bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20`}>Update</button>
+                    <button type='submit' className={`bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20`}>Update</button>
                     <Button color="gray" 
                     onClick={() => { 
                         props.setOpenModal(undefined); 
@@ -371,6 +374,8 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     }} 
                     className='ml-2 text-md'>Cancel</Button>
                 </div>
+                
+                </form>
             </Modal.Body>
         </Modal>   
     </div>

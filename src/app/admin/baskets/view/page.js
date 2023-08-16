@@ -35,6 +35,8 @@ const Customers = () => {
     fetchBaskets();
   }, [handleFetch, filteredBasket])
 
+  records.sort((a, b) => new Date (b.createdOn) - new Date (a.createdOn));
+
   return (
     <div className='container mx-auto mt-4' style={{width: '90%'}}>
         <div className='flex justify-between '>
@@ -111,7 +113,7 @@ const Customers = () => {
                           <div className='text-sm text-black p-2'>{record.createdBy}</div>    
                       </td>          
                       <td className='text-center'>
-                          <div className='text-sm text-black p-2'>{record.createdOn}</div>    
+                          <div className='text-sm text-black p-2'>{record.createdOn.split('T')[0]}</div>    
                       </td>  
                       <td className="text-right text-sm ">
                           <div className="flex justify-center items-center">

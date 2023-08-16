@@ -30,6 +30,7 @@ const UpdateBasket = ({ params }) => {
   useEffect( () => {
     const gettingRecords = async () => {
       const response = await getBasketValue(params.id, adminId);
+      console.log(response)
       setInvestmentVal(response[0].basketInvestAmt);
       setTransType(response[0].transactionType);
     };
@@ -227,7 +228,7 @@ const UpdateBasket = ({ params }) => {
                 <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} transType={transType} investmentVal={investmentVal} basketVal={basketVal} mainBasketName={params.id} />
               </div>
               <div>
-                <SubmitBasket saved={saved} setSaved={setSaved} />              
+                <SubmitBasket saved={saved} setSaved={setSaved} transType={transType} investmentAmount={investmentVal} actualValue={basketVal} mainBasketName={params.id} />              
               </div>
             </div>
 

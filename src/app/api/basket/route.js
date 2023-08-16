@@ -18,15 +18,16 @@ export const getRecords = async(adminName, basketName) => {
         if (response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
+            console.log(data)
             return data;
         } else {
             const errorText = await response.text();
+            console.log(errorText);
             throw new Error(`Failed to fetch data: ${errorText}`);
         }
     }
     catch(error){
         console.log(error)
-        console.log(adminName, basketName)
     }
 }
 

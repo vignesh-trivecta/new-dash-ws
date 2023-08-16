@@ -106,6 +106,11 @@ const CreateBasket = () => {
     })
     setTotal(total);
     
+    // condition to set msg5
+    if((records?.length !== 0)){
+      setMessage(msg5);
+    }
+
     // condition to compare investment and basket value
     if(total > basketAmount){
       setComparison(false);
@@ -115,10 +120,6 @@ const CreateBasket = () => {
       setComparison(true);
     }
 
-    // condition to set msg5
-    if(records?.length !== 0){
-      setMessage(msg5);
-    }
   }, [records]);
   
   // Conditional rendering for buttons based on comparison and existence of total/basketAmount
@@ -136,8 +137,8 @@ const CreateBasket = () => {
   const msg2 = "Add scripts to the basket";
   const msg3 = "Basket name exists!";
   const msg4 = "Basket Saved Successfully!";
-  const msg5 = `Basket Value is lesser than Investment Amount`;
-  const msg6 = "Basket Value is higher than Investment Amount. Delete some scripts!"
+  const msg5 = "Basket Value is lesser than Investment Amount";
+  const msg6 = "Basket Value is higher than Investment Amount";
 
   return (
     <div className='container mx-auto mt-4' style={{width: '90%'}}>

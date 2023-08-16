@@ -10,7 +10,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { setUsername, setEmail, setPhone, setLoggedIn } from "@/store/userSlice";
+import { setUsername, setEmail, setPhone, setLoggedIn, setAdminLoginStatus } from "@/store/userSlice";
 import { Label, TextInput } from 'flowbite-react';
 import { loginAPI } from "@/app/api/login";
 import Link from "next/link";
@@ -98,6 +98,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
         dispatch(setUsername(username));
         dispatch(setEmail(login.email));
         dispatch(setPhone(login.phone));
+        dispatch(setAdminLoginStatus(true));
         router.push('/admin/dashboard');
       }
     }

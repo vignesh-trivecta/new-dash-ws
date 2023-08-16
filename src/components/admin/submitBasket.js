@@ -1,12 +1,14 @@
-import { getRecords, submitBasket } from '@/app/api/basket/route';
+import { getRecords, getSpecificBasket, submitBasket } from '@/app/api/basket/route';
 import ValiditySelector from '@/utils/validitySelector';
 import { Button, Modal } from 'flowbite-react';
 import React, {useState} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import MapAlert from './mapAlert';
 import { setBasketAmount } from '@/store/basketSlice';
+import { usePathname } from 'next/navigation';
 
-const SubmitBasket = ({ saved, setSaved, transType, investmentAmount, actualValue }) => {
+
+const SubmitBasket = ({ saved, setSaved, transType, investmentAmount, actualValue, mainBasketName }) => {
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -15,6 +17,7 @@ const SubmitBasket = ({ saved, setSaved, transType, investmentAmount, actualValu
   let basketActualValue = actualValue?.split(',').join('')
 
   const dispatch = useDispatch();
+  const pathname = usePathname();
 
   // local state variables
   // const [popup, setPopup] = useState(false);
@@ -29,8 +32,16 @@ const SubmitBasket = ({ saved, setSaved, transType, investmentAmount, actualValu
   // function to submit all the records
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const basketRequests = await getRecords(adminName, basketName);
+    let basketRequests;
+    if(pathname == '/admin/baskets/create'){
+      basketRequests = await getRecords(adminName, basketName);
+    }
+    else{
+      basketRequests = await getSpecificBasket(mainBasketName);
+    }
+    console.log(adminName, basketName || mainBasketName, modelBasket, basketValidity, basketRequests, transType, investmentAmount, basketActualValue)
     const response = await submitBasket(adminName, basketName, modelBasket, basketValidity, basketRequests, transType, investmentAmount, basketActualValue);
+    console.log(response);
     // setPopup(!popup); // Close the MapAlert after saving
     setSaved(true);
   }
