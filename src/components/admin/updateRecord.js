@@ -1,8 +1,9 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { Button, Label, Modal } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getEquityPrice, sendWeightage, updateRecordAPI, updateRecordMainAPI } from '@/app/api/basket/route';
-// import UpdateSearchDropdown from '@/utils/updateSearchDropdown';
+import { getEquityPrice, sendWeightage } from '@/app/api/basket/route';
+import { updateRecordMainAPI } from '@/app/api/mainBasket/route';
+import { updateRecordAPI } from '@/app/api/tempBasket/route';
 import Link from 'next/link';
 import { segregate } from '@/utils/priceSegregator';
 import { setSelectedStock } from '@/store/addRecordSlice';

@@ -1,6 +1,7 @@
 'use client';
 
-import { getBasketValue, getRecords, getSpecificBasket } from '@/app/api/basket/route';
+import { getBasketValue, getSpecificBasket } from '@/app/api/basket/route';
+import { getRecords } from '@/app/api/tempBasket/route';
 import BasketRecords from '@/components/admin/basketRecords';
 import { segregate } from '@/utils/priceSegregator';
 import React, {useState, useEffect} from 'react';

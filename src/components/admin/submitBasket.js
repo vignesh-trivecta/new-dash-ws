@@ -1,4 +1,5 @@
-import { getRecords, getSpecificBasket, submitBasket } from '@/app/api/basket/route';
+import { getRecords } from '@/app/api/tempBasket/route';
+import { getSpecificBasket, submitBasket } from '@/app/api/basket/route';
 import ValiditySelector from '@/utils/validitySelector';
 import { Button, Modal } from 'flowbite-react';
 import React, {useState} from 'react';

@@ -1,4 +1,4 @@
-import { deleteBasket } from '@/app/api/basket/route';
+import { deleteBasket } from '@/app/api/mainBasket/route';
 import Link from 'next/link'
 import React from 'react'
 import { useSelector } from 'react-redux';

@@ -82,12 +82,13 @@ const CustomerMapping = () => {
         console.log(response)
         setInvestmentVal(response[0]?.basketInvestAmt);
         setTransType(response[0]?.transactionType);
-        setBasketVal(response[0].basketActualValue);
+        setBasketVal(response[0]?.basketActualValue);
     }
     
     // handle customer mapping
     const handleMapping = async (customerId) => {
         const response = await mapBasket(basket, adminId, customerId, broker);
+        console.log(response)
     }
 
     return(

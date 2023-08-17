@@ -1,8 +1,7 @@
 'use client';
 
-import { cloneBasket, deleteBasket, getSpecificBasket } from '@/app/api/basket/route';
-// import { Dialog, Transition } from '@headlessui/react';
-// import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { cloneBasket, getSpecificBasket } from '@/app/api/basket/route';
+import { deleteBasket } from '@/app/api/mainBasket/route';
 import { segregate } from '@/utils/priceSegregator';
 import Link from 'next/link';
 import React, { useEffect, useState, useRef } from 'react'

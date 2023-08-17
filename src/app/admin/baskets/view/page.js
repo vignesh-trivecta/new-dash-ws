@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { deleteBasket, getBasketList } from '@/app/api/basket/route';
+import { getBasketList } from '@/app/api/basket/route';
+import { deleteBasket } from '@/app/api/mainBasket/route';
 import { segregate } from '@/utils/priceSegregator';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
@@ -78,7 +79,7 @@ const Customers = () => {
                   </tr>
               </thead> */}
               <div className='flex mt-8'>
-        <div className={'overflow-y-scroll border'} >
+        <div className={'overflow-y-scroll border'} style={{height: '400px'}}>
           <table className='table-fixed w-full ' >
             <thead className='sticky top-0 bg-gray-50' >
               <tr>

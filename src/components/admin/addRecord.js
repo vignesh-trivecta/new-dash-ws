@@ -4,11 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { Button, Label, Modal } from 'flowbite-react';
 import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddRecordMainAPI, addRecord, getEquityPrice, sendWeightage } from '@/app/api/basket/route';
+import { getEquityPrice, sendWeightage } from '@/app/api/basket/route';
+import { AddRecordMainAPI } from '@/app/api/mainBasket/route';
+import { addRecord } from '@/app/api/tempBasket/route';
 import { setSelectedStock} from '@/store/addRecordSlice';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { Formik } from "formik";
-import * as Yup from "yup";
+import { usePathname } from 'next/navigation';
 
 const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, mainBasketName }) => {
 

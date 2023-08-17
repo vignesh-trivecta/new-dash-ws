@@ -1,4 +1,5 @@
-import { deleteRecord, deleteRecordMainAPI } from '@/app/api/basket/route';
+import { deleteRecordMainAPI } from '@/app/api/mainBasket/route';
+import { deleteRecord } from '@/app/api/tempBasket/route';
 import Link from 'next/link'
 import React from 'react'
 import { useSelector } from 'react-redux';
