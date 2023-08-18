@@ -30,7 +30,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     const [weightage, setWeightage] = useState('');
     const [price, setPrice] = useState('');
     const [exchange, setExchange] = useState('');
-    const [orderType, setOrderType] = useState('');
+    const [orderType, setOrderType] = useState('LIMIT');
     const [quantity, setQuantity] = useState('');
 
     const [fetch, setFetch] = useState(false);
@@ -100,7 +100,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             setPrice('');
             setQuantity('');
             setExchange('');
-            setOrderType('');
+            setOrderType('LIMIT');
         }}
         >
             Add Record

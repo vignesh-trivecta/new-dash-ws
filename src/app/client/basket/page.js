@@ -15,7 +15,7 @@ const BasketPage = () => {
             <Image src={Logo} alt="wealth spring logo"  />
             <div></div>
         </div>
-        <p className='text-center font-semibold mb-4'>BankingSmallCase</p>
+        <p className='text-center font-semibold mb-4 text-xl'>BankingSmallCase</p>
         <div className='flex justify-center'>
             <div>
                 <p>Basket Value &#8377;</p>
@@ -38,6 +38,7 @@ const BasketPage = () => {
                         <th>Script</th>
                         <th>Price &#8377;</th>
                         <th className='p-2'>Quantity</th>
+                        <th className='p-2'>Total &#8377;</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,31 +47,35 @@ const BasketPage = () => {
                         <td className='truncate p-2'>YES BANK</td>
                         <td className='text-right'>115.85</td>
                         <td className='text-right pr-2'>452</td>
+                        <td className='text-right pr-2'>50,255</td>
                     </tr>
                     <tr className='border-b'>
                         <td className='text-center'>2</td>
                         <td className='truncate p-2'>DCB BANK</td>
                         <td className='text-right'>72.10</td>
                         <td className='text-right pr-2'>250</td>
+                        <td className='text-right pr-2'>80,524</td>
                     </tr>
                     <tr className='border-b'>
                         <td className='text-center'>3</td>
                         <td className='truncate p-2'>IOB BANK</td>
                         <td className='text-right'>55.00</td>
                         <td className='text-right pr-2'>120</td>
+                        <td className='text-right pr-2'>75,789</td>
                     </tr>
                     <tr className='border-b'>
                         <td className='text-center'>4</td>
                         <td className='truncate p-2'>AXIS BANK</td>
                         <td className='text-right'>1325.20</td>
                         <td className='text-right pr-2'>54</td>
+                        <td className='text-right pr-2'>64,245</td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div className='flex justify-center space-x-4 mt-4'>
-            <button className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20'>Accept</button>
-            <Button color='gray'>Cancel</Button>
+            <button className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20'>Conform</button>
+            <Button color='gray'>Decline</Button>
         </div>
     </div>
   )

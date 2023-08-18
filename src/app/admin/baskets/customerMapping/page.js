@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState, Fragment } from "react";
-import { getBasketList, getBasketValue, getCustomers, mapBasket } from "@/app/api/basket/route";
+import { useEffect, useState, Fragment, use } from "react";
+import { getBasketList, getBasketValue, getCustomerStatus, getCustomers, mapBasket } from "@/app/api/basket/route";
 import { Alert, Button, Modal, Toast, Tooltip } from "flowbite-react";
 import { HiCheck, HiCheckCircle } from "react-icons/hi";
 import { useRouter } from "next/navigation";
@@ -24,14 +24,13 @@ const CustomerMapping = () => {
     const [ customers, setCustomers ] = useState([]);
     const [weblink, setWeblink] = useState(false);
     const [message, setMessage] = useState(false);
+    const [status, setStatus] = useState([]);
     const [records, setRecords] = useState([]);
     const [investmentVal, setInvestmentVal] = useState('');
     const [basketVal, setBasketVal] = useState('');
     const [transType, setTransType] = useState('');
     const [broker, setBroker] = useState(brokers[0].name);
-    const [basket, setBasket] = useState('');
-
-    const basketName = useSelector((state) => state.basket.basketName);
+    const [basketName, setBasketName] = useState('');
     
     // modal state variables
     const [openModal, setOpenModal] = useState();
@@ -45,12 +44,10 @@ const CustomerMapping = () => {
         const fetchBaskets = async() => {
             const response = await getBasketList();
             setRecords(response);
-            console.log(response)
         }
         const fetchData = async () => {
             const customersData = await getCustomers();
             setCustomers(customersData);
-            console.log(customersData)
         };
         
         fetchBaskets();
@@ -77,18 +74,25 @@ const CustomerMapping = () => {
 
     // handle basket selection
     const handleSelection = async (value) => {
-        setBasket(value);
+        setBasketName(value);
         const response = await getBasketValue(value, adminId);
-        console.log(response)
         setInvestmentVal(response[0]?.basketInvestAmt);
         setTransType(response[0]?.transactionType);
         setBasketVal(response[0]?.basketActualValue);
+
+        const status = await getCustomerStatus(value);
+        if(status){
+            setStatus(status);
+        }
+        else{
+            console.log('error')
+        }
     }
     
     // handle customer mapping
     const handleMapping = async (customerId) => {
-        const response = await mapBasket(basket, adminId, customerId, broker);
-        console.log(response)
+        const response = await mapBasket(basketName, adminId, customerId, broker);
+        handleSelection(basketName);
     }
 
     return(
@@ -103,10 +107,10 @@ const CustomerMapping = () => {
                             name="transactionType"
                             id="transactionType"
                             className='border border-gray-200 rounded-md w-44'
-                            defaultValue={'select'}
+                            defaultValue={''}
                             onChange={(e) => {handleSelection(e.target.value)}}
                         >
-                            <option>-Select -</option>
+                            <option disabled value="">-Select -</option>
                                 {records?.map((record) => (
                                     <option key={record.basketName} value={record.basketName}>
                                         {record.basketName}
@@ -176,10 +180,17 @@ const CustomerMapping = () => {
                                     </td>
                                     <td>
                                         <div className="ml-8">
-                                            <svg className="w-4 h-4 text-green-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M1 5.917 5.724 10.5 15 1.5"/>
-                                            </svg>
-                                        </div>
+                                            {status.find((obj) =>{ return (obj.customerId === data.customerId) }) 
+                                            ?
+                                                <svg className="w-4 h-4 text-green-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M1 5.917 5.724 10.5 15 1.5"/>
+                                                </svg>
+                                            : 
+                                                <svg className="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                </svg>
+                                            }
+                                        </div>  
                                     </td>
                                     <td>
                                         <div className="ml-8">

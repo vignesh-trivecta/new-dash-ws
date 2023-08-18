@@ -36,7 +36,7 @@ const Customers = () => {
     fetchBaskets();
   }, [handleFetch, filteredBasket])
 
-  records.sort((a, b) => new Date (b.createdOn) - new Date (a.createdOn));
+  records?.sort((a, b) => new Date (b.createdOn) - new Date (a.createdOn));
 
   return (
     <div className='container mx-auto mt-4' style={{width: '90%'}}>

@@ -11,12 +11,11 @@ import AddRecord from '@/components/admin/addRecord';
 import SubmitBasket from '@/components/admin/submitBasket';
 import { Alert, Button, Tooltip } from 'flowbite-react';
 import { HiInformationCircle, HiCheck, HiCheckCircle } from 'react-icons/hi';
+import { useRouter } from 'next/navigation';
 
 const UpdateBasket = ({ params }) => {
 
   const adminId = useSelector((state) => state.user.username);
-  let value;
-
     
   // local state variables
   const [records, setRecords] = useState([]);
@@ -25,6 +24,7 @@ const UpdateBasket = ({ params }) => {
   const [transType, setTransType] = useState('');
   
   const pathname = usePathname();
+  const router = useRouter();
   
   const [investmentVal, setInvestmentVal] = useState('');
   // useEffect to fetch 
@@ -223,13 +223,14 @@ const UpdateBasket = ({ params }) => {
           {/* Conditional rendering based on comparison and records.length */}
           { comparison && (investmentVal !== '')
             ? 
-            <div className='flex justify-center'>
+            <div className='flex justify-center space-x-2'>
               {/* <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button> */}
               <div>
                 <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} transType={transType} investmentVal={investmentVal} basketVal={basketVal} mainBasketName={params.id} />
               </div>
               <div>
-                <SubmitBasket saved={saved} setSaved={setSaved} transType={transType} investmentAmount={investmentVal} actualValue={basketVal} mainBasketName={params.id} />              
+                {/* <SubmitBasket saved={saved} setSaved={setSaved} transType={transType} investmentAmount={investmentVal} actualValue={basketVal} mainBasketName={params.id} />               */}
+                <Button onClick={() => {router.push('/admin/baskets/view')}}>Save & Close</Button>
               </div>
             </div>
 
