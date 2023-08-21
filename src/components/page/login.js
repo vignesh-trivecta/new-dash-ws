@@ -20,6 +20,7 @@ const LoginAuth = () => {
     const [breakpoint, setBreakpoint] = useState('');
     const [captchaValue, setCaptchaValue] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [errorMsg, setErrorMsg] = useState("");
     
     const router = useRouter();
     const dispatch = useDispatch();
@@ -93,7 +94,6 @@ function encryptedCredentials(user, password, SECRET_KEY) {
       // based on the received respone 200 or 404 
       // redirecting user to next page
       const login =  await loginAPI(token);
-      console.log(login.email)
       if(login.statusCode == 200){
         dispatch(setUsername(username));
         dispatch(setEmail(login.email));
@@ -101,6 +101,10 @@ function encryptedCredentials(user, password, SECRET_KEY) {
         dispatch(setAdminLoginStatus(true));
         router.push('/admin/dashboard');
       }
+    }
+    else{
+      console.log("Invalid credentials");
+      setErrorMsg("Invalid credentials! Try again")
     }
   };
 
@@ -141,7 +145,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
             handleSubmit,
             }) => (
                 <div className="p-12 w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg border border-gray-300 dark:bg-gray-800">
-                    <div className="px-6 py-4">
+                    <div className="px-6">
 
                         <form noValidate onSubmit={handleSubmit}>
                             <div className="flex justify-center mx-auto">
@@ -167,14 +171,14 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                             </div>
                             {/* If validation is not passed show errors */}
                             <p className="error text-red-500" style={{fontSize: '12px'}}>
-                                {errors.username && touched.username && errors.username}
+                                {(errors.username && touched.username && errors.username) || (<p>&nbsp;</p>)}
                             </p>
 
                             {/* Password */}
                             {showPassword 
                             ? (
 
-                                <div className="relative text-gray-700 mt-4">
+                                <div className="relative text-gray-700 mt-1">
                                     <input 
                                     className="w-full h-10 pl-3 pr-8 text-gray-700 placeholder-gray-500 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" 
                                     type="text" 
@@ -202,7 +206,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                             ) 
                             : (
 
-                                <div className="relative text-gray-700 mt-4">
+                                <div className="relative text-gray-700 mt-1">
                                     <input 
                                     className="w-full h-10 pl-3 pr-8 text-gray-700 placeholder-gray-500 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300" 
                                     type="password" 
@@ -229,12 +233,12 @@ function encryptedCredentials(user, password, SECRET_KEY) {
 
                             {/* If validation is not passed show errors */}
                             <p className="error text-red-500" style={{fontSize: '12px'}}>
-                                {errors.password && touched.password && errors.password}
+                                {(errors.password && touched.password && errors.password) || (<p>&nbsp;</p>)}
                             </p>
 
                             {/* Captcha */}
-                            <div className="mt-4">
-                                <div className="relative text-gray-700 mt-4">
+                            <div className="mt-1">
+                                <div className="relative text-gray-700">
                                     <input 
                                     className="select-none pointer-events-none draggable block w-full text-gray-700 bg-gray-100 border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600" 
                                     type="text" 
@@ -264,14 +268,16 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                                 />
                             </div>
                             <p className="error text-red-500" style={{fontSize: '12px'}}>
-                              {errors.captcha && touched.captcha && errors.captcha}
+                              {(errors.captcha && touched.captcha && errors.captcha) || (<p>&nbsp;</p>)}
                             </p>
 
-                            <div>
+                            <div className="-mt-2">
                               <Link href="#" className="underline text-xs text-blue-500">Forgot password?</Link>
                             </div>
 
-                            <div className="flex justify-center mt-4">
+                            <div className="text-red-500" style={{fontSize: '14px'}}>{errorMsg || <p>&nbsp;</p>}</div>
+
+                            <div className="flex justify-center mt-2">
                                 <button type="submit" className="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
                                     Log In
                                 </button>
