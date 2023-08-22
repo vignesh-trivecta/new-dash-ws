@@ -37,14 +37,12 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
     // function to handle the exchange radio button
     const handleExchange = (exchange) => {
-        console.log(exchange);
         (setExchange(exchange));
         const fetchPrice = async () => {
             const data = await getEquityPrice(selectedStock, exchange);
             (setPrice(data));
         }
         if(exchange){
-            console.log('called');
             fetchPrice();
         }
     }
@@ -55,9 +53,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
     // Event handler //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
-        const newValue = (e?.target.value);
-        setWeightage(newValue || weightage);
-        const quantity = await sendWeightage(newValue || weightage, basketAmount || investmentVal, price);
+        setWeightage(e?.target.value );
+        const quantity = await sendWeightage(e?.target.value || weightage, basketAmount || investmentVal, price);
         setQuantity(quantity);
     };
 

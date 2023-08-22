@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import DashNavbar from "./Navbar";
-import ExampleSidebar from "./Sidebar";
+import DashNavbar from "./navbar";
+import ExampleSidebar from "./sidebar";
 
 const DashLayout = ({children}) => {
 

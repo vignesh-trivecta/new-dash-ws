@@ -66,7 +66,7 @@ export const AddRecordMainAPI = async( adminId, basketName, selectedStock, excha
 }
 
 // API call to update a record in Main table
-export const updateRecordMainAPI = async(recId, basketName, adminId, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, basketVal, limitPrice ) => {
+export const updateRecordMainAPI = async(recId, basketName, adminId, selectedStock, exchange, orderType, transType, quantity, weightage, price, val1, val2, limitPrice ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -84,14 +84,12 @@ export const updateRecordMainAPI = async(recId, basketName, adminId, selectedSto
                 "quantity": quantity,
                 "weightage": Number(weightage),
                 "price": price,
-                "basketInvAmount": Number(investmentVal),       
-                "basketActualValue" : Number(basketVal),
-                "limitPrice": limitPrice          
+                "basketInvAmount": Number(val1),       
+                "basketActualValue" : Number(val2),
+                "limitPrice": Number(limitPrice)          
             })
         };
-
         const response = await fetch("http://localhost:8083/basket/update", requestOptions);
-        console.log(recId, basketName, adminId, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, basketVal, limitPrice)
 
         if (response.ok) {
             return true;

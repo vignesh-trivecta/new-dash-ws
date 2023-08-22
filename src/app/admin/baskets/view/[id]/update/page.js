@@ -81,8 +81,15 @@ const UpdateBasket = ({ params }) => {
       
       // setting the basket value
       let total = 0;
+      let price;
       records?.forEach((record) => {
-        total += (record.priceValue * record.quantityValue);
+        if(record.orderType === 'MARKET'){
+          price = record.priceValue;
+        }
+        else{
+          price = record.limitPrice;
+        }
+        total += (price * record.quantityValue);
       })
       setTotal(total);
       

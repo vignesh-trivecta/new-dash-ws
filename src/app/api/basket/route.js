@@ -327,6 +327,11 @@ export const mapBasket = async(basketName, adminId, customerId, brokerName) => {
     }
 }
 
+// API call to send weblink to a customer
+export const sendWeblink = async() => {
+    
+}
+
 // API call to get the mapping, weblink status of customers based on baksetName
 export const getCustomerStatus = async (basketName) => {
     try{

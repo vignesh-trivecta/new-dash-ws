@@ -95,6 +95,11 @@ const CustomerMapping = () => {
         handleSelection(basketName);
     }
 
+    // handle weblink
+    const handleWeblink = async () => {
+        
+    }
+
     return(
         <div className='container mx-auto mt-4' style={{width: '90%'}}>
 

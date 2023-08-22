@@ -10,7 +10,7 @@ import { setSelectedStock } from '@/store/addRecordSlice';
 import { Combobox, Transition } from "@headlessui/react"
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid"
 import { getInstrumentDetails } from "@/app/api/basket/route";
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 
 const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, weightage, price, lp, quantity, handleFetch, setHandleFetch, mainBasketName, investmentVal, basketVal }) => {
@@ -78,11 +78,11 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     const handleUpdate = (e) => {
         e.preventDefault();
         const localtransType = toggle;
+        console.log(localOrderType, limitPrice);
         const postDataAPI = async() => {
             if(pathname == '/admin/baskets/create'){
                 let val1 = String(investmentVal).split(',').join('');
                 let val2 = String(basketVal).split(',').join('');
-                const data = await updateRecordAPI(recId, basketName, adminId, localStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, val1, val2, limitPrice);
                 if(data === true){
                     setHandleFetch(!handleFetch);
                     props.setOpenModal(undefined);
@@ -92,8 +92,10 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                 let val1 = String(investmentVal).split(',').join('');
                 let val2 = String(basketVal).split(',').join('');
                 const data = await updateRecordMainAPI(recId, mainBasketName, adminId, localStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, val1, val2, limitPrice);
-                setHandleFetch(!handleFetch);
-                props.setOpenModal(undefined);
+                if(data === true){
+                    setHandleFetch(!handleFetch);
+                    props.setOpenModal(undefined);
+                }
             }
         }
         postDataAPI();
@@ -103,7 +105,6 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     const handleExchange = (exchange) => {
         setLocalExchange(exchange);
         const fetchPrice = async () => {
-            console.log(localStock, exchange)
             const data = await getEquityPrice(localStock, exchange);
             setLocalPrice(data);
         }
@@ -116,9 +117,8 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
 
     // Weightage event handler
     const handleWeightage = async (e) => {
-        const newValue = (e?.target.value);
-        setLocalWeightage(newValue || localWeightage);
-        const quantity = await sendWeightage(newValue || localWeightage, basketAmount, localPrice);
+        setLocalWeightage(e?.target.value);
+        const quantity = await sendWeightage(e?.target.value , basketAmount || investmentVal, localPrice);
         setLocalQuantity(quantity);
     };
 
@@ -128,6 +128,9 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
 
     // handling orderType radio button selection
     const handleOrderType = (type) => {
+        if(type === 'MARKET'){
+            setLimitPrice('0');
+        }
         setLocalOrderType(type); // Update localOrderType when a radio button is clicked
         // dispatch(setOrderType(type)); // Update Redux state with the selected orderType
     }
@@ -256,7 +259,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     {/* Price element */}
                     <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
                         <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                        <input disabled id='price' name="price" value={localPrice} type="number" className='absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
+                        <input disabled id='price' name="price" value={localPrice} type="number" className='absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200 text-right' />
                     </div>
 
                     {/* Exchange element */}
@@ -345,13 +348,14 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     {/* Quantity element */}
                     <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
                         <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                        <input disabled id='quantity' name='quantity' value={segregate(localQuantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
+                        <input disabled id='quantity' name='quantity' value={segregate(localQuantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md text-right' />
                     </div>
-
+                    
+                    {/* Limit Input element */}
                     {localOrderType === "LIMIT" && (   
                         <span className='relative ml-8'>
                             <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                            <input  id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className='absolute w-32 rounded-md border border-gray-200' />                                             
+                            <input  id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className='absolute w-32 rounded-md border border-gray-200 text-right' />                                             
                         </span>                             
                     )}
 
@@ -370,6 +374,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                         setLocalOrderType(orderType);
                         setLocalQuantity(quantity);
                         setLocalWeightage(weightage);
+                        setLimitPrice(lp);
                         setToggle(transType); 
                         dispatch(setSelectedStock(instrumentName));
                     }} 

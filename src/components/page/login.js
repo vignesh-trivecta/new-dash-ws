@@ -102,10 +102,10 @@ function encryptedCredentials(user, password, SECRET_KEY) {
         router.push('/admin/dashboard');
       }
     }
-    else{
-      console.log("Invalid credentials");
-      setErrorMsg("Invalid credentials! Try again")
-    }
+    // else{
+    //   console.log("Invalid credentials");
+    //   setErrorMsg("Invalid credentials! Try again")
+    // }
   };
 
   // dispatch(setEmail('admin12'));
