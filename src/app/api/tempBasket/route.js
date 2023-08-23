@@ -71,7 +71,7 @@ export const addRecord = async(adminName, basketName, selectedStock, exchange, o
 
 
 // API  call to update a record in temporary table
-export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, basketVal, limitPrice ) => {
+export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, exchange, orderType, transType, quantity, weightage, price, val1, val2, limitPrice ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -89,12 +89,11 @@ export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, 
                 "quantity": quantity,
                 "weightage": Number(weightage),
                 "price": price,
-                "basketInvAmount": Number(investmentVal),       
-                "basketActualValue" : Number(basketVal),
+                "basketInvAmount": Number(val1),       
+                "basketActualValue" : Number(val2),
                 "limitPrice": limitPrice    
             })
         };
-
         const response = await fetch("http://localhost:8083/basket/temp/up", requestOptions);
 
         if (response.ok) {

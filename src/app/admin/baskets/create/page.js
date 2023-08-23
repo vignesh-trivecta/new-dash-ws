@@ -2,7 +2,7 @@
 
 import AddRecord from '@/components/admin/addRecord';
 import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Button, Tooltip } from 'flowbite-react';
+import { Alert, Button, Toast, Tooltip } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBasketAmount, setBasketName } from '@/store/basketSlice';
 import { basketNameCheck } from '@/app/api/basket/route';
@@ -230,6 +230,7 @@ const CreateBasket = () => {
                     index={index} 
                     handleFetch={handleFetch} 
                     setHandleFetch={setHandleFetch}
+                    basketVal={total}
                   />
                   
                   ))) : <td colSpan="8" style={{ height: '250px', textAlign: 'center' }}>

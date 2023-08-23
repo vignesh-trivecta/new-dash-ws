@@ -81,8 +81,10 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
         console.log(localOrderType, limitPrice);
         const postDataAPI = async() => {
             if(pathname == '/admin/baskets/create'){
-                let val1 = String(investmentVal).split(',').join('');
+                let val1 = String(basketAmount).split(',').join('');
                 let val2 = String(basketVal).split(',').join('');
+                console.log(val1, val2, basketAmount, basketVal)
+                const data = await updateRecordAPI(recId, basketName, adminId, localStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, val1, val2, limitPrice);
                 if(data === true){
                     setHandleFetch(!handleFetch);
                     props.setOpenModal(undefined);
