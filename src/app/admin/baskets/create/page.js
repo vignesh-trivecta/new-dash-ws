@@ -21,7 +21,6 @@ const CreateBasket = () => {
   // const props = { openModal, setOpenModal };
 
   
-  let [namecheck, setNameCheck] = useState(true);
   
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -34,6 +33,7 @@ const CreateBasket = () => {
   const basketState = useSelector((state) => state.event.basketState);
   
   // local state variables
+  const [namecheck, setNameCheck] = useState(true);
   const [records, setRecords] = useState([]);
   const [handleFetch, setHandleFetch] = useState(false);
   const [message, setMessage] = useState('');

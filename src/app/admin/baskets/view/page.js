@@ -108,7 +108,7 @@ const Customers = () => {
                           <div className='text-sm text-black p-2 ml-2'>{record.totalNoOrders}</div>
                       </td>
                       <td className='text-center'>
-                          <div className='text-sm text-black p-2 mr-20'>{(record.basketInvAmount)}</div>
+                          <div className='text-sm text-black p-2 mr-20'>{segregate(record.basketInvAmount)}</div>
                       </td>
                       <td className='text-left'>
                           <div className='text-sm text-black p-2'>{record.createdBy}</div>    
