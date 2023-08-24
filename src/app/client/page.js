@@ -24,7 +24,9 @@ const Client = () => {
       <Image src={Logo} alt="wealth spring logo" className='mb-40'  />
       <form onSubmit={handleSubmit} className='mb-20'>
         <div className='flex flex-col'>
-          <p className='text-center'>Enter OTP</p>
+          <p className='text-left'>Basket details will be shown and </p>
+          <p className='text-left'>orders placed only after confirmation</p>
+          <p className='text-center mt-4'>Enter OTP</p>
           <input required type='password' placeholder='One Time Password' className={error ? 'border-red-500 rounded-md placeholder-red-500' : 'mt-2 border-gray-200 rounded-md placeholder-gray-300'} />
           <p className={error ? 'visible text-red-500 text-xs' : 'invisible '}>Wrong OTP!</p>
           <div className='flex justify-center items-center mt-2 space-x-2'>

@@ -33,7 +33,7 @@ export const getRecords = async(adminName, basketName) => {
 
 
 // API call to add a new record in temporary table
-export const addRecord = async(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount, limitPrice ) => {
+export const addRecord = async(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -50,7 +50,7 @@ export const addRecord = async(adminName, basketName, selectedStock, exchange, o
                 "quantity": quantity,
                 "weightage": Number(weightage),
                 "price": price, 
-                "basketInvAmount": Number(basketAmount)     ,
+                "basketInvAmount": Number(investmentVal),
                 "limitPrice" : Number(limitPrice)      
             })
         };

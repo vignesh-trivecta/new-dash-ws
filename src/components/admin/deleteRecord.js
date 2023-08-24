@@ -1,14 +1,13 @@
+import React from 'react';
+import Link from 'next/link';
 import { deleteRecordMainAPI } from '@/app/api/mainBasket/route';
 import { deleteRecord } from '@/app/api/tempBasket/route';
-import Link from 'next/link'
-import React from 'react'
 import { useSelector } from 'react-redux';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 const DeleteRecord = ({ recId, mainBasketName, handleFetch, setHandleFetch }) => {
 
     let pathname = usePathname();
-    const searchParams = useSearchParams();
 
     const basketName = useSelector((state) => state.basket.basketName);
     const adminId = useSelector((state) => state.user.username);
@@ -17,16 +16,14 @@ const DeleteRecord = ({ recId, mainBasketName, handleFetch, setHandleFetch }) =>
         console.log(recId, mainBasketName, adminId)
         if(pathname == `/admin/baskets/view/${mainBasketName}/update`){
             const response = await deleteRecordMainAPI(recId, mainBasketName, adminId );
-            console.log(response); 
             setHandleFetch(!handleFetch);           
         }
         else{
             const response = await deleteRecord(recId, basketName, adminId );
-            console.log(response);
             setHandleFetch(!handleFetch);
         }
-        // setHandleFetch(!handleFetch);
     }
+
   return (
     <div>
         <Link href="#" onClick={handleDelete}>

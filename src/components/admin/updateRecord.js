@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState, Fragment } from 'react';
 import { Button, Label, Modal } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,11 +17,12 @@ import { usePathname } from 'next/navigation';
 
 const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, weightage, price, lp, quantity, handleFetch, setHandleFetch, mainBasketName, investmentVal, basketVal }) => {
 
-    // modal state
+    // modal state values
     const [openModal, setOpenModal] = useState(false);
     const props = { openModal, setOpenModal };
 
-    const pathname = usePathname()
+    // for getting url pathname
+    const pathname = usePathname();
     
     // redux store variables
     const dispatch = useDispatch();
@@ -27,27 +30,24 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     const basketAmount = useSelector((state) => state.basket.basketAmount);
     const adminId = useSelector((state) => state.user.username);
     const selectedStock = useSelector((state) => state.add.selectedStock);
-    // let exchange = useSelector((state) => state.update.exchange);
-    // let transType = useSelector((state) => state.update.transType);
-    // let weightage = useSelector((state) => state.update.weightage);
-    // let price = useSelector((state) => state.update.price);
-    // let quantity = useSelector((state) => state.update.quantity);
+
     
     // local state variables
-    let [localPrice, setLocalPrice] = useState(price);
-    let [localExchange, setLocalExchange] = useState(exchange);
-    let [localOrderType, setLocalOrderType] = useState(orderType);
-    let [localQuantity, setLocalQuantity] = useState(quantity);
-    let [localWeightage, setLocalWeightage] = useState(weightage);
+    let lquantity = quantity; // used to resolve localQuantity not showing when updateRecord component is mounted first time
+    let lweightage = weightage;  // used to resolve localWeightage not showing when updateRecord component is mounted first time
+    const [localQuantity, setLocalQuantity] = useState(quantity);
+    const [localWeightage, setLocalWeightage] = useState(weightage);
+    const [localPrice, setLocalPrice] = useState(price);
+    const [localExchange, setLocalExchange] = useState(exchange);
+    const [localOrderType, setLocalOrderType] = useState(orderType);
     const [toggle, setToggle] = useState(transType);
     const [limitPrice, setLimitPrice] = useState(lp);
     const [fetch, setFetch] = useState(false);
-    // let [localTransType, setLocalTransType] = useState(transType);
 
-    //search dropdown
+    //search dropdown - local state variables
     const [stocksList, setStocksList] = useState([]);
     const [query, setQuery] = useState("");
-    let [localStock, setLocalStock] = useState(instrumentName);
+    const [localStock, setLocalStock] = useState(instrumentName);
 
     const filteredStocksList =
     query === ""
@@ -59,20 +59,12 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
             .startsWith(query.toLowerCase().replace(/\s+/g, ""))
     )
     
-    useEffect(() => {
-        const fetchData = async () => {
-        const list = await getInstrumentDetails();
-        setStocksList(list);
-        };
     
-        fetchData();
-    }, []);
-
     const handleChange = (value) => {
         dispatch(setSelectedStock(value));
         setFetch(!fetch);
         setLocalStock(value);
-      }
+    }
     
     // handling update button click to update the records
     const handleUpdate = (e) => {
@@ -83,7 +75,6 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
             if(pathname == '/admin/baskets/create'){
                 let val1 = String(basketAmount).split(',').join('');
                 let val2 = String(basketVal).split(',').join('');
-                console.log(val1, val2, basketAmount, basketVal)
                 const data = await updateRecordAPI(recId, basketName, adminId, localStock, localExchange, localOrderType, localtransType, localQuantity, localWeightage, localPrice, val1, val2, limitPrice);
                 if(data === true){
                     setHandleFetch(!handleFetch);
@@ -102,7 +93,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
         }
         postDataAPI();
     }
-
+    
     // handling exchange radio button selection
     const handleExchange = (exchange) => {
         setLocalExchange(exchange);
@@ -112,45 +103,42 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
         }
         fetchPrice();
     }
-
-    useEffect(() => {
-        handleExchange(localExchange);
-    }, [fetch]);
-
-    // Weightage event handler
-    const handleWeightage = async (e) => {
-        setLocalWeightage(e?.target.value);
-        const quantity = await sendWeightage(e?.target.value , basketAmount || investmentVal, localPrice);
-        setLocalQuantity(quantity);
-    };
-
-    useEffect(() => {
-        handleWeightage();
-    }, [localPrice])
-
+    
     // handling orderType radio button selection
     const handleOrderType = (type) => {
         if(type === 'MARKET'){
             setLimitPrice('0');
         }
         setLocalOrderType(type); // Update localOrderType when a radio button is clicked
-        // dispatch(setOrderType(type)); // Update Redux state with the selected orderType
     }
 
+    // Weightage event handler
+    const handleWeightage = async (e) => {
+        setLocalWeightage(e?.target.value);
+        // multiple OR statements used to handle 'undefined' being sent to api call issue
+        const quantity = await sendWeightage(e?.target.value || localWeightage || lweightage , basketAmount || investmentVal, localPrice);
+        setLocalQuantity(quantity);
+    };
 
-    // // Set localOrderType based on orderType when the component mounts
-    // useEffect(() => {
-    //     setLocalOrderType(orderType);
-    // }, [orderType, openModal]);
+    useEffect(() => {
+        handleExchange(localExchange);
+    }, [fetch]);
+    
+    
+    useEffect(() => {
+        const fetchData = async () => {
+        const list = await getInstrumentDetails();
+        setStocksList(list);
+        };
+    
+        fetchData();
+    }, []);
 
-    // useEffect(() => {
-    //     if(transType == 'BUY'){
-    //         setToggle('BUY');
-    //     }
-    //     else{
-    //         setToggle('SELL')
-    //     }
-    // }, [])
+    useEffect(() => {
+        handleWeightage();
+    }, [localPrice])
+
+
 
 
   return (
@@ -287,7 +275,6 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                             defaultChecked={localExchange === "NSE"}
                             onClick={() => {
                                 handleExchange("NSE");
-                                console.log('nse')
                             }} />
                         <label htmlFor='nse' className='ml-1'>NSE</label>
                     </div>
@@ -297,7 +284,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     <div className='rounded-md col-start-2 row-start-3 h-10'>
                         <input
                             type='text'
-                            value={localWeightage}
+                            value={localWeightage || lweightage}
                             onChange={handleWeightage}
                             className='w-full border border-gray-200 rounded-md text-right'
                         />
@@ -350,7 +337,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     {/* Quantity element */}
                     <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
                         <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                        <input disabled id='quantity' name='quantity' value={segregate(localQuantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md text-right' />
+                        <input disabled id='quantity' name='quantity' value={segregate(localQuantity) || segregate(lquantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md text-right' />
                     </div>
                     
                     {/* Limit Input element */}

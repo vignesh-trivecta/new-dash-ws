@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react'
 import UpdateRecord from './updateRecord';
 import { segregate } from '@/utils/priceSegregator';
 import DeleteRecord from './deleteRecord';
 
 const BasketRecords = ({ record, index, handleFetch, setHandleFetch, basketName, investmentVal, basketVal }) => {
-  console.log(basketName)
   return (
     <tr className='border-t border-b hover:bg-gray-50'>
       <th className='text-left'>

@@ -22,7 +22,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     const dispatch = useDispatch();
     const selectedStock = useSelector((state) => state.add.selectedStock);
     const basketName = useSelector((state) => state.basket.basketName);
-    const basketAmount = useSelector((state) => state.basket.basketAmount);
+    // const basketAmount = useSelector((state) => state.basket.basketAmount);
     const adminName = useSelector((state) => state.user.username);
     
     // local state variables
@@ -54,7 +54,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     // Event handler //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
         setWeightage(e?.target.value );
-        const quantity = await sendWeightage(e?.target.value || weightage, basketAmount || investmentVal, price);
+        const quantity = await sendWeightage(e?.target.value || weightage, investmentVal, price);
         setQuantity(quantity);
     };
 
@@ -68,9 +68,11 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         e.preventDefault();
         const postData = async() => {
             let data;
+            console.log(investmentVal)
             if(pathname == '/admin/baskets/create'){
-                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, basketAmount, limitPrice);
+                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice);
                 if(data === true){
+                    console.log('enter 2')
                     setHandleFetch(!handleFetch);
                     props.setOpenModal(undefined);
                 }
