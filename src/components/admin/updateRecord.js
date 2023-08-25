@@ -174,7 +174,6 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     {/* Search Dropdown */}
                     <Label htmlFor="stock" value="Stock" className='text-md' />
                     <div className=''>
-                        {/* <UpdateSearchDropdown instrumentName={localStock} id="stock" /> */}
                         <div className="">
                             <Combobox value={localStock} onChange={(newValue) => {handleChange(newValue)}}>
                                 <div className="relative mt-1">
@@ -243,7 +242,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                                 </Transition>
                                 </div>
                             </Combobox>
-                            </div>
+                        </div>
                     </div>
 
                     {/* Price element */}
@@ -325,14 +324,6 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                         <input id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' defaultChecked={localOrderType === "LIMIT"} onClick={() => handleOrderType("LIMIT")} />
                         <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
                     </div>
-                                {/* {orderType === "LIMIT" && (
-                                    <>
-                                        <Label className='text-sm row-start-5 col-start-1'>Validity</Label>
-                                        <div className='row-start-5 col-start-2'>
-                                        <StockValidity />
-                                        </div>
-                                    </>
-                                )} */}
 
                     {/* Quantity element */}
                     <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>

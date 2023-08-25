@@ -1,8 +1,8 @@
 'use client';
 
+import React, { useState } from 'react';
 import { Button, Spinner } from 'flowbite-react';
 import Image from 'next/image';
-import React, { useState } from 'react';9
 import Logo from "../../../../public/logo1.png";
 import { HiCheck } from 'react-icons/hi';
 import Link from 'next/link';
@@ -34,7 +34,7 @@ const BasketPage = () => {
                     <div className='flex justify-between space-x-8'>
                         <div className='flex flex-col space-y-2'>
                             <div className='text-xs'>Basket</div>
-                            <div className='text-sm'>Banking</div>
+                            <div className='text-sm'>BanksCase</div>
                         </div>
                         <div className='flex flex-col space-y-2'>
                             <div className='text-xs'>Status</div>
@@ -46,7 +46,7 @@ const BasketPage = () => {
                         </div>
                     </div>
                     <div>
-                        <p className='text-sm'><button onClick={() => { setShowBasket(true)}} className='underline'>Click</button> here to view basket</p>
+                        <p className='text-sm'><button onClick={() => { setShowBasket(true)}} className='underline'>Click</button> here to view executed basket</p>
                     </div>
                     {showBasket ? <div className='flex justify-center items-center mt-4 text-xs'>
                     <table className='table-fixed border'>
@@ -54,9 +54,9 @@ const BasketPage = () => {
                             <tr>
                                 <th className='p-2'>S.No</th>
                                 <th>Script</th>
-                                <th>Price &#8377;</th>
+                                <th>Price&nbsp;&#8377;</th>
                                 <th className='p-2'>Quantity</th>
-                                <th className='p-2'>Total &#8377;</th>
+                                <th className='p-2'>Total&nbsp;&#8377;</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,7 +105,10 @@ const BasketPage = () => {
                     <Image src={Logo} alt="wealth spring logo"  />
                     <div></div>
                 </div>
-                <p className='text-center font-semibold mb-4 text-xl'>Banking</p>
+                <div className='flex justify-center space-x-2 mr-32 mt-10'>
+                    <p className='text-center font-semibold mb-4 text-xl'>Basket name: </p>
+                    <p className='text-center font-semibold mb-4 text-xl'>BanksCase</p>
+                </div>
                 <div className='flex justify-center'>
                     <div>
                         <p>Basket Value &#8377;</p>
