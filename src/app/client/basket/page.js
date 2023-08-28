@@ -99,20 +99,20 @@ const BasketPage = () => {
                 </div>
                 <div className='flex justify-center space-x-2 mr-32 mt-10'>
                     <p className='text-center font-semibold mb-4 text-xl'>Basket name: </p>
-                    <p className='text-center font-semibold mb-4 text-xl'>{basketData.basketName}</p>
+                    <p className='text-center font-semibold mb-4 text-xl'>{'BankingSmallCase'}</p>
                 </div>
                 <div className='flex justify-center'>
                     <div>
                         <p>Basket Value &#8377;</p>
-                        <input disabled type='text' value={segregate(basketValue)} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
+                        <input disabled type='text' value={'323,432.45'} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
                     </div>
                     <div className='ml-4'>
                         <p>Basket Type</p>
-                        <input disabled type='text' value={basketData?.rows[0]?.transType} className='w-28 border-gray-200 bg-gray-50 rounded-md' />
+                        <input disabled type='text' value={'BUY'} className='w-28 border-gray-200 bg-gray-50 rounded-md' />
                     </div>
                     <div className='ml-4'>
                         <p>No.of Scripts</p>
-                        <input disabled type='number' value={basketData?.rows?.length} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
+                        <input disabled type='number' value={'3'} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
                     </div>
                 </div>
                 <div className='flex justify-center items-center mt-4'>
@@ -127,7 +127,7 @@ const BasketPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {
+                            {/* {
                                 basketData?.rows.map((record, index) => {
                                     return <tr className='border-b' key={index}>
                                             <td className='text-center'>{index+1}</td>
@@ -137,8 +137,8 @@ const BasketPage = () => {
                                             <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
                                     </tr>
                                 })
-                            }
-                            {/* <tr className='border-b'>
+                            } */}
+                            <tr className='border-b'>
                                 <td className='text-center'>1</td>
                                 <td className='truncate p-2'>YES BANK</td>
                                 <td className='text-right'>115.85</td>
@@ -165,7 +165,7 @@ const BasketPage = () => {
                                 <td className='text-right'>1325.20</td>
                                 <td className='text-right pr-2'>54</td>
                                 <td className='text-right pr-2'>64,245</td>
-                            </tr> */}
+                            </tr>
                         </tbody>
                     </table>
                 </div>
