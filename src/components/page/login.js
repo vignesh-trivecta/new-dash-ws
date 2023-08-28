@@ -82,6 +82,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
 
     // checking if login credentials are correct
     if(username != null && password !== null && captcha === captchaValue){
+      console.log("enter")
 
       // signing the username, password with secret key
       // using jwt to create a authentication token
@@ -101,11 +102,11 @@ function encryptedCredentials(user, password, SECRET_KEY) {
         dispatch(setAdminLoginStatus(true));
         router.push('/admin/dashboard');
       }
+      else{
+        console.log("Invalid credentials");
+        setErrorMsg("Invalid credentials! Try again")
+      }
     }
-    // else{
-    //   console.log("Invalid credentials");
-    //   setErrorMsg("Invalid credentials! Try again")
-    // }
   };
 
   // dispatch(setEmail('admin12'));
@@ -164,6 +165,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                                 name="username"
                                 id="username"
                                 onChange={handleChange}
+                                onClickCapture={() => {setErrorMsg("")}}
                                 onBlur={handleBlur}
                                 value={values.username}
                                 placeholder="Username" 
@@ -184,6 +186,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                                     type="text" 
                                     name="password"
                                     onChange={handleChange}
+                                    onClickCapture={() => {setErrorMsg("")}}
                                     onBlur={handleBlur}
                                     value={values.password} 
                                     placeholder="Password" 
@@ -212,6 +215,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                                     type="password" 
                                     name="password"
                                     onChange={handleChange}
+                                    onClickCapture={() => {setErrorMsg("")}}
                                     onBlur={handleBlur}
                                     value={values.password} 
                                     placeholder="Password" 
@@ -264,6 +268,7 @@ function encryptedCredentials(user, password, SECRET_KEY) {
                                 value={values.captcha}
                                 onBlur={handleBlur}
                                 onChange={handleChange}
+                                onClickCapture={() => {setErrorMsg("")}}
                                 ref={captchaRef} 
                                 />
                             </div>
