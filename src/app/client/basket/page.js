@@ -8,10 +8,13 @@ import { HiCheck } from 'react-icons/hi';
 import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { segregate } from '@/utils/priceSegregator';
+import { useRouter } from 'next/navigation';
 
 const BasketPage = () => {
 
     const basketData = useSelector((state) => state.client.basketData);
+
+    const router = useRouter();
 
     let basketValue = 0;
     const data = basketData?.rows?.map((record, index) => {
@@ -23,9 +26,28 @@ const BasketPage = () => {
     const [status, setStatus] = useState(true); // show the spinner or order placed page
     const [showBasket, setShowBasket] = useState(false); // show or not show the basket in orders placed page
 
+    // OAuth login redirect after click on submit button
     const handleConfirm = (e) => {
         e.preventDefault();
-        setShow(true);
+        // setShow(true);
+        const f = document.createElement('form');
+        f.action = 'https://ttweb.indiainfoline.com/trade/Login.aspx';
+        f.method = 'POST';
+
+        const i1 = document.createElement('input');
+        i1.type = 'hidden';
+        i1.name = 'VP';
+        i1.value = 'https://new-dash-ws.vercel.app/';
+        f.appendChild(i1);
+
+        const i2 = document.createElement('input');
+        i2.type = 'hidden';
+        i2.name = 'UserKey';
+        i2.value = process.env.NEXT_PUBLIC_USER_KEY;
+        f.appendChild(i2);
+
+        document.body.appendChild(f);
+        f.submit();
     }
 
   return (
