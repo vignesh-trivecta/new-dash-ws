@@ -91,36 +91,6 @@ const BasketPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className='border-b'>
-                                <td className='text-center'>1</td>
-                                <td className='truncate p-2'>YES BANK</td>
-                                <td className='text-right'>115.85</td>
-                                <td className='text-right pr-2'>452</td>
-                                <td className='text-right pr-2'>50,255</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>2</td>
-                                <td className='truncate p-2'>DCB BANK</td>
-                                <td className='text-right'>72.10</td>
-                                <td className='text-right pr-2'>250</td>
-                                <td className='text-right pr-2'>80,524</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>3</td>
-                                <td className='truncate p-2'>IOB BANK</td>
-                                <td className='text-right'>55.00</td>
-                                <td className='text-right pr-2'>120</td>
-                                <td className='text-right pr-2'>75,789</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>4</td>
-                                <td className='truncate p-2'>AXIS BANK</td>
-                                <td className='text-right'>1325.20</td>
-                                <td className='text-right pr-2'>54</td>
-                                <td className='text-right pr-2'>64,245</td>
-                            </tr>
-                        </tbody>
-                        {/*
                             {
                                 basketData?.rows.map((record, index) => {
                                     return <tr className='border-b' key={index}>
@@ -131,8 +101,8 @@ const BasketPage = () => {
                                             <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
                                     </tr>
                                 })
-                            }
-                        */}
+                            }   
+                        </tbody>
                     </table> </div> : <></>}
                   </div>
                 : <div className='flex flex-col justify-center items-center h-screen'>
@@ -179,7 +149,7 @@ const BasketPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {/* {
+                            {
                                 basketData?.rows.map((record, index) => {
                                     return <tr className='border-b' key={index}>
                                             <td className='text-center'>{index+1}</td>
@@ -189,35 +159,7 @@ const BasketPage = () => {
                                             <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
                                     </tr>
                                 })
-                            } */}
-                            <tr className='border-b'>
-                                <td className='text-center'>1</td>
-                                <td className='truncate p-2'>YES BANK</td>
-                                <td className='text-right'>115.85</td>
-                                <td className='text-right pr-2'>452</td>
-                                <td className='text-right pr-2'>50,255</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>2</td>
-                                <td className='truncate p-2'>DCB BANK</td>
-                                <td className='text-right'>72.10</td>
-                                <td className='text-right pr-2'>250</td>
-                                <td className='text-right pr-2'>80,524</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>3</td>
-                                <td className='truncate p-2'>IOB BANK</td>
-                                <td className='text-right'>55.00</td>
-                                <td className='text-right pr-2'>120</td>
-                                <td className='text-right pr-2'>75,789</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>4</td>
-                                <td className='truncate p-2'>AXIS BANK</td>
-                                <td className='text-right'>1325.20</td>
-                                <td className='text-right pr-2'>54</td>
-                                <td className='text-right pr-2'>64,245</td>
-                            </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
