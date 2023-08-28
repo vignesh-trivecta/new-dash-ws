@@ -6,13 +6,22 @@ import Image from 'next/image';
 import Logo from "../../../../public/logo1.png";
 import { HiCheck } from 'react-icons/hi';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
+import { segregate } from '@/utils/priceSegregator';
 
 const BasketPage = () => {
 
-    const [records, setRecords] = useState([]);
-    const [show, setShow] = useState(false);
-    const [showBasket, setShowBasket] = useState(false);
-    const [status, setStatus] = useState(true);
+    const basketData = useSelector((state) => state.client.basketData);
+
+    let basketValue = 0;
+    const data = basketData?.rows?.map((record, index) => {
+        let i = ((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue));
+        basketValue = basketValue + i;
+    });
+
+    const [show, setShow] = useState(false); // show the basket page or completed page
+    const [status, setStatus] = useState(true); // show the spinner or order placed page
+    const [showBasket, setShowBasket] = useState(false); // show or not show the basket in orders placed page
 
     const handleConfirm = (e) => {
         e.preventDefault();
@@ -34,7 +43,7 @@ const BasketPage = () => {
                     <div className='flex justify-between space-x-8'>
                         <div className='flex flex-col space-y-2'>
                             <div className='text-xs'>Basket</div>
-                            <div className='text-sm'>BanksCase</div>
+                            <div className='text-sm'>{basketData.basketName}</div>
                         </div>
                         <div className='flex flex-col space-y-2'>
                             <div className='text-xs'>Status</div>
@@ -60,34 +69,17 @@ const BasketPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className='border-b'>
-                                <td className='text-center'>1</td>
-                                <td className='truncate p-2'>YES BANK</td>
-                                <td className='text-right'>115.85</td>
-                                <td className='text-right pr-2'>452</td>
-                                <td className='text-right pr-2'>50,255</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>2</td>
-                                <td className='truncate p-2'>DCB BANK</td>
-                                <td className='text-right'>72.10</td>
-                                <td className='text-right pr-2'>250</td>
-                                <td className='text-right pr-2'>80,524</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>3</td>
-                                <td className='truncate p-2'>IOB BANK</td>
-                                <td className='text-right'>55.00</td>
-                                <td className='text-right pr-2'>120</td>
-                                <td className='text-right pr-2'>75,789</td>
-                            </tr>
-                            <tr className='border-b'>
-                                <td className='text-center'>4</td>
-                                <td className='truncate p-2'>AXIS BANK</td>
-                                <td className='text-right'>1325.20</td>
-                                <td className='text-right pr-2'>54</td>
-                                <td className='text-right pr-2'>64,245</td>
-                            </tr>
+                            {
+                                basketData?.rows.map((record, index) => {
+                                    return <tr className='border-b' key={index}>
+                                            <td className='text-center'>{index+1}</td>
+                                            <td className='truncate p-2'>{record?.instrumentName}</td>
+                                            <td className='text-right'>{record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue}</td>
+                                            <td className='text-right pr-4'>{segregate(record?.quantityValue)}</td>
+                                            <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
+                                    </tr>
+                                })
+                            }
                         </tbody>
                     </table> </div> : <></>}
                   </div>
@@ -107,20 +99,20 @@ const BasketPage = () => {
                 </div>
                 <div className='flex justify-center space-x-2 mr-32 mt-10'>
                     <p className='text-center font-semibold mb-4 text-xl'>Basket name: </p>
-                    <p className='text-center font-semibold mb-4 text-xl'>BanksCase</p>
+                    <p className='text-center font-semibold mb-4 text-xl'>{basketData.basketName}</p>
                 </div>
                 <div className='flex justify-center'>
                     <div>
                         <p>Basket Value &#8377;</p>
-                        <input disabled type='text' value={'270,813'} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
+                        <input disabled type='text' value={segregate(basketValue)} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
                     </div>
                     <div className='ml-4'>
                         <p>Basket Type</p>
-                        <input disabled type='text' value={'BUY'} className='w-28 border-gray-200 bg-gray-50 rounded-md' />
+                        <input disabled type='text' value={basketData?.rows[0]?.transType} className='w-28 border-gray-200 bg-gray-50 rounded-md' />
                     </div>
                     <div className='ml-4'>
                         <p>No.of Scripts</p>
-                        <input disabled type='number' value={4} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
+                        <input disabled type='number' value={basketData?.rows?.length} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
                     </div>
                 </div>
                 <div className='flex justify-center items-center mt-4'>
@@ -135,7 +127,18 @@ const BasketPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className='border-b'>
+                            {
+                                basketData?.rows.map((record, index) => {
+                                    return <tr className='border-b' key={index}>
+                                            <td className='text-center'>{index+1}</td>
+                                            <td className='truncate p-2'>{record?.instrumentName}</td>
+                                            <td className='text-right'>{record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue}</td>
+                                            <td className='text-right pr-4'>{segregate(record?.quantityValue)}</td>
+                                            <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
+                                    </tr>
+                                })
+                            }
+                            {/* <tr className='border-b'>
                                 <td className='text-center'>1</td>
                                 <td className='truncate p-2'>YES BANK</td>
                                 <td className='text-right'>115.85</td>
@@ -162,7 +165,7 @@ const BasketPage = () => {
                                 <td className='text-right'>1325.20</td>
                                 <td className='text-right pr-2'>54</td>
                                 <td className='text-right pr-2'>64,245</td>
-                            </tr>
+                            </tr> */}
                         </tbody>
                     </table>
                 </div>

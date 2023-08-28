@@ -32,14 +32,17 @@ export const validateOtp = async(basketLink, otp) => {
             },
             body: JSON.stringify({
                 "basketLink": basketLink,
-                "otpRequest": otp,
+                "otp": otp,
             })
         }
-        console.log(response, basketLink, otp);
-        const response = await fetch("http://localhost:8083/basket/" + basketLink, requestOptions);
+        const response = await fetch("http://localhost:8086/basket/" + basketLink, requestOptions);
+
 
         if(response.ok) {
-            return true;
+            const responseText = await response.text();
+            let data = JSON.parse(responseText);
+            console.log(data)
+            return data;
         } else {
             const errorText = await response.text();
             console.log(errorText);

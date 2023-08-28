@@ -6,12 +6,15 @@ import { Button } from 'flowbite-react';
 import Logo from "@/../public/logo1.png";
 import Image from 'next/image';
 import { generateOtp, validateOtp } from '@/app/api/client/route';
+import { useDispatch } from 'react-redux';
+import { setBasketData } from '@/store/clientBasketSlice';
 
 const Client = ({ params }) => {
 
   const basketLink = params.id;
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [otp, setOtp] = useState(null);
   const [error, setError] = useState(false);
@@ -20,13 +23,17 @@ const Client = ({ params }) => {
     e.preventDefault();
     const response = await validateOtp(basketLink, otp);
     if(response){
+      dispatch(setBasketData(response));
       router.push('/client/basket');
     }
   }
 
-  useEffect(async() => {
+  const otpGeneration = async () => {
     const data = await generateOtp(basketLink);
-    return;
+  }
+
+  useEffect(() => {
+    otpGeneration();
   }, [])
 
   return (

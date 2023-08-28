@@ -1,5 +1,5 @@
 'use client'
-import DashLayout from '@/components/page/dashLayout'
+import DashLayout from '../../components/page/dashLayout';
 import Link from 'next/link';
 import React from 'react'
 import { useSelector } from 'react-redux';
