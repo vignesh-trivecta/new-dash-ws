@@ -8,6 +8,7 @@ export const generateOtp = async(basketLink) => {
             }
         }
         const response = await fetch("http://localhost:8083/basket/" + basketLink, requestOptions);
+        console.log(response);
         if(response.ok){
             return true;
         }
@@ -40,6 +41,41 @@ export const validateOtp = async(basketLink, otp) => {
         if(response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
+            console.log(data)
+            return data;
+        } else {
+            const errorText = await response.text();
+            console.log(errorText);
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+// API call to make when client confirms the basket shown to them
+export const clientConfirmsBasket = async(basketData) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "basketName": basketData.basketName,
+                "customerName": basketData.customerName,
+                "customerId": basketData.customerId,
+                "rows": basketData.rows,
+            })
+        }
+        const response = await fetch("http://localhost:8084/place/order", requestOptions);
+        console.log(response);
+        console.log(response);
+
+        if(response.ok) {
+            const responseText = await response.text();
+            let data = JSON.parse(responseText);
+            console.log(data);
             return data;
         } else {
             const errorText = await response.text();

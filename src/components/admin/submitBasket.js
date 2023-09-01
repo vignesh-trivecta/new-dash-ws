@@ -40,9 +40,7 @@ const SubmitBasket = ({ saved, setSaved, transType, investmentAmount, actualValu
     else{
       basketRequests = await getSpecificBasket(mainBasketName);
     }
-    console.log(adminName, basketName || mainBasketName, modelBasket, basketValidity, basketRequests, transType, investmentAmount, basketActualValue)
     const response = await submitBasket(adminName, basketName, modelBasket, basketValidity, basketRequests, transType, investmentAmount, basketActualValue);
-    console.log(response);
     // setPopup(!popup); // Close the MapAlert after saving
     setSaved(true);
   }

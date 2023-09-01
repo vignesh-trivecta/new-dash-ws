@@ -119,7 +119,7 @@ export const deleteRecordMainAPI = async(recId, basketName, adminId ) => {
         };
 
         const response = await fetch("http://localhost:8083/basket/delete", requestOptions);
-        console.log(response)
+        console.log(recId, basketName, adminId,response)
         if (response.ok) {
             return true;
         } else {

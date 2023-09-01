@@ -183,6 +183,7 @@ const CustomerMapping = () => {
                                             <option className="text-sm" value={'IIFL'}>IIFL</option>
                                         </select>
                                     </td>
+                                    {/* Map status */}
                                     <td>
                                         <div className="ml-8">
                                             {status.find((obj) =>{ return (obj.customerId === data.customerId) }) 
@@ -197,13 +198,16 @@ const CustomerMapping = () => {
                                             }
                                         </div>  
                                     </td>
+                                    {/* Weblink status */}
                                     <td>
                                         <div className="ml-8">
-                                            <svg className="w-4 h-4 text-green-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M1 5.917 5.724 10.5 15 1.5"/>
+                                            <svg className="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                                             </svg>
                                         </div>
                                     </td>
+                                    {/* Actions button group */}
+                                    {/* Map customer */}
                                     <td className=" flex text-sm text-black mt-2 ml-6">
                                         <Tooltip content="Map Customer">
                                             <button className="ml-2" onClick={() => {handleMapping(data.customerId)}}>
@@ -212,6 +216,7 @@ const CustomerMapping = () => {
                                             </svg>
                                             </button>
                                         </Tooltip>
+                                        {/* Send Weblink */}
                                         <Tooltip content="Send Weblink">
                                             <button className="ml-4">
                                                 <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">

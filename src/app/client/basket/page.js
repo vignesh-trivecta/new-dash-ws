@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useSelector } from 'react-redux';
 import { segregate } from '@/utils/priceSegregator';
 import { useRouter } from 'next/navigation';
+import { clientConfirmsBasket } from '@/app/api/client/route';
 
 const BasketPage = () => {
 
@@ -17,37 +18,47 @@ const BasketPage = () => {
     const router = useRouter();
 
     let basketValue = 0;
-    const data = basketData?.rows?.map((record, index) => {
+    const dataValue = basketData?.rows?.map((record, index) => {
         let i = ((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue));
         basketValue = basketValue + i;
     });
 
+
     const [show, setShow] = useState(false); // show the basket page or completed page
-    const [status, setStatus] = useState(true); // show the spinner or order placed page
+    const [status, setStatus] = useState(false); // show the spinner or order placed page
     const [showBasket, setShowBasket] = useState(false); // show or not show the basket in orders placed page
+    const [data, setData] = useState([]);
 
     // OAuth login redirect after click on submit button
-    const handleConfirm = (e) => {
+    const handleConfirm = async (e) => {
         e.preventDefault();
-        // setShow(true);
-        const f = document.createElement('form');
-        f.action = 'https://ttweb.indiainfoline.com/trade/Login.aspx';
-        f.method = 'POST';
+        setShow(true);
+        const response = await clientConfirmsBasket(basketData);
+        console.log(response);
+        if(response){
+            setData(response);
+            setShow(true);
+            setStatus(true);
+        }
+        // // setShow(true);
+        // const f = document.createElement('form');
+        // f.action = 'https://ttweb.indiainfoline.com/trade/Login.aspx';
+        // f.method = 'POST';
 
-        const i1 = document.createElement('input');
-        i1.type = 'hidden';
-        i1.name = 'VP';
-        i1.value = 'https://new-dash-ws.vercel.app/';
-        f.appendChild(i1);
+        // const i1 = document.createElement('input');
+        // i1.type = 'hidden';
+        // i1.name = 'VP';
+        // i1.value = 'https://www.google.co.in/';
+        // f.appendChild(i1);
 
-        const i2 = document.createElement('input');
-        i2.type = 'hidden';
-        i2.name = 'UserKey';
-        i2.value = process.env.NEXT_PUBLIC_USER_KEY;
-        f.appendChild(i2);
+        // const i2 = document.createElement('input');
+        // i2.type = 'hidden';
+        // i2.name = 'UserKey';
+        // i2.value = process.env.NEXT_PUBLIC_USER_KEY;
+        // f.appendChild(i2);
 
-        document.body.appendChild(f);
-        f.submit();
+        // document.body.appendChild(f);
+        // f.submit();
     }
 
   return (
@@ -65,14 +76,14 @@ const BasketPage = () => {
                     <div className='flex justify-between space-x-8'>
                         <div className='flex flex-col space-y-2'>
                             <div className='text-xs'>Basket</div>
-                            <div className='text-sm'>{'BankingSmallCase'}</div>
+                            <div className='text-sm'>{data?.basketName}</div>
                         </div>
                         <div className='flex flex-col space-y-2'>
                             <div className='text-xs'>Status</div>
-                            <div className='text-sm'>Placed</div>
+                            <div className='text-sm'>{data?.basketStatus}</div>
                         </div>
                         <div className='flex flex-col space-y-2'>
-                            <div className='text-xs'>6 of 6 placed</div>
+                            <div className='text-xs'>{data?.scriptStatus}</div>
                             <div className='text-sm border border-green-200 h-1/2 rounded-md bg-green-200'></div>
                         </div>
                     </div>
@@ -88,20 +99,23 @@ const BasketPage = () => {
                                 <th>Price&nbsp;&#8377;</th>
                                 <th className='p-2'>Quantity</th>
                                 <th className='p-2'>Total&nbsp;&#8377;</th>
+                                <th className='p-2'>Stauts</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                basketData?.rows.map((record, index) => {
+                                data?.details.map((record, index) => {
                                     return <tr className='border-b' key={index}>
                                             <td className='text-center'>{index+1}</td>
-                                            <td className='truncate p-2'>{record?.instrumentName}</td>
-                                            <td className='text-right'>{record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue}</td>
-                                            <td className='text-right pr-4'>{segregate(record?.quantityValue)}</td>
-                                            <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
+                                            <td className='truncate p-2'>{record?.tradingSymbol}</td>
+                                            <td className='text-right'>{record?.price}</td>
+                                            <td className='text-right pr-4'>{segregate(record?.quantity)}</td>
+                                            <td className='text-right pr-2'>{segregate((record?.price) * (record?.quantity))}</td>
+                                            <td className='text-right pr-2'>{record?.orderStatus}</td>
                                     </tr>
                                 })
-                            }   
+                            }
+                        
                         </tbody>
                     </table> </div> : <></>}
                   </div>
@@ -114,58 +128,60 @@ const BasketPage = () => {
                     <p> Don't leave or close this page.</p>
                   </div>
             : 
-            (<div>
+            (<div className='flex flex-col space-y-20'>
                 <div className='flex justify-center items-center'>
                     <Image src={Logo} alt="wealth spring logo"  />
                     <div></div>
                 </div>
-                <div className='flex justify-center space-x-2 mr-32 mt-10'>
-                    <p className='text-center font-semibold mb-4 text-xl'>Basket name: </p>
-                    <p className='text-center font-semibold mb-4 text-xl'>{'BankingSmallCase'}</p>
-                </div>
-                <div className='flex justify-center'>
-                    <div>
-                        <p>Basket Value &#8377;</p>
-                        <input disabled type='text' value={'323,432.45'} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
+                <div className=''>
+                    <div className='flex justify-center space-x-2 text-left'>
+                        <p className=' font-semibold mb-4 text-xl'>Basket name: </p>
+                        <p className=' font-semibold mb-4 text-xl'>{basketData?.basketName}</p>
                     </div>
-                    <div className='ml-4'>
-                        <p>Basket Type</p>
-                        <input disabled type='text' value={'BUY'} className='w-28 border-gray-200 bg-gray-50 rounded-md' />
+                    <div className='flex justify-center'>
+                        <div>
+                            <p>Basket Value &#8377;</p>
+                            <input disabled type='text' value={segregate((basketValue).toFixed(2))} className='w-32 border-gray-200 bg-gray-50 rounded-md text-right' />
+                        </div>
+                        <div className='ml-4'>
+                            <p>Basket Type</p>
+                            <input disabled type='text' value={basketData?.rows[0]?.transType} className='w-28 border-gray-200 bg-gray-50 rounded-md' />
+                        </div>
+                        <div className='ml-4'>
+                            <p>No.of Scripts</p>
+                            <input disabled type='number' value={basketData?.rows?.length} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
+                        </div>
                     </div>
-                    <div className='ml-4'>
-                        <p>No.of Scripts</p>
-                        <input disabled type='number' value={'3'} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
+                    <div className='flex justify-center items-center mt-4'>
+                        <table className='table-fixed border'>
+                            <thead className='border-b'>
+                                <tr>
+                                    <th className='p-2'>S.No</th>
+                                    <th>Script</th>
+                                    <th>Price &#8377;</th>
+                                    <th className='p-2'>Quantity</th>
+                                    <th className='p-2'>Total &#8377;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    basketData?.rows.map((record, index) => {
+                                        return <tr className='border-b' key={index}>
+                                                <td className='text-center'>{index+1}</td>
+                                                <td className='truncate p-2'>{record?.instrumentName}</td>
+                                                <td className='text-right'>{record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue}</td>
+                                                <td className='text-right pr-4'>{segregate(record?.quantityValue)}</td>
+                                                <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
+                                        </tr>
+                                    })
+                                }
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-                <div className='flex justify-center items-center mt-4'>
-                    <table className='table-fixed border'>
-                        <thead className='border-b'>
-                            <tr>
-                                <th className='p-2'>S.No</th>
-                                <th>Script</th>
-                                <th>Price &#8377;</th>
-                                <th className='p-2'>Quantity</th>
-                                <th className='p-2'>Total &#8377;</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                basketData?.rows.map((record, index) => {
-                                    return <tr className='border-b' key={index}>
-                                            <td className='text-center'>{index+1}</td>
-                                            <td className='truncate p-2'>{record?.instrumentName}</td>
-                                            <td className='text-right'>{record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue}</td>
-                                            <td className='text-right pr-4'>{segregate(record?.quantityValue)}</td>
-                                            <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
-                                    </tr>
-                                })
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <div className='flex justify-center space-x-4 mt-4'>
-                    <button className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20' onClick={handleConfirm}>Confirm</button>
-                    <Button color='gray'>Decline</Button>
+                    <div className='flex justify-center space-x-4 mt-4'>
+                        <button className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20' onClick={handleConfirm}>Confirm</button>
+                        <Button color='gray'>Decline</Button>
+                    </div>
                 </div>
             </div>)
         }

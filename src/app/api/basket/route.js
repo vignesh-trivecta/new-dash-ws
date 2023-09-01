@@ -93,9 +93,11 @@ export const getSpecificBasket = async(basketName) => {
             })
         }
         const response = await fetch("http://localhost:8083/view/basket", requestOptions);
+        console.log(basketName, response);
 
         if(response.ok){
             const jsonData = await response.json();
+            console.log(jsonData);
             return jsonData;
         }
         else {

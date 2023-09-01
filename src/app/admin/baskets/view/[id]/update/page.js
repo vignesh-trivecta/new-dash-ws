@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 const UpdateBasket = ({ params }) => {
 
   const adminId = useSelector((state) => state.user.username);
+  let basketName = (params.id).split('%20').join(" ");
     
   // local state variables
   const [records, setRecords] = useState([]);
@@ -30,7 +31,7 @@ const UpdateBasket = ({ params }) => {
   // useEffect to fetch 
   useEffect( () => {
     const gettingRecords = async () => {
-      const response = await getBasketValue(params.id, adminId);
+      const response = await getBasketValue(basketName, adminId);
       console.log(response)
       setInvestmentVal(response[0].basketInvestAmt);
       setTransType(response[0].transactionType);
@@ -58,7 +59,7 @@ const UpdateBasket = ({ params }) => {
     // useffect for add record, update record, delete record
     useEffect(() => {
       const fetchData = async () => {
-        const response = await getSpecificBasket( params.id);
+        const response = await getSpecificBasket( basketName);
         console.log(response)
         setRecords(response || []);
       }
@@ -120,14 +121,14 @@ const UpdateBasket = ({ params }) => {
     
     return (
       <div className='container mx-auto mt-4' style={{width: '90%'}}>
-      <h3 className='mb-2 font-bold'>Update {params.id}</h3>
+      <h3 className='mb-2 font-bold'>Update {basketName}</h3>
 
             {/* Investment details row */}
       <div className="flex justify-between">
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-left">
                 <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
-                <input type="text" disabled value={params.id} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
+                <input type="text" disabled value={basketName} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
               </div>
               <div className='ml-8 mt-2'>
                 <p className='text-xs text-red-500'><div>&nbsp;</div></p>
@@ -180,7 +181,7 @@ const UpdateBasket = ({ params }) => {
                     index={index} 
                     handleFetch={handleFetch} 
                     setHandleFetch={setHandleFetch}
-                    basketName={params.id}
+                    basketName={basketName}
                     investmentVal={investmentVal}
                     basketVal={basketVal}
                   />
@@ -233,10 +234,10 @@ const UpdateBasket = ({ params }) => {
             <div className='flex justify-center space-x-2'>
               {/* <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button> */}
               <div>
-                <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} transType={transType} investmentVal={investmentVal} basketVal={basketVal} mainBasketName={params.id} />
+                <AddRecord handleFetch={handleFetch} setHandleFetch={setHandleFetch} transType={transType} investmentVal={investmentVal} basketVal={basketVal} mainBasketName={basketName} />
               </div>
               <div>
-                {/* <SubmitBasket saved={saved} setSaved={setSaved} transType={transType} investmentAmount={investmentVal} actualValue={basketVal} mainBasketName={params.id} />               */}
+                {/* <SubmitBasket saved={saved} setSaved={setSaved} transType={transType} investmentAmount={investmentVal} actualValue={basketVal} mainBasketName={basketName} />               */}
                 <Button onClick={() => {router.push('/admin/baskets/view')}}>Save & Close</Button>
               </div>
             </div>

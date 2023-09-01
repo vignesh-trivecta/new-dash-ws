@@ -13,8 +13,13 @@ const DeleteRecord = ({ recId, mainBasketName, handleFetch, setHandleFetch }) =>
     const adminId = useSelector((state) => state.user.username);
 
     const handleDelete = async() => {
-        console.log(recId, mainBasketName, adminId)
-        if(pathname == `/admin/baskets/view/${mainBasketName}/update`){
+        if((pathname == `/admin/baskets/view/${mainBasketName}/update`) && (mainBasketName.includes("%20"))){
+            console.log('enter 1');
+            const response = await deleteRecordMainAPI(recId, mainBasketName, adminId );
+            setHandleFetch(!handleFetch);           
+        }
+        else if(pathname == `/admin/baskets/view/${mainBasketName}/update`){
+            console.log('enter 2');
             const response = await deleteRecordMainAPI(recId, mainBasketName, adminId );
             setHandleFetch(!handleFetch);           
         }

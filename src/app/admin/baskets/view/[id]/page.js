@@ -11,14 +11,12 @@ import { Button, Checkbox, Label, Modal, TextInput } from 'flowbite-react';
 
 const ViewTable = ({ params }) => {
   
-  const basketName = params.id;
+  const basketName = (params.id).split('%20').join(' ');
   let input;
 
   // local state variables
   const [records, setRecords] = useState([]);
-  const [open, setOpen] = useState(false);
   const [res, setRes] = useState(false);
-  const [newBasketName, setNewBasketName] = useState('');
 
 
   // modal elements
@@ -34,7 +32,7 @@ const ViewTable = ({ params }) => {
   // useEffect to fetch the table records
   useEffect( () => {
     const gettingRecords = async () => {
-      const response = await getSpecificBasket( params.id );
+      const response = await getSpecificBasket( basketName );
       setRecords(response);
     };
     gettingRecords();
@@ -47,9 +45,8 @@ const ViewTable = ({ params }) => {
         // Fetch the records after a brief delay to allow the deletion to complete on the server
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
-      const response = await getSpecificBasket(params.id);
+      const response = await getSpecificBasket(basketName);
       setRecords(response);
-      console.log(response)
     };
     gettingRecords();
   }, [res, params.id]);
@@ -167,7 +164,7 @@ const ViewTable = ({ params }) => {
               </div>
               
               <div className="w-full flex justify-center items-center space-x-4">
-                <Button onClick={async() => {let response= await cloneBasket(basketName, input, adminId); setOpenModal(undefined);}}>Clone</Button>
+                <Button onClick={async() => {let response= await cloneBasket(basketName, input, adminId); setOpenModal(undefined); router.push('/admin/baskets/view')}}>Clone</Button>
                 <Button color='gray' onClick={() => {setOpenModal(undefined)}}>Cancel</Button>
               </div>
               
@@ -177,7 +174,7 @@ const ViewTable = ({ params }) => {
       </>
 
       <div className='flex justify-between'>
-        <h1 className='font-bold'>{params.id}</h1>
+        <h1 className='font-bold'>{basketName}</h1>
         <button className='flex border border-gray-200 p-2 rounded-md hover:bg-gray-50' onClick={() => setOpenModal('form-elements')} >
           <svg className="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 18a.969.969 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V9l4-4m-4 5h5m3-4h5V1m5 1v12a.97.97 0 0 1-.933 1H9.933A.97.97 0 0 1 9 14V5l4-4h5.067A.97.97 0 0 1 19 2Z"/>

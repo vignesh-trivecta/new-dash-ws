@@ -79,10 +79,11 @@ function encryptedCredentials(user, password, SECRET_KEY) {
     
     // destructuring values object
     const { username, password, captcha } = values;
+    console.log('enter 1')
 
     // checking if login credentials are correct
     if(username != null && password !== null && captcha === captchaValue){
-      console.log("enter")
+      console.log("enter 2")
 
       // signing the username, password with secret key
       // using jwt to create a authentication token
@@ -94,18 +95,18 @@ function encryptedCredentials(user, password, SECRET_KEY) {
       // posting the authorized token to backend,
       // based on the received respone 200 or 404 
       // redirecting user to next page
-      const login =  await loginAPI(token);
-      if(login.statusCode == 200){
+      try{
+        const login =  await loginAPI(token);
         dispatch(setUsername(username));
         dispatch(setEmail(login.email));
         dispatch(setPhone(login.phone));
         dispatch(setAdminLoginStatus(true));
         router.push('/admin/dashboard');
+      }catch(error){
+        setErrorMsg("Please try again")
       }
-      else{
-        console.log("Invalid credentials");
-        setErrorMsg("Invalid credentials! Try again")
-      }
+    } else{
+      setErrorMsg("Invalid credentials! Try again")
     }
   };
 

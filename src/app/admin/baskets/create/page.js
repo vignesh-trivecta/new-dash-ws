@@ -61,7 +61,7 @@ const CreateBasket = () => {
     (setBasketAmount(''));
     dispatch(setBasketName(''));
     setMessage(msg4);
-    setSaved(false);
+    // setSaved(false);
   }, [saved])
   
   // useEffect to set the message at center of table
@@ -69,7 +69,7 @@ const CreateBasket = () => {
     if(basketName !== '' && basketAmount !== ''){
       setMessage(msg2);
     }
-    else {
+    else if(!saved){
       setMessage(msg1);
     }
   }, [basketAmount, basketName]);
@@ -221,6 +221,7 @@ const CreateBasket = () => {
                     index={index} 
                     handleFetch={handleFetch} 
                     setHandleFetch={setHandleFetch}
+                    investmentVal={basketAmount}
                     basketVal={total}
                   />
                   

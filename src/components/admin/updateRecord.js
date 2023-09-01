@@ -70,7 +70,6 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
     const handleUpdate = (e) => {
         e.preventDefault();
         const localtransType = toggle;
-        console.log(localOrderType, limitPrice);
         const postDataAPI = async() => {
             if(pathname == '/admin/baskets/create'){
                 let val1 = String(basketAmount).split(',').join('');
@@ -284,7 +283,9 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                         <input
                             type='text'
                             value={localWeightage || lweightage}
-                            onChange={handleWeightage}
+                            onChange={(e) => {
+                                handleWeightage(e);
+                            }}
                             className='w-full border border-gray-200 rounded-md text-right'
                         />
                     </div>
