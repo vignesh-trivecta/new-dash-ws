@@ -30,35 +30,35 @@ const BasketPage = () => {
     const [data, setData] = useState([]);
 
     // OAuth login redirect after click on submit button
-    const handleConfirm = async (e) => {
+    const handleConfirm = (e) => {
         e.preventDefault();
-        setShow(true);
-        const response = await clientConfirmsBasket(basketData);
-        console.log(response);
-        if(response){
-            setData(response);
-            setShow(true);
-            setStatus(true);
-        }
+        // setShow(true);
+        // const response = await clientConfirmsBasket(basketData);
+        // console.log(response);
+        // if(response){
+        //     setData(response);
+        //     setShow(true);
+        //     setStatus(true);
+        // }
         // // setShow(true);
-        // const f = document.createElement('form');
-        // f.action = 'https://ttweb.indiainfoline.com/trade/Login.aspx';
-        // f.method = 'POST';
+        var f = document.createElement('form');
+        f.action = 'https://ttweb.indiainfoline.com/trade/Login.aspx';
+        f.method = 'POST';
 
-        // const i1 = document.createElement('input');
-        // i1.type = 'hidden';
-        // i1.name = 'VP';
-        // i1.value = 'https://www.google.co.in/';
-        // f.appendChild(i1);
+        var i1 = document.createElement('input');
+        i1.type = 'hidden';
+        i1.name = 'VP';
+        i1.value = 'https://www.google.co.in/';
+        f.appendChild(i1);
 
-        // const i2 = document.createElement('input');
-        // i2.type = 'hidden';
-        // i2.name = 'UserKey';
-        // i2.value = process.env.NEXT_PUBLIC_USER_KEY;
-        // f.appendChild(i2);
+        var i2 = document.createElement('input');
+        i2.type = 'hidden';
+        i2.name = 'UserKey';
+        i2.value = 'zPBLyrSExfrFMjnNnIvgycdpkTtlaGRv';
+        f.appendChild(i2);
 
-        // document.body.appendChild(f);
-        // f.submit();
+        document.body.appendChild(f);
+        f.submit();
     }
 
   return (
@@ -179,7 +179,7 @@ const BasketPage = () => {
                         </table>
                     </div>
                     <div className='flex justify-center space-x-4 mt-4'>
-                        <button className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20' onClick={handleConfirm}>Confirm</button>
+                        <button className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20' onClick={(e) => {handleConfirm(e)}}>Confirm</button>
                         <Button color='gray'>Decline</Button>
                     </div>
                 </div>
