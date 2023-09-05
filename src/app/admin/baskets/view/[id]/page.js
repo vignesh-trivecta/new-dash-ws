@@ -74,7 +74,7 @@ const ViewTable = ({ params }) => {
   
 
   return (
-    <div className='container mx-auto mt-4' style={{width: '90%'}}>
+    <div className='container mx-auto mt-4' style={{width: '95%'}}>
       {/* <>
         <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>

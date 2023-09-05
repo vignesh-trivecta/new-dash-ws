@@ -41,7 +41,6 @@ const ExampleSidebar = function () {
   const pageNavigator = () => {
     switch(tab) {
       case 1:
-        console.log("entered dashboard");
         router.push('/admin/dashboard');
         dispatch(setBasketState(false));
         setIsLinkDisabled(false);
@@ -49,7 +48,6 @@ const ExampleSidebar = function () {
         dispatch(setBasketName(''));
         break;
       case 2:
-        console.log("entered customers")
         router.push('/admin/customers');
         dispatch(setBasketState(false));
         setIsLinkDisabled(false);
@@ -57,7 +55,6 @@ const ExampleSidebar = function () {
         dispatch(setBasketName(''));
         break;
       case 3:
-        console.log("entered create", tab);
         router.push('/admin/baskets/create');
         dispatch(setBasketState(false));
         setIsLinkDisabled(false);
@@ -65,7 +62,6 @@ const ExampleSidebar = function () {
         dispatch(setBasketName(''));
         break;
       case 4:
-        console.log("entered view page");
         router.push('/admin/baskets/view');
         dispatch(setBasketState(false));
         setIsLinkDisabled(false);
@@ -73,7 +69,6 @@ const ExampleSidebar = function () {
         dispatch(setBasketName(''));
         break;
       case 5:
-        console.log("entered customer mapping")
         router.push('/admin/baskets/customerMapping');
         dispatch(setBasketState(false));
         setIsLinkDisabled(false);
@@ -81,14 +76,6 @@ const ExampleSidebar = function () {
         dispatch(setBasketName(''));
         break;
       case 6:
-        router.push('/admin/baskets/create#');
-        dispatch(setBasketState(false));
-        setIsLinkDisabled(false);
-        dispatch(setBasketAmount(''));
-        dispatch(setBasketName(''));
-        break;
-      case 7:
-        router.push('/admin/baskets/create#');
         dispatch(setBasketState(false));
         setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
@@ -182,6 +169,7 @@ const ExampleSidebar = function () {
         </Dialog>
       </Transition.Root>
       </>
+      
       <Sidebar ariaLabel="Sidebar with multi-level dropdown example" style={{height: '85vh'}} className=" border-r-2" >
         <div className="flex flex-col justify-between py-2">
           <div>
@@ -254,35 +242,19 @@ const ExampleSidebar = function () {
                         }
                       </Sidebar.Item>
                 </Sidebar.Collapse>
-                <Sidebar.Collapse
+                <Sidebar.Item
                   icon={CgFileDocument}
-                  label="Reports"
+                  className={
+                    "/admin/reports" === pathname
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
                 >
-                  <Sidebar.Item 
-                      icon={CgFileDocument}
-                  >
-                    {isLinkDisabled 
-                      ? ( <button onClick={() => {setOpen(true); setTab(6);}}>Report 1</button> ) 
-                      : ( <Link href="#">Report 1</Link> )
-                    }
-                  </Sidebar.Item>
-                  <Sidebar.Item 
-                      icon={CgFileDocument}
-                  >
-                    {isLinkDisabled 
-                      ? ( <button onClick={() => {setOpen(true); setTab(7);}}>Report 2</button> ) 
-                      : ( <Link href="#">Report 2</Link> )
-                    }
-                  </Sidebar.Item>
-                  <Sidebar.Item 
-                      icon={CgFileDocument}
-                  >
-                    {isLinkDisabled 
-                      ? ( <button onClick={() => {setOpen(true); setTab(8);}}>Report 3</button> ) 
-                      : ( <Link href="#">Report 3</Link> )
-                    }
-                  </Sidebar.Item>
-                </Sidebar.Collapse>
+                  {isLinkDisabled 
+                    ? ( <button onClick={() => {setOpen(true); setTab();}}>Reports</button> ) 
+                    : ( <Link href="/admin/reports">Reports</Link> )
+                  }
+                </Sidebar.Item> 
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>

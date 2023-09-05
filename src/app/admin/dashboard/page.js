@@ -14,8 +14,8 @@ import Image from "next/image";
 
 const DashCards = () => {
     return(
-        <div className="">
-            <h1 className="font-bold mb-2">Dashboard</h1>
+        <div className='container mx-auto mt-4' style={{width: '95%'}}>
+            <h1 className="font-bold">Dashboard</h1>
             <div className="flex justify-center gap-4">
                 <div className="border border-gray-50 mb-4">
                     <Image src={Line} width={500} />

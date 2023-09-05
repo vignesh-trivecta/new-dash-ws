@@ -120,7 +120,7 @@ const UpdateBasket = ({ params }) => {
     const msg6 = "Basket Value is higher than Investment Amount. Delete some scripts!"
     
     return (
-      <div className='container mx-auto mt-4' style={{width: '90%'}}>
+      <div className='container mx-auto mt-4' style={{width: '95%'}}>
       <h3 className='mb-2 font-bold'>Update {basketName}</h3>
 
             {/* Investment details row */}

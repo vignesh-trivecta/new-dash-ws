@@ -101,7 +101,7 @@ const CustomerMapping = () => {
     }
 
     return(
-        <div className='container mx-auto mt-4' style={{width: '90%'}}>
+        <div className='container mx-auto mt-4' style={{width: '95%'}}>
 
             <h5 className="font-bold mb-2">Map Basket</h5>
             <div className="flex justify-between">

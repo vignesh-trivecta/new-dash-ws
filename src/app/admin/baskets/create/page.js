@@ -141,7 +141,7 @@ const CreateBasket = () => {
   }, [records]);
   
   return (
-    <div className='container mx-auto mt-4' style={{width: '90%'}}>
+    <div className='container mx-auto mt-4' style={{width: '95%'}}>
       <h3 className='mb-2 font-bold'>Create new Basket</h3>
       
       {/* Investment details row */}
@@ -178,14 +178,24 @@ const CreateBasket = () => {
           }} className="border border-gray-200 rounded-lg w-44 text-right" />
         </div>
 
-        {/* Basket Type listbox */}
+        {/* Basket Category listbox */}
+        <div className="">
+          <p className="text-black text-sm dark:text-white mr-2">Basket Categpry</p>
+          <select name="transactionType" id="transactionType" value={''} className='border border-gray-200 rounded-md w-44' onChange={e => setTransType(e.target.value)}>
+            <option value="BUY">Pharma</option>
+            <option value="SELL">Energy</option>
+          </select> 
+        </div>
+
+        {/* Transaction Type listbox */}
         <div className="">
           <p className="text-black text-sm dark:text-white mr-2">Transaction Type</p>
           <select name="transactionType" id="transactionType" value={transType} className='border border-gray-200 rounded-md w-44' onChange={e => setTransType(e.target.value)}>
             <option value="BUY">BUY</option>
             <option value="SELL">SELL</option>
           </select> 
-      </div>
+        </div>
+
         <div className="flex flex-col items-left mb-6">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value &#8377;</p>
           <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-right" />

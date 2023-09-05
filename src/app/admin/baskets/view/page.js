@@ -39,7 +39,7 @@ const Customers = () => {
   records?.sort((a, b) => new Date (b.createdOn) - new Date (a.createdOn));
 
   return (
-    <div className='container mx-auto mt-4' style={{width: '90%'}}>
+    <div className='container mx-auto mt-4' style={{width: '95%'}}>
         <div className='flex justify-between '>
             <h1 className="font-bold">View Baskets</h1>
             <div className="flex items-center">
