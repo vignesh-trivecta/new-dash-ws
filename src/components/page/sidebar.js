@@ -170,7 +170,7 @@ const ExampleSidebar = function () {
       </Transition.Root>
       </>
       
-      <Sidebar ariaLabel="Sidebar with multi-level dropdown example" style={{height: '85vh'}} className=" border-r-2" >
+      <Sidebar ariaLabel="Sidebar with multi-level dropdown example" style={{height: '85vh'}} className="border-r-2" >
         <div className="flex flex-col justify-between py-2">
           <div>
             <Sidebar.Items>
@@ -207,8 +207,8 @@ const ExampleSidebar = function () {
                           icon={HiPencilAlt}
                           className={
                             "/admin/baskets/create" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700"
-                              : ""
+                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              : " -ml-3"
                           }
                       >
                         <Link href="/admin/baskets/create">
@@ -219,8 +219,8 @@ const ExampleSidebar = function () {
                           icon={AiOutlineFolderView}
                           className={
                             "/admin/baskets/view" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700"
-                              : ""
+                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              : " -ml-3"
                           }
                       >
                         {isLinkDisabled 
@@ -232,8 +232,8 @@ const ExampleSidebar = function () {
                           icon={AiOutlineUserAdd}
                           className={
                             "/admin/baskets/customerMapping" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700"
-                              : ""
+                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              : " -ml-3"
                           }
                       >
                         {isLinkDisabled 
