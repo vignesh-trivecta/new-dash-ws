@@ -66,7 +66,6 @@ export const getBasketList = async(filteredBasket) => {
 
         if(response.ok){
             const jsonData = await response.json();
-            console.log(jsonData)
             return jsonData;
         }
         else {

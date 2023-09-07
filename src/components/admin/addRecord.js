@@ -72,7 +72,6 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             if(pathname == '/admin/baskets/create'){
                 data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice);
                 if(data === true){
-                    console.log('enter 2')
                     setHandleFetch(!handleFetch);
                     props.setOpenModal(undefined);
                 }

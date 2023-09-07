@@ -7,42 +7,86 @@ import { getInstrumentDetails } from "@/app/api/basket/route"
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedStock } from "@/store/addRecordSlice";
+import { usePathname } from 'next/navigation';
 
-export default function SearchDropdown({ id, fetch, setFetch }) {
-  const [stocksList, setStocksList] = useState([]);
+
+export default function SearchDropdown({ id, fetch, setFetch, localClientCode, setLocalClientCode }) {
+  const [list, setList] = useState([]);
   const [query, setQuery] = useState("");
-
+  const [clientId, setClientId] = useState(localClientCode);
+ 
   const dispatch = useDispatch();
+  const pathname = usePathname();
   const selectedStock = useSelector((state) => state.add.selectedStock);
 
-  const filteredStocksList =
-    query === ""
-      ? stocksList
-      : stocksList.filter((stock) =>
-          stock.instrumentName
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .startsWith(query.toLowerCase().replace(/\s+/g, ""))
-        )
+  console.log('called', localClientCode)
+  const filteredList = 
+  (pathname === "/admin/baskets/create")
+  ? 
+  query === ""
+    ? list
+    : list.filter((stock) =>
+        stock?.instrumentName
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .startsWith(query.toLowerCase().replace(/\s+/g, ""))
+      )
+  : 
+  query === ""
+    ? list
+    : list.filter((customer) =>
+      customer?.customerId
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .startsWith(query.toLowerCase().replace(/\s+/g, ""))
+    );
+
     
   useEffect(() => {
     const fetchData = async () => {
-      const list = await getInstrumentDetails();
-      setStocksList(list);
+      if(pathname == "/admin/baskets/create"){
+        const list = await getInstrumentDetails();
+        setList(list);
+        console.log(list)
+      }
+      else{
+        setList(
+          [
+            { customerId: 'CUST001 - Muthu Kumar' },
+            { customerId: 'CUST002 - Raji Vinod' },
+            { customerId: 'CUST003 - Aadhan Madhankumar' },
+            { customerId: 'CUST004 - Shravan Madhankumar' },
+            { customerId: 'CUST005 - Rekha Kumar' },
+            { customerId: 'CUST006 - Sathish Mishra' },
+            { customerId: 'CUST007 - Rajesh Ram' },
+            { customerId: 'CUST008 - Kannan Suresh' },
+            { customerId: 'CUST009 - Kamal Mishra' },
+            { customerId: 'CUST010 - Elango Ganesh' },
+            { customerId: 'CUST011 - Yoganath' },
+            { customerId: 'CUST012 - Ganesh Ram' }
+          ]
+        )
+      }
     };
   
     fetchData();
   }, []);
 
   const handleChange = (value) => {
-    setFetch(!fetch);
-    dispatch(setSelectedStock(value));
+    if(pathname === "/admin/baskets/create"){
+      setFetch(!fetch);
+      dispatch(setSelectedStock(value));
+    }
+    else{
+      setClientId(value);
+      setLocalClientCode(value);
+    }
   }
   
 
   return (
     <div className="">
-      <Combobox value={selectedStock} onChange={(newValue) => {handleChange(newValue)}}>
+      <Combobox value={(pathname === "/admin/baskets/create") ? selectedStock : clientId} onChange={(newValue) => {handleChange(newValue)}}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default  rounded-lg bg-white text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
@@ -67,12 +111,15 @@ export default function SearchDropdown({ id, fetch, setFetch }) {
             afterLeave={() => setQuery("")}
           >
             <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" style={{height: "150px"}}>
-              {filteredStocksList && filteredStocksList?.length === 0 && query !== "" ? (
+              
+            {pathname === "/admin/baskets/create"
+            ?
+              (filteredList && filteredList?.length === 0 && query !== "" ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                   Nothing found.
                 </div>
-              ) : (
-                filteredStocksList?.map((stock, index) => (
+                ) : (
+                filteredList?.map((stock, index) => (
                   <Combobox.Option
                     key={index}
                     className={({ active }) =>
@@ -104,7 +151,47 @@ export default function SearchDropdown({ id, fetch, setFetch }) {
                     )}
                   </Combobox.Option>
                 ))
-              )}
+              ))
+            :
+              (filteredList && filteredList?.length === 0 && query !== "" ? (
+                <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
+                  Nothing found.
+                </div>
+                ) : (
+                filteredList?.map((stock, index) => (
+                  <Combobox.Option
+                    key={index}
+                    className={({ active }) =>
+                      `relative cursor-default select-none py-2 pl-10 pr-4 text-sm ${
+                        active ? "bg-teal-600 text-white" : "text-gray-900"
+                      }`
+                    }
+                    value={stock.customerId}
+                  >
+                    {({ selected, active }) => (
+                      <>
+                        <span
+                          className={`block truncate ${
+                            selected ? "font-medium" : "font-normal"
+                          }`}
+                        >
+                          {stock.customerId}
+                        </span>
+                        {selected ? (
+                          <span
+                            className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                              active ? "text-white" : "text-teal-600"
+                            }`}
+                          >
+                            <CheckIcon className="h-5 w-5" ariaHidden="true" />
+                          </span>
+                        ) : null}
+                      </>
+                    )}
+                  </Combobox.Option>
+                ))
+              ))
+            }
             </Combobox.Options>
           </Transition>
         </div>
