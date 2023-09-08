@@ -145,36 +145,36 @@ const CustomerMapping = () => {
             {/* Customer Details table */}
                 <div className='flex flex-col mt-2'>
                 <div className={'overflow-y-scroll border'}  style={{ height: '300px' }}>
-                <table className='table-fixed w-full overflow-y-scroll' >
+                <table className='table-fixed w-full overflow-y-scroll overflow-x-scroll' >
                     <thead className='sticky top-0 bg-gray-50' >
                     <tr>
-                        <th className='font-medium text-sm text-left p-2' >Customer ID</th>
-                        <th className='font-medium text-sm text-left' >Name</th>
-                        <th className='font-medium text-left text-sm' style={{width: '20%'}}>Email</th>
-                        <th className='font-medium text-center text-sm'>Contact</th>
-                        <th className='font-medium text-center text-sm'>Broker</th>
-                        <th className='font-medium text-left text-sm'>Map Status</th>
-                        <th className='font-medium text-left text-sm'>WebLink Status</th>
-                        <th className='font-medium text-center text-sm'>Actions</th>
+                        <th className='font-medium text-sm text-left p-2 truncate' >Customer ID</th>
+                        <th className='font-medium text-sm text-left truncate' >Name</th>
+                        <th className='font-medium text-left text-sm w-44 truncate'>Email</th>
+                        <th className='font-medium text-center text-sm truncate'>Contact</th>
+                        <th className='font-medium text-center text-sm truncate'>Broker</th>
+                        <th className='font-medium text-left text-sm truncate'>Map Status</th>
+                        <th className='font-medium text-left text-sm truncate'>WebLink Status</th>
+                        <th className='font-medium text-center text-sm truncate'>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
                         {customers?.map((data, index) => {
                             return (
-                                <tr key={index} className='border-t border-b hover:bg-gray-50'>
+                                <tr key={index} className='border-t border-b hover:bg-gray-100'>
                                     {/* <td className="p-2 font-medium text-gray-900 dark:text-white">
                                         <input type="radio" name="customer" value={index} id={`customer_${index}`} />
                                     </td> */}
-                                    <td className="text-sm text-left text-black p-2">
+                                    <td className="text-sm text-left text-black p-2 truncate">
                                         {data.customerId}
                                     </td>
-                                    <td className="text-sm text-left text-black">
+                                    <td className="text-sm text-left text-black truncate">
                                         {data.name}
                                     </td>
-                                    <td className="text-sm text-left text-black">
+                                    <td className="text-sm text-left text-black truncate">
                                         {data.email}
                                     </td>
-                                    <td className="text-sm text-center text-black">
+                                    <td className="text-sm text-center text-black truncate">
                                         {data.contactOne}
                                     </td>
                                     <td className="text-sm text-center text-black">
@@ -208,7 +208,7 @@ const CustomerMapping = () => {
                                     </td>
                                     {/* Actions button group */}
                                     {/* Map customer */}
-                                    <td className=" flex text-sm text-black mt-2 ml-6">
+                                    <td className=" flex text-sm text-black mt-2 md: lg:ml-4 ">
                                         <Tooltip content="Map Customer">
                                             <button className="ml-2" onClick={() => {handleMapping(data.customerId)}}>
                                             <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">

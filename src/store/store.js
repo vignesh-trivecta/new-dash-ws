@@ -9,6 +9,7 @@ import eventSlice from "./eventSlice";
 import clientBasketSlice from "./clientBasketSlice";
 import addRecordSlice from "./addRecordSlice";
 import updateRecordSlice from "./updateRecordSlice";
+import reportSlice from "./reportSlice";
 
 // combinig all the slices to a reducer
 const reducers = combineReducers({
@@ -18,6 +19,7 @@ const reducers = combineReducers({
     add: addRecordSlice,
     update: updateRecordSlice,
     client: clientBasketSlice,
+    report: reportSlice,
 });
 
 // configuration for persiting data

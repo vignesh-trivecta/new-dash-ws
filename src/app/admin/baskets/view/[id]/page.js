@@ -122,7 +122,7 @@ const ViewTable = ({ params }) => {
                   <div className="bg-gray-50 px-4 py-3 sm:flex justify-center space-x-4 sm:px-6">
                     <button
                       type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-white  px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-50 ring-1 ring-inset ring-gray-300 sm:ml-3 sm:w-auto"
+                      className="inline-flex w-full justify-center rounded-md bg-white  px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 ring-1 ring-inset ring-gray-300 sm:ml-3 sm:w-auto"
                       onClick={(e) => {
                         handleDelete(e)
                       }}
@@ -175,7 +175,7 @@ const ViewTable = ({ params }) => {
 
       <div className='flex justify-between'>
         <h1 className='font-bold'>{basketName}</h1>
-        <button className='flex border border-gray-200 p-2 rounded-md hover:bg-gray-50' onClick={() => setOpenModal('form-elements')} >
+        <button className='flex border border-gray-200 p-2 rounded-md hover:bg-gray-100' onClick={() => setOpenModal('form-elements')} >
           <svg className="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 18a.969.969 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V9l4-4m-4 5h5m3-4h5V1m5 1v12a.97.97 0 0 1-.933 1H9.933A.97.97 0 0 1 9 14V5l4-4h5.067A.97.97 0 0 1 19 2Z"/>
           </svg>
@@ -202,7 +202,7 @@ const ViewTable = ({ params }) => {
             <tbody>
             {records && records?.length > 0 
               ? (records?.map((record, index) => (
-                <tr className='border-t border-b hover:bg-gray-50'>
+                <tr className='border-t border-b hover:bg-gray-100'>
                   <th className="text-left text-sm text-black ">
                       <div className="ml-4">
                           {index+1}

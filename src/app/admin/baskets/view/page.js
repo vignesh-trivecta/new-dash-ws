@@ -83,26 +83,26 @@ const Customers = () => {
           <table className='table-fixed w-full ' >
             <thead className='sticky top-0 bg-gray-50' >
               <tr>
-                <th className='text-left font-medium text-sm p-2' style={{width:'8%'}}>S.No</th>
-                <th className='text-left font-medium text-sm p-2'>Basket Name</th>
-                <th className='text-left font-medium text-sm' style={{width:'12%'}}># Scripts</th>
-                <th className='text-left font-medium text-sm'>Basket Value &#8377;</th>
-                <th className='text-left font-medium text-sm'>Created By</th>
-                <th className='text-center font-medium text-sm'>Created On</th>
-                <th className='text-center font-medium text-sm'>Actions</th>
+                <th className='text-left font-medium text-sm p-2 w-10 md:w-12 lg:w-16 truncate'>S.No</th>
+                <th className='text-left font-medium text-sm p-2 truncate'>Basket Name</th>
+                <th className='text-left font-medium text-sm truncate'># Scripts</th>
+                <th className='text-left font-medium text-sm truncate'>Basket Value &#8377;</th>
+                <th className='text-left font-medium text-sm truncate'>Created By</th>
+                <th className='text-center font-medium text-sm truncate'>Created On</th>
+                <th className='text-center font-medium text-sm truncate'>Actions</th>
               </tr>
             </thead>
               <tbody>
                 {records?.map((record, index) => {
                   return  (
-                    <tr key={index} className='border-t border-b hover:bg-gray-50'>
+                    <tr key={index} className='border-t border-b hover:bg-gray-100'>
                         <th className="text-left text-sm text-black ">
                             <div className="ml-4">
                                 {index+1}
                             </div>
                         </th>
                       <td className='text-left'>
-                          <div className='text-sm text-black p-2'>{record.basketName}</div>
+                          <div className='text-sm text-black p-2 truncate'>{record.basketName}</div>
                       </td>
                       <td className='text-left'>
                           <div className='text-sm text-black p-2 ml-2'>{record.totalNoOrders}</div>

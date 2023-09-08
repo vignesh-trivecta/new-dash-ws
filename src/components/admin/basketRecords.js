@@ -4,7 +4,7 @@ import DeleteRecord from './deleteRecord';
 
 const BasketRecords = ({ record, index, handleFetch, setHandleFetch, basketName, investmentVal, basketVal }) => {
   return (
-    <tr className='border-t border-b hover:bg-gray-50'>
+    <tr className='border-t border-b hover:bg-gray-100'>
       <th className='text-left'>
         <div className='ml-4 text-sm text-black'>{index+1}</div>
       </th>

@@ -18,7 +18,7 @@ const DashNavbar = function () {
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <Navbar.Brand href="#">
-              <Image alt="wealth-spring" src={logo} className="mr-3 h-6 sm:h-10 sm:w-40" />
+              <Image alt="wealth-spring" src={logo} className="mr-3 h-10 w-32 sm:h-10 sm:w-40" />
             </Navbar.Brand>
           </div>
           <div className="flex items-center gap-3">

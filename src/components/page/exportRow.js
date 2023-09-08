@@ -5,7 +5,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { Button } from "flowbite-react";
 
-export default function ExportRow() {
+export default function ExportRow({printTableToPDF}) {
 
   let [isOpen, setIsOpen] = useState(false)
 
@@ -17,14 +17,14 @@ export default function ExportRow() {
           <BiExport className=" h-5 w-5 text-gray-500" aria-hidden="true" />
         </button>
         {
-          isOpen && <ExportModal isOpen={isOpen} setIsOpen={setIsOpen} />
+          isOpen && <ExportModal isOpen={isOpen} setIsOpen={setIsOpen} printTableToPDF={printTableToPDF} />
         }
     </div>
   )
 }
 
 
-export const ExportModal = ({isOpen, setIsOpen}) => {
+export const ExportModal = ({isOpen, setIsOpen, printTableToPDF}) => {
 
   const [selected, setSelected] = useState('xls');
 
@@ -92,7 +92,7 @@ export const ExportModal = ({isOpen, setIsOpen}) => {
                   <div className="mt-4 flex space-x-2 justify-center">
                     <Button
                       size={'sm'}
-                      onClick={closeModal}
+                      onClick={printTableToPDF}
                     >
                       Export
                     </Button>
