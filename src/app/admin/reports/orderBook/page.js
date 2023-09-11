@@ -1,18 +1,14 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import ExportRow from '@/components/page/exportRow';
 import FilterComponent from '@/components/page/filterComp';
+import print from 'print-js';
 
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 // excel
 import { DownloadTableExcel } from 'react-export-table-to-excel';
-// pdf 1
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-// pdf 2
-import print from 'print-js'
 import ReportsTable from '@/components/admin/reportsTable';
 
 
@@ -20,20 +16,9 @@ const OrderBook = () => {
 
   const tableRef = useRef(null); // excel
 
-  const convertTableToPDF = () => { // pdf 1
-    const input = document.getElementById('table-to-convert'); 
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      pdf.addImage(imgData, 'PNG', 10, 10, 180, 0);
-      pdf.save('table.pdf'); // Save the PDF with a given name
-    });
-  };
-
   const printTableToPDF = () => {
-    const tableId = 'table-to-print'; // Replace with your table's ID
-    printJS({ printable: tableId, type: 'html' });
+    const tableId = 'table-to-print';
+    printJS({ printable: tableId, type: 'html',style: 'Td { border: 1px solid #D1D5DB !important;} Th { border: 1px solid #D1D5DB !important;}' });
   };
   
 
@@ -63,7 +48,7 @@ const columns = Object.keys(datas[0]);
               <FilterComponent />
             </div>
             <div>
-              <ExportRow printTableToPDF={() => {printTableToPDF()}} />
+              <ExportRow printTableToPDF={() => {printTableToPDF()}} data={datas} />
             </div>
         </div>
       </div>
@@ -84,7 +69,7 @@ const columns = Object.keys(datas[0]);
 
         </DownloadTableExcel>
       </div>
-      <div className='overflow-y-scroll'>
+      {/* <div className='overflow-y-scroll'>
       <table className='table-fixed w-full border' >
         <thead className='border bg-gray-50' >
           <tr>
@@ -105,6 +90,11 @@ const columns = Object.keys(datas[0]);
         ))}
             </tbody>
         </table>
+      </div> */}
+      <div className='overflow-auto'>
+        <div id="table-to-print">
+          <ReportsTable columns={columns} datas={datas} />
+        </div>
       </div>
     </div>
     )

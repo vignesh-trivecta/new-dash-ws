@@ -1,11 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
 import ExportRow from '@/components/page/exportRow';
 import FilterComponent from '@/components/page/filterComp';
 import ReportsTable from '@/components/admin/reportsTable';
+import print from 'print-js';
 
 const Margin = () => {
+
+  const printTableToPDF = () => {
+    const tableId = 'table-to-print';
+    printJS({ printable: tableId, type: 'html',style: 'Td { border: 1px solid #D1D5DB !important;} Th { border: 1px solid #D1D5DB !important;}' });
+  };
 
   const datas = [
     {
@@ -27,12 +32,14 @@ const Margin = () => {
               <FilterComponent />
             </div>
             <div>
-              <ExportRow />
+              <ExportRow  printTableToPDF={() => {printTableToPDF()}} data={datas} />
             </div>
         </div>
       </div>
-      <div>
-        <ReportsTable columns={columns} datas={datas} />
+      <div className='overflow-auto'>
+        <div id="table-to-print">
+          <ReportsTable columns={columns} datas={datas} />
+        </div>
       </div>
     </div>
     )

@@ -1,18 +1,16 @@
 'use client';
 
-import React, {useState} from 'react';
+import React from 'react';
 import ExportRow from '@/components/page/exportRow';
 import FilterComponent from '@/components/page/filterComp';
 import ReportsTable from '@/components/admin/reportsTable';
-
-import print from 'print-js'
-
+import print from 'print-js';
 
 const Holdings = () => {
 
   const printTableToPDF = () => {
-    const tableId = 'table-to-print'; // Replace with your table's ID
-    printJS({ printable: tableId, type: 'html' });
+    const tableId = 'table-to-print'; 
+    printJS({ printable: tableId, type: 'html',style: 'Td { border: 1px solid #D1D5DB !important;} Th { border: 1px solid #D1D5DB !important;}' });
   };
   
   const datas = [
@@ -77,7 +75,7 @@ const Holdings = () => {
             <FilterComponent />
           </div>
           <div>
-            <ExportRow printTableToPDF={() => {printTableToPDF()}} />
+            <ExportRow printTableToPDF={() => {printTableToPDF()}} data={datas} />
           </div>
         </div>
       </div>

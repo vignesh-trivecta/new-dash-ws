@@ -152,7 +152,7 @@ const CreateBasket = () => {
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-left">
                 <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
-                <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 rounded-lg w-44" />
+                <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 rounded-lg w-24 md:w-44" />
               </div>
               <div className='ml-8 mt-2'>
                 <p className='text-xs text-red-500'><div>&nbsp;</div></p>
@@ -162,7 +162,7 @@ const CreateBasket = () => {
             <div className="flex flex-col items-start">
               <div className="flex flex-col items-left">
                 <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
-                <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 focus:border-red-500 focus:ring-0 rounded-lg w-44" />
+                <input type="text" value={basketName} onChange={(e) => {dispatch(setBasketName(e.target.value))}} className="border border-gray-200 focus:border-red-500 focus:ring-0 rounded-lg w-24 md:w-44" />
               </div>
               <div className='mt-2'>
                 <p className='text-xs text-red-600'><div>{msg3}</div></p>
@@ -175,13 +175,13 @@ const CreateBasket = () => {
             // Remove commas from the input value before updating state
             const newValue = e.target.value.replace(/,/g, "");
             (setBasketAmount(newValue));
-          }} className="border border-gray-200 rounded-lg w-44 text-right" />
+          }} className="border border-gray-200 rounded-lg w-24 md:w-44 text-right" />
         </div>
 
         {/* Basket Category listbox */}
         <div className="">
           <p className="text-black text-sm dark:text-white mr-2">Basket Categpry</p>
-          <select name="transactionType" id="transactionType" value={''} className='border border-gray-200 rounded-md w-44' onChange={e => setTransType(e.target.value)}>
+          <select name="transactionType" id="transactionType" value={''} className='border border-gray-200 rounded-md  w-24 md:w-44' onChange={e => setTransType(e.target.value)}>
             <option value="BUY">Pharma</option>
             <option value="SELL">Energy</option>
           </select> 
@@ -190,7 +190,7 @@ const CreateBasket = () => {
         {/* Transaction Type listbox */}
         <div className="">
           <p className="text-black text-sm dark:text-white mr-2">Transaction Type</p>
-          <select name="transactionType" id="transactionType" value={transType} className='border border-gray-200 rounded-md w-44' onChange={e => setTransType(e.target.value)}>
+          <select name="transactionType" id="transactionType" value={transType} className='border border-gray-200 rounded-md  w-24 md:w-44' onChange={e => setTransType(e.target.value)}>
             <option value="BUY">BUY</option>
             <option value="SELL">SELL</option>
           </select> 
@@ -198,7 +198,7 @@ const CreateBasket = () => {
 
         <div className="flex flex-col items-left mb-6">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value &#8377;</p>
-          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-right" />
+          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg  w-24 md:w-44 bg-gray-50 text-right" />
         </div>
       </div>  
           

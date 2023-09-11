@@ -4,7 +4,7 @@ import React from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 
-const ReportsTable = ({columns, datas}) => {
+const ReportsTable = ({columns, datas, ref}) => {
   return (
     <div>
         <Table className="border mt-4 overflow-hidden">

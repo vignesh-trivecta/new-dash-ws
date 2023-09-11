@@ -2,10 +2,11 @@
 
 import { BiExport } from "react-icons/bi";
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { Button } from "flowbite-react";
+import { CSVLink } from "react-csv";
 
-export default function ExportRow({printTableToPDF}) {
+export default function ExportRow({printTableToPDF, data}) {
 
   let [isOpen, setIsOpen] = useState(false)
 
@@ -17,16 +18,26 @@ export default function ExportRow({printTableToPDF}) {
           <BiExport className=" h-5 w-5 text-gray-500" aria-hidden="true" />
         </button>
         {
-          isOpen && <ExportModal isOpen={isOpen} setIsOpen={setIsOpen} printTableToPDF={printTableToPDF} />
+          isOpen && <ExportModal isOpen={isOpen} setIsOpen={setIsOpen} printTableToPDF={printTableToPDF} data={data} />
         }
     </div>
   )
 }
 
 
-export const ExportModal = ({isOpen, setIsOpen, printTableToPDF}) => {
+export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data}) => {
 
   const [selected, setSelected] = useState('xls');
+  const csvLinkRef = useRef();
+
+  function handleExport() {
+    if(selected == "pdf"){
+      printTableToPDF();
+    }
+    else if(selected == "xls") {
+      csvLinkRef.current.link.click();
+    }
+  }
 
   function handleClick(e) {
     setSelected(e.target.value);
@@ -42,6 +53,13 @@ export const ExportModal = ({isOpen, setIsOpen, printTableToPDF}) => {
 
   return (
     <>
+      <CSVLink
+        filename={"TableContent.xls"}
+        ref={csvLinkRef}
+        data={data}
+        className="btn btn-primary"
+      >
+      </CSVLink>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
@@ -92,7 +110,7 @@ export const ExportModal = ({isOpen, setIsOpen, printTableToPDF}) => {
                   <div className="mt-4 flex space-x-2 justify-center">
                     <Button
                       size={'sm'}
-                      onClick={printTableToPDF}
+                      onClick={handleExport}
                     >
                       Export
                     </Button>

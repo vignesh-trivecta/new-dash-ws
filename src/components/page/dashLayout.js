@@ -6,9 +6,10 @@ import ExampleSidebar from "./sidebar";
 
 const DashLayout = ({children}) => {
 
-
+  // local state variable
   const [windowWidth, setWindowWidth] = useState(0);
 
+  // useEffect with event listener to check the window width 
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
