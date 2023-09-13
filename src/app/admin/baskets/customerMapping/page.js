@@ -1,14 +1,14 @@
 'use client';
 
-import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState, Fragment, use } from "react";
-import { getBasketList, getBasketValue, getCustomerStatus, getCustomers, mapBasket } from "@/app/api/basket/route";
-import { Alert, Button, Modal, Toast, Tooltip } from "flowbite-react";
-import { HiCheck, HiCheckCircle } from "react-icons/hi";
+import { useEffect, useState } from "react";
+import { getBasketList, getBasketValue, getCustomerStatus, getCustomers } from "@/app/api/basket/route";
+import { Alert } from "flowbite-react";
+import { HiCheckCircle } from "react-icons/hi";
 import { useRouter } from "next/navigation";
-import { setBasketAmount, setBasketBroker, setBasketName } from '@/store/basketSlice'
+import { setBasketAmount, setBasketName } from '@/store/basketSlice'
 import { segregate } from "@/utils/priceSegregator";
+import MappingTable from "@/components/admin/mappingTable";
 
 const CustomerMapping = () => {
     
@@ -20,6 +20,7 @@ const CustomerMapping = () => {
 
     const loggedIn = useSelector((state) => state.user.loggedIn);
     const adminId = useSelector((state) => state.user.username);
+    const basketName = useSelector((state) => state.basket.basketName);
 
     const [ customers, setCustomers ] = useState([]);
     const [weblink, setWeblink] = useState(false);
@@ -30,7 +31,6 @@ const CustomerMapping = () => {
     const [basketVal, setBasketVal] = useState('');
     const [transType, setTransType] = useState('');
     const [broker, setBroker] = useState(brokers[0].name);
-    const [basketName, setBasketName] = useState('');
     
     // modal state variables
     const [openModal, setOpenModal] = useState();
@@ -53,7 +53,7 @@ const CustomerMapping = () => {
         fetchBaskets();
         fetchData();
     }, [])
-      
+
     if(weblink){
         dispatch(setBasketAmount(''));
         dispatch(setBasketName(''));
@@ -74,13 +74,15 @@ const CustomerMapping = () => {
 
     // handle basket selection
     const handleSelection = async (value) => {
-        setBasketName(value);
+        dispatch(setBasketName(value));
         const response = await getBasketValue(value, adminId);
+        console.log(response)
         setInvestmentVal(response[0]?.basketInvestAmt);
         setTransType(response[0]?.transactionType);
         setBasketVal(response[0]?.basketActualValue);
 
         const status = await getCustomerStatus(value);
+        console.log(status, basketName)
         if(status){
             setStatus(status);
         }
@@ -88,17 +90,7 @@ const CustomerMapping = () => {
             console.log('error')
         }
     }
-    
-    // handle customer mapping
-    const handleMapping = async (customerId) => {
-        const response = await mapBasket(basketName, adminId, customerId, broker);
-        handleSelection(basketName);
-    }
 
-    // handle weblink
-    const handleWeblink = async () => {
-        
-    }
 
     return(
         <div className='container mx-auto mt-4' style={{width: '95%'}}>
@@ -146,86 +138,22 @@ const CustomerMapping = () => {
                 <div className='flex flex-col mt-2'>
                 <div className={'overflow-y-scroll border'}  style={{ height: '300px' }}>
                 <table className='table-fixed w-full overflow-y-scroll overflow-x-scroll' >
-                    <thead className='sticky top-0 bg-gray-50' >
+                    <thead className='border-b sticky top-0 bg-gray-50' >
                     <tr>
-                        <th className='font-medium text-sm text-left p-2 truncate' >Customer ID</th>
-                        <th className='font-medium text-sm text-left truncate' >Name</th>
-                        <th className='font-medium text-left text-sm w-44 truncate'>Email</th>
-                        <th className='font-medium text-center text-sm truncate'>Contact</th>
-                        <th className='font-medium text-center text-sm truncate'>Broker</th>
-                        <th className='font-medium text-left text-sm truncate'>Map Status</th>
-                        <th className='font-medium text-left text-sm truncate'>WebLink Status</th>
-                        <th className='font-medium text-center text-sm truncate'>Actions</th>
+                        <th className='font-medium text-sm text-left p-2 break-words' >Customer ID</th>
+                        <th className='font-medium text-sm text-left break-words' >Name</th>
+                        <th className='font-medium text-left text-sm w-44 break-words'>Email</th>
+                        <th className='font-medium text-center text-sm break-words'>Contact</th>
+                        <th className='font-medium text-center text-sm break-words'>Broker</th>
+                        <th className='font-medium text-left text-sm break-words'>Map Status</th>
+                        <th className='font-medium text-left text-sm break-words'>WebLink Status</th>
+                        <th className='font-medium text-center text-sm break-words'>Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="" style={{width: '100%'}}>
                         {customers?.map((data, index) => {
                             return (
-                                <tr key={index} className='border-t border-b hover:bg-gray-100'>
-                                    {/* <td className="p-2 font-medium text-gray-900 dark:text-white">
-                                        <input type="radio" name="customer" value={index} id={`customer_${index}`} />
-                                    </td> */}
-                                    <td className="text-sm text-left text-black p-2 truncate">
-                                        {data.customerId}
-                                    </td>
-                                    <td className="text-sm text-left text-black truncate">
-                                        {data.name}
-                                    </td>
-                                    <td className="text-sm text-left text-black truncate">
-                                        {data.email}
-                                    </td>
-                                    <td className="text-sm text-center text-black truncate">
-                                        {data.contactOne}
-                                    </td>
-                                    <td className="text-sm text-center text-black">
-                                        <select className="text-xs border-gray-200 rounded-md" value={broker} onChange={e => setBroker(e.target.value)} >
-                                            <option className="text-sm" value={'AXIS'}>AXIS</option>
-                                            <option className="text-sm" value={'IIFL'}>IIFL</option>
-                                        </select>
-                                    </td>
-                                    {/* Map status */}
-                                    <td>
-                                        <div className="ml-8">
-                                            {status.find((obj) =>{ return (obj.customerId === data.customerId) }) 
-                                            ?
-                                                <svg className="w-4 h-4 text-green-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M1 5.917 5.724 10.5 15 1.5"/>
-                                                </svg>
-                                            : 
-                                                <svg className="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                                </svg>
-                                            }
-                                        </div>  
-                                    </td>
-                                    {/* Weblink status */}
-                                    <td>
-                                        <div className="ml-8">
-                                            <svg className="w-4 h-4 text-red-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                                            </svg>
-                                        </div>
-                                    </td>
-                                    {/* Actions button group */}
-                                    {/* Map customer */}
-                                    <td className=" flex text-sm text-black mt-2 md: lg:ml-4 ">
-                                        <Tooltip content="Map Customer">
-                                            <button className="ml-2" onClick={() => {handleMapping(data.customerId)}}>
-                                            <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="m1 14 3-3m-3 3 3 3m-3-3h16v-3m2-7-3 3m3-3-3-3m3 3H3v3"/>
-                                            </svg>
-                                            </button>
-                                        </Tooltip>
-                                        {/* Send Weblink */}
-                                        <Tooltip content="Send Weblink">
-                                            <button className="ml-4">
-                                                <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
-                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M5.5 6.5h.01m4.49 0h.01m4.49 0h.01M18 1H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"/>
-                                                </svg>
-                                            </button>
-                                        </Tooltip>
-                                    </td>
-                                </tr>
+                                <MappingTable data={data} index={index} status={status} setStatus={setStatus} />
                             )
                         })}
                     </tbody>

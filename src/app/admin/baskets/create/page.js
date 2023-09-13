@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import AddRecord from '@/components/admin/addRecord';
 import { Alert, Button, Tooltip } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setBasketAmount, setBasketName } from '@/store/basketSlice';
+import { setBasketName } from '@/store/basketSlice';
 import { basketNameCheck } from '@/app/api/basket/route';
 import { getRecords } from '@/app/api/tempBasket/route';
 import BasketRecords from '@/components/admin/basketRecords';
