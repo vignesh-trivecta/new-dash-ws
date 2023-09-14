@@ -10,7 +10,7 @@ export const metadata = {
     title: 'Wealth Spring | Dashboard',
 }
 
-const DashCards = () => {
+const DashCards = () => {   
     return(
         <div className='container mx-auto mt-4' style={{width: '95%'}}>
             <h1 className="font-bold">Dashboard</h1>

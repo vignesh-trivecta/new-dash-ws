@@ -18,7 +18,7 @@ const initialState = {
 const reportSlice = createSlice({
     name: 'report',
     initialState,
-    reducers: {
+    reducers: { 
         setClientCode: (state, action) => {
             state.clientCode = action.payload;
         },

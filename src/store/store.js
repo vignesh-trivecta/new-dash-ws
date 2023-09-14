@@ -25,7 +25,7 @@ const reducers = combineReducers({
 // configuration for persiting data
 const persistConfig = {
     key: 'root',
-    whitelist: ['data', 'event', 'user'],
+    whitelist: ['data', 'event', 'user', 'client'],
     storage,
 }
 
