@@ -1,20 +1,24 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ExportRow from '@/components/page/exportRow';
 import FilterComponent from '@/components/page/filterComp';
-import print from 'print-js';
-
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
-import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+// import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+// import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 // excel
-import { DownloadTableExcel } from 'react-export-table-to-excel';
+// import { DownloadTableExcel } from 'react-export-table-to-excel';
 import ReportsTable from '@/components/admin/reportsTable';
+import print from 'print-js';
+import { useSelector } from 'react-redux';
+import { handleFetchReports } from '@/app/api/reports/route';
 
 
 const OrderBook = () => {
 
-  const tableRef = useRef(null); // excel
+  // local state
+  const [data, setData] = useState([]);
+
+  // const tableRef = useRef(null); // excel
 
   const printTableToPDF = () => {
     const tableId = 'table-to-print';
@@ -34,10 +38,21 @@ const OrderBook = () => {
       "Qty": 1,
       "Rate": 12,
       "ScripName": "YESBANK",
+      "RemoteOrderId": "1300000009880667",
     },
 ];
 
-const columns = Object.keys(datas[0]);
+  const customerId = useSelector((state) => state.report.customerId);
+  const columns = Object.keys(datas[0]);
+
+  useEffect(() => {
+    const fetchOrderBook = async () => {
+      const response = await handleFetchReports("orderbook", customerId);
+      console.log(response);
+      // setData(response);
+    }
+    fetchOrderBook();
+  }, []);
   
   return (
     <div className='container mx-auto mt-4 h-full' style={{width: '95%'}}>
@@ -55,11 +70,11 @@ const columns = Object.keys(datas[0]);
       {/* <div className='overflow-auto' id="table-to-print" ref={tableRef}>
         <ReportsTable columns={columns} datas={datas} />
       </div> */}
-      <div>
+      {/* <div>
             {/* <button> Export excel </button> 
-            <button onClick={convertTableToPDF}>Convert to PDF</button>  */}
-            {/* <button onClick={printTableToPDF}> 
-            </button> */}
+            <button onClick={convertTableToPDF}>Convert to PDF</button>
+            <button onClick={printTableToPDF}> 
+            </button> 
         <DownloadTableExcel
             filename="users table"
             sheet="users"
@@ -68,8 +83,8 @@ const columns = Object.keys(datas[0]);
 
 
         </DownloadTableExcel>
-      </div>
-      {/* <div className='overflow-y-scroll'>
+      </div> 
+       <div className='overflow-y-scroll'>
       <table className='table-fixed w-full border' >
         <thead className='border bg-gray-50' >
           <tr>

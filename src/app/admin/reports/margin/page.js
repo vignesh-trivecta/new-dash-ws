@@ -1,11 +1,17 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import ExportRow from '@/components/page/exportRow';
 import FilterComponent from '@/components/page/filterComp';
 import ReportsTable from '@/components/admin/reportsTable';
+import { useSelector } from 'react-redux';
+import { handleFetchReports } from '@/app/api/reports/route';
 import print from 'print-js';
 
 const Margin = () => {
+
+  // local state
+  const [data, setData] = useState([]);
 
   const printTableToPDF = () => {
     const tableId = 'table-to-print';
@@ -21,7 +27,17 @@ const Margin = () => {
     }
   ]
 
+  const customerId = useSelector((state) => state.report.customerId);
   const columns = Object.keys(datas[0]);
+
+  useEffect(() => {
+    const fetchMargin = async () => {
+      const response = await handleFetchReports("margin", customerId);
+      console.log(response);
+      // setData(response);
+    }
+    fetchMargin();
+  }, []);
 
   return (
     <div className='container mx-auto mt-4 h-full' style={{width: '95%'}}>

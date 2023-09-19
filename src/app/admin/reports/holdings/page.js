@@ -1,12 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { handleFetchReports } from '@/app/api/reports/route';
 import ExportRow from '@/components/page/exportRow';
 import FilterComponent from '@/components/page/filterComp';
 import ReportsTable from '@/components/admin/reportsTable';
 import print from 'print-js';
 
 const Holdings = () => {
+
+  // local state
+  const [data, setData] = useState([]);
 
   const printTableToPDF = () => {
     const tableId = 'table-to-print'; 
@@ -64,7 +69,19 @@ const Holdings = () => {
       },
   ];
 
+  const customerId = useSelector((state) => state.report.customerId);
+
   const columns = Object.keys(datas[0]);
+  // const columns = Object.keys(data[0]);
+
+  useEffect(() => {
+    const fetchHoldings = async () => {
+      const response = await handleFetchReports("holding", customerId);
+      console.log(response);
+      // setData(response);
+    }
+    fetchHoldings();
+  }, []);
 
   return (
     <div className='container mx-auto mt-4 h-full' style={{width: '95%'}}>

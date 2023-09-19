@@ -1,22 +1,27 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ExportRow from '@/components/page/exportRow';
 import FilterComponent from '@/components/page/filterComp';
 import ReportsTable from '@/components/admin/reportsTable';
+import { useSelector } from 'react-redux';
+import { handleFetchReports } from '@/app/api/reports/route';
 import print from 'print-js';
 
 const Ledger = () => {
+
+  // local state
+  const [data, setData] = useState([]);
 
   const printTableToPDF = () => {
     const tableId = 'table-to-print';
     printJS({ printable: tableId, type: 'html',style: 'Td { border: 1px solid #D1D5DB !important;} Th { border: 1px solid #D1D5DB !important;}' });
   };
 
+  
   const datas = [
     {
       "Amount": 253.55,
-      "ClientCode": "IIFL_CLIENT_CODE",
       "DebitCreditFlag": "D",
       "Narration": "CDSL DP Bill for Sep 2022  (Including Monthly AMC) and (Including Pending Monthly AMC charges for the period from February 2022 to August 2022) for demat account no. 1204470013879162",
       "VoucherDate": 20221002,
@@ -24,7 +29,6 @@ const Ledger = () => {
     },
     {
       "Amount": 10736.78,
-      "ClientCode": "IIFL_CLIENT_CODE",
       "DebitCreditFlag": "D",
       "Narration": "FO BILL FOR ",
       "VoucherDate": 20221003,
@@ -32,7 +36,17 @@ const Ledger = () => {
     }
   ]
 
+  const customerId = useSelector((state) => state.report.customerId);
   const columns = Object.keys(datas[0]);
+
+  useEffect(() => {
+    const fetchLedger = async () => {
+      const response = await handleFetchReports("ledger", customerId);
+      console.log(response);
+      // setData(response);
+    }
+    fetchLedger();
+  }, []);
 
   return (
     <div className='container mx-auto mt-4 h-full' style={{width: '95%'}}>

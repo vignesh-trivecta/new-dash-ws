@@ -5,7 +5,7 @@ export const metadata = {
 }
 
 const Customers = () => {
-    return(
+    return (
         <div>
             <CustomerDetails />
         </div>

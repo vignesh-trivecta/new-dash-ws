@@ -8,12 +8,11 @@ export const loginAPI = async (token) => {
               "Authorization": `Bearer ${token}`
             },
         };
-        let data;
         const response = await fetch("http://localhost:8082/admin/login", requestOptions);
 
         if (response.ok) {
             const responseText = await response.text();
-            data = JSON.parse(responseText);
+            const data = JSON.parse(responseText);
             return data;
         } else {
             const errorText = await response.text();

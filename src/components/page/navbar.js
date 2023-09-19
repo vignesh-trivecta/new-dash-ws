@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { GiHamburgerMenu } from "react-icons/gi";
 import ExampleSidebar from "./sidebar";
 import { useState } from "react";
+import { setAdminLogin } from "@/store/reportSlice";
 
 const DashNavbar = function () {
 
@@ -59,6 +60,7 @@ const DashNavbar = function () {
                     router.push('/');
                     dispatch(setLoggedIn(false));
                     dispatch(setAdminLoginStatus(false));
+                    dispatch(setAdminLogin(false))
                 }}
                 >            
                     Sign out
