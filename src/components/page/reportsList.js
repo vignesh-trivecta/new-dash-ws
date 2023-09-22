@@ -7,11 +7,11 @@ const ReportsList = () => {
   return (
     <div>
         <ul className='space-y-4 list-disc ml-4 mt-8'>
-            <li><Link href={'/admin/reports/holdings'}>Holdings</Link></li>
-            <li><Link href={'/admin/reports/orderBook'}>Order Book</Link></li>
-            <li><Link href={'/admin/reports/tradeBook'}>Trade Book</Link></li>
-            <li><Link href={'/admin/reports/margin'}>Margin</Link></li>
-            <li><Link href={'/admin/reports/ledger'}>Ledger</Link></li>
+            <li><Link href={'/admin/reports/holdings'} className='underline text-blue-700'>Holdings</Link></li>
+            <li><Link href={'/admin/reports/orderBook'} className='underline text-blue-700'>Order Book</Link></li>
+            <li><Link href={'/admin/reports/tradeBook'} className='underline text-blue-700'>Trade Book</Link></li>
+            <li><Link href={'/admin/reports/margin'} className='underline text-blue-700'>Margin</Link></li>
+            <li><Link href={'/admin/reports/ledger'} className='underline text-blue-700'>Ledger</Link></li>
         </ul>
     </div>
   )
