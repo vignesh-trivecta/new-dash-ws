@@ -18,7 +18,6 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
             })
         }
         const response = await fetch('http://localhost:8083/basket/create', requestOptions);
-        console.log(adminName, basketName, modelBasket, basketValidity, transType, Number(investmentAmount), Number(basketActualValue))
         if(response.ok){
             return true;
         }
@@ -44,26 +43,20 @@ export const getBasketList = async(filteredBasket) => {
         switch(filteredBasket){
             case 'ALL':
                 response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
-                console.log(response);
                 break;
             case 'MODEL':
                 response = await fetch("http://localhost:8083/view/basketlist/model", requestOptions);
-                console.log(response);
                 break;
             case 'BUY':
                 response = await fetch("http://localhost:8083/view/basketlist/buy", requestOptions);
-                console.log(response);
                 break;
             case 'SELL':
                 response = await fetch("http://localhost:8083/view/basketlist/sell", requestOptions);
-                console.log(response);
                 break;
             default:
                 response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
-                console.log(response);
                 break;
         }
-
         if(response.ok){
             const jsonData = await response.json();
             return jsonData;
@@ -92,11 +85,9 @@ export const getSpecificBasket = async(basketName) => {
             })
         }
         const response = await fetch("http://localhost:8083/view/basket", requestOptions);
-        console.log(basketName, response);
 
         if(response.ok){
             const jsonData = await response.json();
-            console.log(jsonData);
             return jsonData;
         }
         else {
@@ -125,7 +116,6 @@ export const cloneBasket = async (basketName, newBasketName, adminId) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/clone", requestOptions);
-        console.log(basketName, newBasketName, adminId);
         if(response.ok){
             return true;
         }
@@ -151,7 +141,6 @@ export const basketNameCheck = async (basketName) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/namecheck", requestOptions);
-        console.log(basketName);
         if(response.ok){
             return true;
         }
@@ -229,7 +218,6 @@ export const sendWeightage = async(weightage, totalAmount, priceofAsset) => {
                 "priceofAsset": priceofAsset,
             })
         }
-        console.log(weightage, totalAmount, priceofAsset)
         const response = await fetch("http://localhost:8083/quantity-calc", requestOptions);
 
         if(response.ok) {
@@ -314,9 +302,7 @@ export const mapBasket = async(basketName, adminId, customerId, brokerName) => {
                 "brokerName": brokerName,
             })
         }
-        console.log(basketName, adminId, customerId, brokerName)
         const response = await fetch("http://localhost:8083/customer/map", requestOptions);
-        console.log(response)
         if(response.ok) {
             return true;
         } else {
@@ -348,7 +334,6 @@ export const getCustomerStatus = async (basketName) => {
         const response = await fetch("http://localhost:8083/mappedstatus", requestOptions);
         if(response.ok){
             const responseText = await response.text();
-            console.log(JSON.parse(responseText))
             return JSON.parse(responseText);
         }
         else{
