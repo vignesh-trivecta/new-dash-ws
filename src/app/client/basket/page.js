@@ -1,34 +1,37 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Spinner } from 'flowbite-react';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Logo from "../../../../public/logo1.png";
 import { HiCheck } from 'react-icons/hi';
-import Link from 'next/link';
-import { useSelector } from 'react-redux';
-import { segregate } from '@/utils/priceSegregator';
-import { useRouter } from 'next/navigation';
+import { Button, Spinner } from 'flowbite-react';
 import { clientConfirmsBasket } from '@/app/api/client/route';
+import { segregate } from '@/utils/priceSegregator';
 
 const BasketPage = () => {
 
+    // local state
+    const [show, setShow] = useState(false); // show the basket page or completed page
+    const [status, setStatus] = useState(false); // show the spinner or order placed page
+    const [showBasket, setShowBasket] = useState(false); // show or not show the basket in orders placed page
+    const [data, setData] = useState([]);
+    const [broker, setBroker] = useState('axis');
+
+    // redux
     const basketData = useSelector((state) => state.client.basketData);
 
+    // nextjs router
     const router = useRouter();
 
+    // calculating the value of the basket
     let basketValue = 0;
     const dataValue = basketData?.rows?.map((record, index) => {
         let i = ((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue));
         basketValue = basketValue + i;
     });
 
-
-    const [show, setShow] = useState(false); // show the basket page or completed page
-    const [status, setStatus] = useState(false); // show the spinner or order placed page
-    const [showBasket, setShowBasket] = useState(false); // show or not show the basket in orders placed page
-    const [data, setData] = useState([]);
-    const [broker, setBroker] = useState('axis');
 
     // OAuth login redirect after click on submit button
     const handleConfirm = (e) => {
@@ -102,9 +105,9 @@ const BasketPage = () => {
                     <div>
                         <p className='text-sm'><button onClick={() => { setShowBasket(true)}} className='underline'>Click</button> here to view executed basket</p>
                     </div>
-                    {  // this is inside of the order placed page
+                    {  // inside of the order placed page
                     showBasket // show or not show the basket in orders placed page by using a button click
-                        ? 
+                        ? // showing the placed order basket
                         <div className='flex justify-center items-center mt-4 text-xs'>
                             <table className='table-fixed border'>
                                 <thead className='border-b'>
@@ -132,8 +135,10 @@ const BasketPage = () => {
                                     }
                                 
                                 </tbody>
-                            </table> </div> 
-                        : <></>
+                            </table> 
+                        </div> 
+                        :  // showing empty page 
+                        <></>
                     }
                 </div>)
                 : // - spinner loading page
@@ -171,6 +176,7 @@ const BasketPage = () => {
                             <input disabled type='number' value={basketData?.rows?.length} className='w-28 border-gray-200 bg-gray-50 rounded-md text-right' />
                         </div>
                     </div>
+                    {/* Table showing baskets to client */}
                     <div className='flex justify-center items-center mt-4'>
                         <table className='table-fixed border'>
                             <thead className='border-b'>
@@ -184,19 +190,23 @@ const BasketPage = () => {
                             </thead>
                             <tbody>
                                 {
-                                    basketData?.rows.map((record, index) => {
-                                        return <tr className='border-b' key={index}>
+                                    basketData?.rows?.map((record, index) => {
+                                        return (
+                                            <tr className='border-b' key={index}>
                                                 <td className='text-center'>{index+1}</td>
                                                 <td className='truncate p-2'>{record?.instrumentName}</td>
                                                 <td className='text-right'>{record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue}</td>
                                                 <td className='text-right pr-4'>{segregate(record?.quantityValue)}</td>
                                                 <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
-                                        </tr>
+                                            </tr>
+                                        )
                                     })
                                 }
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Button groups */}
                     <div className='flex justify-center space-x-4 mt-4'>
                         <button className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20' onClick={(e) => {handleConfirm(e)}}>Confirm</button>
                         <Button color='gray'>Decline</Button>
