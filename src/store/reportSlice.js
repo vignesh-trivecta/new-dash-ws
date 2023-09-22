@@ -6,13 +6,16 @@ yesterday.setDate(today.getDate() - 1);
 
 // initial state values
 const initialState = {
-    customerId: "CUST001 - Muthu Kumar",
-    borker: "AXIS",
+    customerId: "",
+    broker: "",
     dateType: "today",
     startDate: yesterday,
     endDate: yesterday,
     toggle: false,
     adminLogin: false,
+    reportType: '',
+    data: [],
+    path: ''
 }
 
 // creating new slice
@@ -24,7 +27,7 @@ const reportSlice = createSlice({
             state.customerId = action.payload;
         },
         setBroker: (state, action) => {
-            state.borker = action.payload;
+            state.broker = action.payload;
         },
         setDateType: (state, action) => {
             state.dateType = action.payload;
@@ -41,9 +44,18 @@ const reportSlice = createSlice({
         setAdminLogin: (state, action) => {
             state.adminLogin = action.payload;
         },
+        setReportType: (state, action) => {
+            state.reportType = action.payload;
+        },
+        setData: (state, action) => {
+            state.data = action.payload;
+        },
+        setPath: (state, action) => {
+            state.path = action.payload;
+        },
     }
 });
 
-export const { setCustomerId, setBroker, setDateType, setStartDate, setEndDate, setToggle, setAdminLogin } = reportSlice.actions;
+export const { setCustomerId, setBroker, setDateType, setStartDate, setEndDate, setToggle, setAdminLogin, setReportType, setData, setPath } = reportSlice.actions;
 
 export default reportSlice.reducer;
