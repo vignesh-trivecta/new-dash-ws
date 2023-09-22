@@ -1,23 +1,28 @@
 'use client';
 
-import { getBasketValue, getSpecificBasket } from '@/app/api/basket/route';
-import { getRecords } from '@/app/api/tempBasket/route';
-import BasketRecords from '@/components/admin/basketRecords';
-import { segregate } from '@/utils/priceSegregator';
 import React, {useState, useEffect} from 'react';
 import { useSelector } from 'react-redux';
-import { usePathname, useSearchParams } from 'next/navigation';
-import AddRecord from '@/components/admin/addRecord';
-import SubmitBasket from '@/components/admin/submitBasket';
-import { Alert, Button, Tooltip } from 'flowbite-react';
-import { HiInformationCircle, HiCheck, HiCheckCircle } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import { Alert, Button, Tooltip } from 'flowbite-react';
+import { HiInformationCircle, HiCheckCircle } from 'react-icons/hi';
+import { getBasketValue, getSpecificBasket } from '@/app/api/basket/route';
+import BasketRecords from '@/components/admin/basketRecords';
+import AddRecord from '@/components/admin/addRecord';
+import { segregate } from '@/utils/priceSegregator';
+import Breadcrumbs from '@/components/page/breadcrumb';
 
 const UpdateBasket = ({ params }) => {
 
+  
   const adminId = useSelector((state) => state.user.username);
   let basketName = (params.id).split('%20').join(" ");
-    
+  
+  const ids = [
+    {"View Baskets" : "/admin/baskets/view"},
+    { [`Update ${basketName}`] : ""},
+  ]
+  
   // local state variables
   const [records, setRecords] = useState([]);
   const [handleFetch, setHandleFetch] = useState(false);
@@ -121,14 +126,16 @@ const UpdateBasket = ({ params }) => {
     
     return (
       <div className='container mx-auto mt-4' style={{width: '95%'}}>
-      <h3 className='mb-2 font-bold'>Update {basketName}</h3>
+        <div>
+          <Breadcrumbs len={ids.length} ids={ids} />
+        </div>
 
             {/* Investment details row */}
-      <div className="flex justify-between">
+      <div className="flex justify-between mt-2">
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-left">
                 <label className="text-black text-sm dark:text-white mr-2">Basket Name</label>
-                <input type="text" disabled value={basketName} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
+                <input type="text" disabled value={basketName} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-sm" />
               </div>
               <div className='ml-8 mt-2'>
                 <p className='text-xs text-red-500'><div>&nbsp;</div></p>
@@ -136,20 +143,20 @@ const UpdateBasket = ({ params }) => {
             </div>
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">Investment</label>
-          <input type="text" value={(investmentVal)} className="border border-gray-200 rounded-lg w-44 text-right" onChange={(e) => setInvestmentVal(e.target.value)} />
+          <input type="text" value={(investmentVal)} className="border border-gray-200 rounded-lg w-44 text-right text-sm" onChange={(e) => setInvestmentVal(e.target.value)} />
         </div>
 
         {/* Basket Type listbox */}
         <div className="">
           <p className="text-black text-sm dark:text-white mr-2">Transaction Type</p>
-          <select name="transactionType" id="transactionType" value={transType} onChange={e => setTransType(e.target.value)} className='border border-gray-200 rounded-md w-32'>
+          <select name="transactionType" id="transactionType" value={transType} onChange={e => setTransType(e.target.value)} className='border border-gray-200 rounded-md w-32 text-sm'>
             <option value="BUY">BUY</option>
             <option value="SELL">SELL</option>
         </select> 
       </div>
         <div className="flex flex-col items-left mb-6">
           <p className="text-black text-sm dark:text-white mr-2">Basket Value</p>
-          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-right" />
+          <input disabled type="text" value={basketVal} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-right text-sm" />
         </div>
       </div>  
 
