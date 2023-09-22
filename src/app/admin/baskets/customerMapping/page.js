@@ -1,14 +1,14 @@
 'use client';
 
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { getBasketList, getBasketValue, getCustomerStatus, getCustomers } from "@/app/api/basket/route";
-import { Alert } from "flowbite-react";
-import { HiCheckCircle } from "react-icons/hi";
-import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
 import { setBasketAmount, setBasketName } from '@/store/basketSlice'
-import { segregate } from "@/utils/priceSegregator";
+import { useRouter } from "next/navigation";
+import { HiCheckCircle } from "react-icons/hi";
+import { Alert } from "flowbite-react";
+import { getBasketList, getBasketValue, getCustomerStatus, getCustomers } from "@/app/api/basket/route";
 import MappingTable from "@/components/admin/mappingTable";
+import { segregate } from "@/utils/priceSegregator";
 
 const CustomerMapping = () => {
     
@@ -18,10 +18,13 @@ const CustomerMapping = () => {
         { name: 'IIFL' },
     ]
 
+    // redux 
+    const dispatch = useDispatch();
     const loggedIn = useSelector((state) => state.user.loggedIn);
     const adminId = useSelector((state) => state.user.username);
     const basketName = useSelector((state) => state.basket.basketName);
 
+    // local state
     const [ customers, setCustomers ] = useState([]);
     const [weblink, setWeblink] = useState(false);
     const [message, setMessage] = useState(false);
@@ -36,7 +39,7 @@ const CustomerMapping = () => {
     const [openModal, setOpenModal] = useState();
     const props = { openModal, setOpenModal };
     
-    const dispatch = useDispatch();
+    // nextjs router
     const router = useRouter();
     
     // useEffect to fetch the view table baskets
@@ -76,13 +79,11 @@ const CustomerMapping = () => {
     const handleSelection = async (value) => {
         dispatch(setBasketName(value));
         const response = await getBasketValue(value, adminId);
-        console.log(response)
         setInvestmentVal(response[0]?.basketInvestAmt);
         setTransType(response[0]?.transactionType);
         setBasketVal(response[0]?.basketActualValue);
 
         const status = await getCustomerStatus(value);
-        console.log(status, basketName)
         if(status){
             setStatus(status);
         }
@@ -103,7 +104,7 @@ const CustomerMapping = () => {
                         <select
                             name="transactionType"
                             id="transactionType"
-                            className='border border-gray-200 rounded-md w-44'
+                            className='border border-gray-200 rounded-md w-44 text-sm'
                             defaultValue={''}
                             onChange={(e) => {handleSelection(e.target.value)}}
                         >
@@ -116,20 +117,23 @@ const CustomerMapping = () => {
                         </select>
 
                 </div>
+
+                {/* Disabled investment value */}
                 <div className="flex flex-col items-left mb-6">
                     <label className="text-black text-sm dark:text-white">Investment &#8377;</label>
-                    <input type="text" value={segregate(investmentVal)} disabled className="border border-gray-200 bg-gray-50 text-right rounded-lg w-44" />
+                    <input type="text" value={segregate(investmentVal)} disabled className="border border-gray-200 bg-gray-50 text-right rounded-lg w-44 text-sm" />
                 </div>
 
                 {/* Basket Type listbox */}
                 <div className="">
                     <p className="text-black text-sm dark:text-white mr-2">Transaction Type</p>
-                    <input disabled type="text" value={transType} className="border border-gray-200 rounded-lg w-44 bg-gray-50" />
+                    <input disabled type="text" value={transType} className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-sm" />
                 </div>
-
+                
+                {/* Disabled basket value */}
                 <div className="flex flex-col items-left mb-6">
                     <p className="text-black text-sm dark:text-white mr-2">Basket value &#8377;</p>
-                    <input disabled type="text" value={segregate(basketVal)} className="border border-gray-200 rounded-lg w-44 text-right bg-gray-50" />
+                    <input disabled type="text" value={segregate(basketVal)} className="border border-gray-200 rounded-lg w-44 text-right bg-gray-50 text-sm" />
                 </div>
             </div>       
 
