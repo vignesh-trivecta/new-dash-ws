@@ -1,13 +1,13 @@
 'use client'
 
-import Script from 'next/script';
-import './globals.css'
-import 'tailwindcss/tailwind.css';
-import { Inter } from 'next/font/google'
-import { Provider } from 'react-redux';
 import store from '@/store/store';
+import { Provider } from 'react-redux';
 import { persistor } from '@/store/store';
 import { PersistGate } from 'redux-persist/integration/react';
+import Script from 'next/script';
+import './globals.css';
+import 'tailwindcss/tailwind.css';
+import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] })
 
