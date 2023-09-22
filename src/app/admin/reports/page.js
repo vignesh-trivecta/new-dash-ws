@@ -8,10 +8,6 @@ import { partnerLogin } from '@/app/api/reports/route';
 import FilterComponent from '@/components/page/filterComp';
 import { usePathname } from 'next/navigation';
 
-export const metadata = {
-    title: 'WealthSpring | Reports'
-}
-
 const Reports = () => {
 
     const pathName = usePathname();
