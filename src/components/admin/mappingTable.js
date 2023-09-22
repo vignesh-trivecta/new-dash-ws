@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Tooltip } from 'flowbite-react'
+import React, { useState } from 'react';
+import { Tooltip } from 'flowbite-react';
 import { getCustomerStatus, mapBasket } from '@/app/api/basket/route';
 import { useSelector } from 'react-redux';
 
@@ -11,9 +11,11 @@ const MappingTable = ({ data, index, status, setStatus }) => {
         { name: 'IIFL' },
     ]
 
+    // redux
     const adminId = useSelector((state) => state.user.username);
     const basketName = useSelector((state) => state.basket.basketName);
 
+    // local state
     const [broker, setBroker] = useState(brokers[0].name);
 
     // handle customer mapping
@@ -80,8 +82,8 @@ const MappingTable = ({ data, index, status, setStatus }) => {
                 </div>
             </td>
             {/* Actions button group */}
-            {/* Map customer */}
             <td className=" flex text-sm text-black mt-2 md: lg:ml-4 ">
+                {/* Map customer */}
                 <Tooltip content="Map Customer">
                     <button className="ml-2" onClick={() => {handleMapping(data.customerId)}}>
                     <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
@@ -102,4 +104,4 @@ const MappingTable = ({ data, index, status, setStatus }) => {
     )
 }
 
-export default MappingTable
+export default MappingTable;
