@@ -1,47 +1,50 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getBasketList } from '@/app/api/basket/route';
-import { deleteBasket } from '@/app/api/mainBasket/route';
-import { segregate } from '@/utils/priceSegregator';
-import Link from 'next/link';
 import { useSelector } from 'react-redux';
+import Link from 'next/link';
 import { Tooltip } from 'flowbite-react';
+import { getBasketList } from '@/app/api/basket/route';
 import DeleteBasket from '@/components/admin/deleteBasket';
+import { segregate } from '@/utils/priceSegregator';
+import formatDate from '@/utils/format-date';
 
 const Customers = () => {
 
-  // local state
-  const [records, setRecords] = useState([]);
-  const [handleFetch, setHandleFetch] = useState(false);
-  const [filteredBasket, setFilteredBasket] = useState('ALL');
+    // local state
+    const [records, setRecords] = useState([]);
+    const [handleFetch, setHandleFetch] = useState(false);
+    const [filteredBasket, setFilteredBasket] = useState('ALL');
 
-  const username = useSelector((state) => state.user.username);
+    // redux
+    const username = useSelector((state) => state.user.username);
 
-  // useEffect to fetch the view table baskets
-  useEffect(() => {
-    const fetchBaskets = async() => {
-      const response = await getBasketList(filteredBasket);
-      setRecords(response);
-    }
-    fetchBaskets();
-  }, [])
+    // sorting the records fetched from backend
+    records?.sort((a, b) => new Date (b.createdOn) - new Date (a.createdOn));
 
-  // useEffect to update table after deletion
-  useEffect(() => {
-    const fetchBaskets = async() => {
-        const response = await getBasketList(filteredBasket);
-        setRecords(response);
-    }
-    fetchBaskets();
-  }, [handleFetch, filteredBasket])
+    // useEffect to fetch the view table baskets
+    useEffect(() => {
+        const fetchBaskets = async() => {
+            const response = await getBasketList(filteredBasket);
+            setRecords(response);
+        }
+        fetchBaskets();
+    }, [])
 
-  records?.sort((a, b) => new Date (b.createdOn) - new Date (a.createdOn));
+    // useEffect to update table after deletion
+    useEffect(() => {
+        const fetchBaskets = async() => {
+            const response = await getBasketList(filteredBasket);
+            setRecords(response);
+        }
+        fetchBaskets();
+    }, [handleFetch, filteredBasket])
 
-  return (
+    return (
     <div className='container mx-auto mt-4' style={{width: '95%'}}>
         <div className='flex justify-between '>
             <h1 className="font-bold">View Baskets</h1>
+            {/* Filter selection to filter the baskets */}
             <div className="flex items-center">
                 <p className="text-black text-sm dark:text-white mr-2">Filter</p>
                 <select name="basketType" id="basketType" value={filteredBasket} onChange={e => {setFilteredBasket(e.target.value)}} className='border border-gray-200 rounded-md w-32 h-8 text-xs'>
@@ -52,37 +55,11 @@ const Customers = () => {
                 </select> 
             </div>
         </div>
-
-      {/* View all Baskets table */}
-      {/* <div className="mt-4 ml-8 overflow-x-auto overflow-y-scroll"  style={{ maxHeight: '450px'}}>
-          <table className='table-auto w-full border'>
-              <thead className="sticky top-0 border bg-gray-50">
-                  <tr>
-                      <th scope="col" className=" font-medium text-sm text-left p-2">
-                          Basket Name
-                      </th>
-                      <th scope="col" className=" font-medium text-sm text-right p-2">
-                          Stock
-                      </th>
-                      <th scope="col" className=" font-medium text-sm text-right p-2">
-                          Investment &#8377;
-                      </th>
-                      <th scope="col" className=" font-medium text-sm p-2">
-                          Created By
-                      </th>
-                      <th scope="col" className=" font-medium text-sm p-2">
-                          Created On
-                      </th>
-                      <th scope="col" className=" font-medium text-start text-sm p-2">
-                          Actions
-                      </th>
-                  </tr>
-              </thead> */}
-              <div className='flex mt-8'>
+        <div className='flex mt-8'>
         <div className={'overflow-y-scroll border'} style={{height: '400px'}}>
-          <table className='table-fixed w-full ' >
+            <table className='table-fixed w-full ' >
             <thead className='sticky top-0 bg-gray-50' >
-              <tr>
+                <tr>
                 <th className='text-left font-medium text-sm p-2 w-10 md:w-12 lg:w-16 truncate'>S.No</th>
                 <th className='text-left font-medium text-sm p-2 truncate'>Basket Name</th>
                 <th className='text-left font-medium text-sm truncate'># Scripts</th>
@@ -90,35 +67,35 @@ const Customers = () => {
                 <th className='text-left font-medium text-sm truncate'>Created By</th>
                 <th className='text-center font-medium text-sm truncate'>Created On</th>
                 <th className='text-center font-medium text-sm truncate'>Actions</th>
-              </tr>
+                </tr>
             </thead>
-              <tbody>
+                <tbody>
                 {records?.map((record, index) => {
-                  return  (
+                    return  (
                     <tr key={index} className='border-t border-b hover:bg-gray-100'>
                         <th className="text-left text-sm text-black ">
                             <div className="ml-4">
                                 {index+1}
                             </div>
                         </th>
-                      <td className='text-left'>
-                          <div className='text-sm text-black p-2 truncate'>{record.basketName}</div>
-                      </td>
-                      <td className='text-left'>
-                          <div className='text-sm text-black p-2 ml-2'>{record.totalNoOrders}</div>
-                      </td>
-                      <td className='text-center'>
-                          <div className='text-sm text-black p-2 mr-20'>{segregate(record.basketInvAmount)}</div>
-                      </td>
-                      <td className='text-left'>
-                          <div className='text-sm text-black p-2'>{record.createdBy}</div>    
-                      </td>          
-                      <td className='text-center'>
-                          <div className='text-sm text-black p-2'>{record.createdOn.split('T')[0]}</div>    
-                      </td>  
-                      <td className="text-right text-sm ">
-                          <div className="flex justify-center items-center">
-                              <div className="mr-2">
+                        <td className='text-left'>
+                            <div className='text-sm text-black p-2 truncate'>{record.basketName}</div>
+                        </td>
+                        <td className='text-left'>
+                            <div className='text-sm text-black p-2 ml-2'>{record.totalNoOrders}</div>
+                        </td>
+                        <td className='text-center'>
+                            <div className='text-sm text-black p-2 mr-20'>{segregate(record.basketInvAmount)}</div>
+                        </td>
+                        <td className='text-left'>
+                            <div className='text-sm text-black p-2'>{record.createdBy}</div>    
+                        </td>          
+                        <td className='text-center'>
+                            <div className='text-sm text-black p-2'>{formatDate(record.createdOn.split('T')[0])}</div>    
+                        </td>  
+                        <td className="text-right text-sm ">
+                            <div className="flex justify-center items-center">
+                                <div className="mr-2">
                                 {/* SVG icon for Viewing table */}
                                 <Tooltip content="View" >
                                     <Link href={`/admin/baskets/view/${record.basketName}`}>
@@ -130,9 +107,10 @@ const Customers = () => {
                                         </svg>
                                     </Link>
                                 </Tooltip>
-                              </div>
-                              {record.createdBy == username 
-                                ? 
+                                </div>
+                                {/* Checking if the table is created by admin and showing options based on it */}
+                                {record.createdBy == username 
+                                ?   // enabled update, delete options
                                     (
                                         <>
                                             <div className="mr-2">
@@ -158,7 +136,7 @@ const Customers = () => {
                                             </div>
                                         </>
                                     )
-                                :
+                                :   // disabled update/delete options
                                 <>
                                     <div className="mr-2">
                                         {/* SVG icon for updating table */}
@@ -182,17 +160,17 @@ const Customers = () => {
                                         </Tooltip>
                                     </div>
                                 </>
-                              }
-                          </div>
-                      </td>        
+                                }
+                            </div>
+                        </td>        
                     </tr>)
-                  })}
-              </tbody>
-          </table>
-      </div>
-      </div>
+                    })}
+                </tbody>
+            </table>
+        </div>
+        </div>
     </div>      
-  )
+    )
 }
 
-export default Customers
+export default Customers;
