@@ -1,24 +1,26 @@
-import { Navbar, Dropdown, Avatar, Sidebar } from "flowbite-react";
-import logo from "@/../../public/logo1.png";
-import Image from "next/image";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Navbar, Dropdown } from "flowbite-react";
+import Image from "next/image";
+import logo from "@/../../public/logo1.png";
 import { setAdminLoginStatus, setLoggedIn } from "@/store/userSlice";
 import { useRouter } from "next/navigation";
 import { GiHamburgerMenu } from "react-icons/gi";
 import ExampleSidebar from "./sidebar";
-import { useState } from "react";
 import { setAdminLogin } from "@/store/reportSlice";
 
 const DashNavbar = function () {
-
-    const dispatch = useDispatch();
-    const router = useRouter();
-    const username = useSelector((state) => state.user.username);
-    const email = useSelector((state) => state.user.email);
-
-    // local state variables 
-    const [showSidebar, setShowSidebar] = useState(false);
-
+  
+  // local state variables 
+  const [showSidebar, setShowSidebar] = useState(false);
+  
+  // redux
+  const dispatch = useDispatch();
+  const username = useSelector((state) => state.user.username);
+  const email = useSelector((state) => state.user.email);
+    
+  const router = useRouter();
+  
   return (
     <Navbar fluid className="border-b-2">
       <div className="w-full p-3 lg:px-5 lg:pl-3">
@@ -31,14 +33,19 @@ const DashNavbar = function () {
             </Navbar.Brand>
           </div>
 
-          {/* Hamburger menu and user profile */}
           <div className="flex items-center gap-3">
             <div className=" md:hidden hover:cursor-pointer">
+              {/* Hamburger menu and user profile */}
               <div onClick={() => {setShowSidebar(!showSidebar)}}>
                 <GiHamburgerMenu />
               </div>
               {showSidebar && <div className="absolute right-10 z-30 border border-gray-300 rounded-md"> <ExampleSidebar /> </div>}
             </div>
+            <div>
+              <div>Date: {new Date().toUTCString().slice(0,16)}</div>
+              <div>Time: {`${new Date().getHours()}` + ':' + `${new Date().getMinutes()}` + ` ${new Date().getHours() >= 12 ? 'PM' : 'AM'}`}</div>
+            </div>
+            {/* User profile dropdown */}
             <Dropdown
             inline
             arrowIcon={false}
