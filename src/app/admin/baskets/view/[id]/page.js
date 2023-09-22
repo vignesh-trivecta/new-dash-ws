@@ -1,18 +1,22 @@
 'use client';
 
-import { cloneBasket, getSpecificBasket } from '@/app/api/basket/route';
-import { deleteBasket } from '@/app/api/mainBasket/route';
-import { segregate } from '@/utils/priceSegregator';
-import Link from 'next/link';
 import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { Button, Checkbox, Label, Modal, TextInput } from 'flowbite-react';
+import { Button, Label, Modal, TextInput } from 'flowbite-react';
+import { cloneBasket, getSpecificBasket } from '@/app/api/basket/route';
+import { segregate } from '@/utils/priceSegregator';
+import Breadcrumbs from '@/components/page/breadcrumb';
 
 const ViewTable = ({ params }) => {
   
   const basketName = (params.id).split('%20').join(' ');
   let input;
+
+  const ids = [
+    {"View Baskets" : "/admin/baskets/view"},
+    { [basketName] : ""},
+  ]
 
   // local state variables
   const [records, setRecords] = useState([]);
@@ -174,7 +178,9 @@ const ViewTable = ({ params }) => {
       </>
 
       <div className='flex justify-between'>
-        <h1 className='font-bold'>{basketName}</h1>
+        <div>
+          <Breadcrumbs len={ids.length} ids={ids} />
+        </div>
         <button className='flex border border-gray-200 p-2 rounded-md hover:bg-gray-100' onClick={() => setOpenModal('form-elements')} >
           <svg className="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 18a.969.969 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V9l4-4m-4 5h5m3-4h5V1m5 1v12a.97.97 0 0 1-.933 1H9.933A.97.97 0 0 1 9 14V5l4-4h5.067A.97.97 0 0 1 19 2Z"/>
