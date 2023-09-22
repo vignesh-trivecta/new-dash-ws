@@ -90,7 +90,7 @@ export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data}) => {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900 text-center"
                   >
-                    Export as
+                    Export As
                   </Dialog.Title>
                   <div className="mt-2 flex items-center justify-center space-x-4">
                     <label className="" htmlFor="xls">
@@ -100,10 +100,6 @@ export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data}) => {
                     <label className="" htmlFor="pdf">
                       <input value='pdf' checked={selected === "pdf"} onChange={handleClick} type="radio" className="mr-1" name="pdf" id="pdf" />
                       PDF
-                    </label>
-                    <label className="" htmlFor="email">
-                      <input value='email' checked={selected === "email"} onChange={handleClick} type="radio" className="mr-1" name="email" id="email" />
-                      Email
                     </label>
                   </div>
 
