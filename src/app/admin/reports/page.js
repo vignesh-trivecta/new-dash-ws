@@ -1,10 +1,12 @@
 'use client';
 
-import { partnerLogin } from '@/app/api/reports/route';
-import ReportsList from '@/components/page/reportsList'
-import { setAdminLogin } from '@/store/reportSlice';
-import React, { useState } from 'react'
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { setAdminLogin, setPath } from '@/store/reportSlice';
+import ReportsList from '@/components/page/reportsList'
+import { partnerLogin } from '@/app/api/reports/route';
+import FilterComponent from '@/components/page/filterComp';
+import { usePathname } from 'next/navigation';
 
 export const metadata = {
     title: 'WealthSpring | Reports'
@@ -12,10 +14,14 @@ export const metadata = {
 
 const Reports = () => {
 
+    const pathName = usePathname();
+    setPath(pathName.split('/')[3] ?? '')
+
+    // redux
+    const dispatch = useDispatch();
     const loggedIn = useSelector((state) => state.report.adminLogin);
 
-    const dispatch = useDispatch();
-
+    // function to login the admin to the IIFL page
     const handleClick = async () => {
         // const response = await partnerLogin();
         // if(response) {
@@ -26,9 +32,12 @@ const Reports = () => {
 
     return (
     <div className='container mx-auto mt-4' style={{width: '95%'}}>
-        <h1 className="font-bold">Reports</h1>
-        {!loggedIn && <p className='my-6'><span className='underline text-blue-500 cursor-pointer' onClick={() => {handleClick()}}>Login</span> to access Customer Reports</p>}
-        {loggedIn && <ReportsList />}
+        <div className='flex justify-between'>
+            <h1 className="font-bold">Reports</h1>
+            <FilterComponent />
+        </div>
+        {/* Showing reports after logged in */}
+        <ReportsList />
     </div>
   )
 }
