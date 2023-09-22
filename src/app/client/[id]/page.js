@@ -1,24 +1,30 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from 'flowbite-react';
-import Logo from "@/../public/logo1.png";
-import Image from 'next/image';
-import { generateOtp, validateOtp } from '@/app/api/client/route';
 import { useDispatch } from 'react-redux';
 import { setBasketData } from '@/store/clientBasketSlice';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Logo from "@/../public/logo1.png";
+import { Button } from 'flowbite-react';
+import { generateOtp, validateOtp } from '@/app/api/client/route';
 
 const Client = ({ params }) => {
 
+  // getting the basket link as parameter
   const basketLink = params.id;
 
+  // nextjs router
   const router = useRouter();
+
+  // redux
   const dispatch = useDispatch();
 
+  // local state
   const [otp, setOtp] = useState(null);
   const [error, setError] = useState(false);
 
+  // function to verify the OTP entered by user
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await validateOtp(basketLink, otp);
@@ -29,10 +35,12 @@ const Client = ({ params }) => {
     }
   }
 
+  // function to generate new OTP
   const otpGeneration = async () => {
     const data = await generateOtp(basketLink);
   }
 
+  // useEffect that generates a new OTP whenever the page loads
   useEffect(() => {
     otpGeneration();
   }, [])
