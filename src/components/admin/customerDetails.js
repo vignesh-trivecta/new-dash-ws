@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import { getCustomers } from "@/app/api/basket/route";
 
 const CustomerDetails = () => {
+
+    // local state
     const [customers, setCustomers] = useState([]);
 
+    // useEffect to fetch the customers data
     useEffect(() => {
         const fetchData = async () => {
             const customersData = await getCustomers();
