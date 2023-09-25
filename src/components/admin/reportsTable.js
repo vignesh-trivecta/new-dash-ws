@@ -1,17 +1,30 @@
 'use client';
 
 import React from 'react';
-import { Tooltip } from 'flowbite-react';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
-import formatDate from '@/utils/format-date';
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import stringFormatter from '@/utils/stringFormatter';
+import { usePathname } from 'next/navigation';
 
-const ReportsTable = ({columns, datas, toooltipData}) => {
+const ReportsTable = ({columns, datas, tooltipData}) => {
+
+  const pathName = usePathname();
+
+  const renderTooltipContent = (index) => {
+    if (pathName === "/admin/reports/orderBook") {
+      return `Exchange Order Id: ${tooltipData && tooltipData[index]?.exchangeOrderId} <br /> Exchange Type: ${tooltipData && tooltipData[index]?.exchangeType}`;
+    } else if (pathName === "/admin/reports/tradeBook") {
+      return `Exchange Order Id: ${tooltipData && tooltipData[index]?.exchangeOrderId} <br /> Exchange Trade Id: ${tooltipData && tooltipData[index]?.exchangeTradeId}`;
+    }
+    return;
+  }
+  
   return (
+    <>
     <div>
       {
-        (datas?.length !== 0)
+        (datas?.length !== 0) && datas
         ?
         <Table className="border mt-4 overflow-hidden">
           <Thead className="border">
@@ -35,6 +48,10 @@ const ReportsTable = ({columns, datas, toooltipData}) => {
               <Tr 
                 className="border hover:bg-gray-100" 
                 key={index}
+                data-tooltip-id="my-tooltip"
+                data-tooltip-html={
+                  renderTooltipContent(index)
+                }
               >
                 {Object.values(data)?.map((value, subIndex) => (
                   <Td 
@@ -53,7 +70,9 @@ const ReportsTable = ({columns, datas, toooltipData}) => {
           <p>No records found!</p>
         </div>  
       }
+      <ReactTooltip id="my-tooltip" />
     </div>
+    </>
   )
 }
 
