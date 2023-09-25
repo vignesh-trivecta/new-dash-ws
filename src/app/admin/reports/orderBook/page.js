@@ -62,6 +62,7 @@ const OrderBook = () => {
         // setDatas(response);
 
         const { mainDatas, tooltipDatas} = orderDataParser(response);
+        console.log(tooltipDatas)
         setTableData(mainDatas);
         setTooltipData(tooltipDatas);
 
@@ -90,11 +91,16 @@ const OrderBook = () => {
     <div className="container mx-auto mt-4 h-full" style={{ width: "95%" }}>
       <div className="flex justify-between">
         <div>
-          <Breadcrumbs len={ids.length} ids={ids} />
+          <Breadcrumbs 
+            len={ids.length} 
+            ids={ids} 
+          />
         </div>
         <div className="flex justify-end space-x-2">
           <div className="relative">
-            <FilterComponent props={'orderbook'} />
+            <FilterComponent 
+              props={'orderbook'} 
+            />
           </div>
           <div>
             <ExportRow
@@ -102,17 +108,29 @@ const OrderBook = () => {
                 printTableToPDF();
               }}
               data={tableData}
+              columns={columns}
+              fileName={'orderBook'}
             />
           </div>
         </div>
       </div>
-      <div>
-        <FilteredData len={ids.length} ids={ids} />
-      </div>
-      <div className="overflow-auto">
-        <div id="table-to-print">
-          <ReportsTable columns={columns} datas={tableData} tooltipData={tooltipData} />
+      <div id="table-to-print">
+        <div>
+          <FilteredData 
+            len={ids.length} 
+            ids={ids} 
+          />
         </div>
+        <div className="overflow-auto">
+          <div>
+            <ReportsTable 
+              columns={columns} 
+              datas={tableData} 
+              tooltipData={tooltipData} 
+            />
+          </div>
+        </div>
+
       </div>
     </div>
   );
