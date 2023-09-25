@@ -27,28 +27,32 @@ const FilteredData = () => {
     
 
     return (
-        <div className='flex '>
-            <div>
-                <label className="text-black text-sm dark:text-white mr-2 font-medium">Customer</label>
-                <input type="text" value={customerId} className="border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-44 text-sm" />
-            </div>
-            <div>
-                <label className="text-black text-sm dark:text-white mr-2 font-medium">Broker</label>
-                <input type="text" value={broker} className="border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-44 text-sm" />
-            </div>
-            <div>
-                <label className="text-black text-sm dark:text-white mr-2 font-medium">Report Type</label>
-                <input type="text" value={(reportType === 'Market' ? "Market Hours" : (reportType !== "" ? "Post Market" : ""))} className="border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-44 text-sm" />
-            </div>
-            <div>
-                <label className="text-black text-sm dark:text-white mr-2 font-medium">From</label>
-                <input type="text" value={reportType ? formattedStartDate : ''} className="border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-44 text-sm" />
-            </div>
-            <div>
-                <label className="text-black text-sm dark:text-white mr-2 font-medium">To</label>
-                <input type="text" value={reportType ? formattedEndDate : ''} className="border border-gray-200 bg-gray-50 hover:cursor-not-allowed rounded-lg w-24 md:w-44 text-sm" />
-            </div>
+      <div className='flex space-x-6'>
+        <div>
+            <label className="text-black text-sm dark:text-white mr-2 font-medium break-words">Customer Id</label>
+            <input disabled type="text" value={customerId.split('-')[0]} className="hover:cursor-default border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-36 text-sm" />
         </div>
+        <div>
+            <label className="text-black text-sm dark:text-white mr-2 font-medium break-words">Customer Name</label>
+            <input disabled type="text" value={customerId.split('-')[1]} className="hover:cursor-default border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-36 text-sm" />
+        </div>
+        <div>
+            <label className="text-black text-sm dark:text-white mr-2 font-medium">Broker</label>
+            <input disabled type="text" value={broker} className="hover:cursor-default border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-36 text-sm" />
+        </div>
+        <div>
+            <label className="text-black text-sm dark:text-white mr-2 font-medium">Report Type</label>
+            <input disabled type="text" value={(reportType === 'Market' ? "Market Hours" : (reportType !== "" ? "Post Market" : ""))} className="hover:cursor-default border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-36 text-sm" />
+        </div>
+        <div>
+            <label className="text-black text-sm dark:text-white mr-2 font-medium">From</label>
+            <input disabled type="text" value={reportType ? formattedStartDate : ''} className="hover:cursor-default border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-36 text-sm" />
+        </div>
+        <div>
+            <label className="text-black text-sm dark:text-white mr-2 font-medium">To</label>
+            <input disabled type="text" value={reportType ? formattedEndDate : ''} className="hover:cursor-default border border-gray-200 bg-gray-50 rounded-lg w-24 md:w-36 text-sm" />
+        </div>
+      </div>
     )
 }
 
