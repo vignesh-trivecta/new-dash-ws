@@ -98,16 +98,20 @@ const TradeBook = () => {
                 printTableToPDF();
               }}
               data={tableData}
+              columns={columns}
+              fileName={'tradeBook'}
             />
           </div>
         </div>
       </div>
-      <div>
-        <FilteredData />
-      </div>
-      <div className="overflow-auto">
-        <div id="table-to-print">
-          <ReportsTable columns={columns} datas={tableData} tooltipData={tooltipData} />
+      <div id="table-to-print">
+        <div>
+          <FilteredData />
+        </div>
+        <div className="overflow-auto">
+          <div>
+            <ReportsTable columns={columns} datas={tableData} tooltipData={tooltipData} />
+          </div>
         </div>
       </div>
     </div>
