@@ -5,8 +5,10 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useRef, useState } from 'react'
 import { Button } from "flowbite-react";
 import { CSVLink } from "react-csv";
+import { useSelector } from "react-redux";
+import stringFormatter from "@/utils/stringFormatter";
 
-export default function ExportRow({printTableToPDF, data}) {
+export default function ExportRow({printTableToPDF, data, columns, fileName}) {
 
   let [isOpen, setIsOpen] = useState(false)
 
@@ -18,18 +20,46 @@ export default function ExportRow({printTableToPDF, data}) {
           <BiExport className=" h-5 w-5 text-gray-500" aria-hidden="true" />
         </button>
         {
-          isOpen && <ExportModal isOpen={isOpen} setIsOpen={setIsOpen} printTableToPDF={printTableToPDF} data={data} />
+          isOpen && <ExportModal isOpen={isOpen} setIsOpen={setIsOpen} printTableToPDF={printTableToPDF} data={data} columns={columns} fileName={fileName} />
         }
     </div>
   )
 }
 
 
-export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data}) => {
+export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data, columns, fileName}) => {
 
   const [selected, setSelected] = useState('xls');
   const csvLinkRef = useRef();
 
+  // redux
+  const customerId = useSelector((state) => state.report.customerId);
+  const broker = useSelector((state) => state.report.broker);
+  const reportType = useSelector((state) => state.report.reportType);
+  const startDate = useSelector((state) => state.report.startDate);
+  const endDate = useSelector((state) => state.report.endDate);
+
+  const now = stringFormatter(new Date().toISOString())
+
+  const header = [
+    ["Customer Id", "Customer Name", "Broker", "Report Type", "From", "To", "Report Generated On"],
+    [customerId.split('-')[0], customerId.split('-')[1], broker, reportType, stringFormatter(startDate.toISOString()).split(' ')[0], stringFormatter(endDate.toISOString()).split(' ')[0], now],
+  ]
+
+
+  const csvData = [
+    header[0],
+    header[1],
+    ['', '', ''],
+    columns,
+  ]
+
+
+
+  for(let i=0; i<data.length; i++) {
+    csvData.push(Object.values(data[i]))
+  }
+    
   function handleExport() {
     if(selected == "pdf"){
       printTableToPDF();
@@ -54,9 +84,9 @@ export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data}) => {
   return (
     <>
       <CSVLink
-        filename={"TableContent.xls"}
+        filename={`${fileName}.xls`}
         ref={csvLinkRef}
-        data={data}
+        data={csvData}
         className="btn btn-primary"
       >
       </CSVLink>
