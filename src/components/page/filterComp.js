@@ -77,7 +77,6 @@ const FilterComponent = ({props, fetch, setFetch}) => {
 
     const handleFilter = async (e) => {
         e.preventDefault();
-        console.log(startDate, endDate, localReportType)
         dispatch(setToggle(!toggle));
         dispatch(setCustomerId(localCustomerId));
         dispatch(setBroker(localBroker));
@@ -89,16 +88,14 @@ const FilterComponent = ({props, fetch, setFetch}) => {
         if (pathName !== '/admin/reports') {
             if (localReportType === 'Market') {
                 const response = await handleLiveReportsFetch(props ?? '', localCustomerId, localStartDate, localEndDate);
-                console.log(response)
             }
             else if (localReportType === 'Post') {
-                console.log(props ?? '', localCustomerId, localStartDate, localEndDate)
                 const response = handleDbReportsFetch(props ?? '', localCustomerId, localStartDate, localEndDate);
-                console.log(response);
             }
         }
         else {
             console.log("you are on reports page");
+            // return;
         }
         dispatch(setToggle(!toggle));
     }
@@ -141,7 +138,6 @@ const FilterComponent = ({props, fetch, setFetch}) => {
         // // IST Time now represents the time in IST coordinates
         const hoursIST = ISTTime.getHours()
         const minutesIST = ISTTime.getMinutes()
-        console.log(hoursIST, minutesIST, now)
         if((hoursIST > 9) && (hoursIST <16)){
             setNow(true);
         }
@@ -161,7 +157,7 @@ const FilterComponent = ({props, fetch, setFetch}) => {
                         <BiFilterAlt className="h-5 w-5 text-gray-500" />
                     </div>
                     )}
-                className="p-4 w-max"
+                className="px-4 py-2 w-max"
             >
                 <h1 className="mb-2 font-semibold">Filter</h1>
                 <div className="space-y-2">
