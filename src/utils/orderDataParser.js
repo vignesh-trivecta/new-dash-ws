@@ -21,7 +21,6 @@ const orderDataParser = (response) => {
       });
     }
   }
-  console.log(mainDatas, tooltipDatas);
   return { mainDatas, tooltipDatas };
 };
 
