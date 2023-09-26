@@ -7,8 +7,9 @@ import { Button } from "flowbite-react";
 import { CSVLink } from "react-csv";
 import { useSelector } from "react-redux";
 import stringFormatter from "@/utils/stringFormatter";
+import PrintPDF from "../admin/jsonPdf";
 
-export default function ExportRow({printTableToPDF, data, columns, fileName}) {
+export default function ExportRow({data, columns, pdfColumns, fileName}) {
 
   let [isOpen, setIsOpen] = useState(false)
 
@@ -20,14 +21,23 @@ export default function ExportRow({printTableToPDF, data, columns, fileName}) {
           <BiExport className=" h-5 w-5 text-gray-500" aria-hidden="true" />
         </button>
         {
-          isOpen && <ExportModal isOpen={isOpen} setIsOpen={setIsOpen} printTableToPDF={printTableToPDF} data={data} columns={columns} fileName={fileName} />
+          isOpen 
+          && 
+          <ExportModal 
+            isOpen={isOpen} 
+            setIsOpen={setIsOpen} 
+            data={data} 
+            columns={columns} 
+            pdfColumns={pdfColumns}
+            fileName={fileName} 
+          />
         }
     </div>
   )
 }
 
 
-export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data, columns, fileName}) => {
+export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileName}) => {
 
   const [selected, setSelected] = useState('xls');
   const csvLinkRef = useRef();
@@ -54,15 +64,14 @@ export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data, columns, 
     columns,
   ]
 
-
-
   for(let i=0; i<data.length; i++) {
     csvData.push(Object.values(data[i]))
   }
     
   function handleExport() {
     if(selected == "pdf"){
-      printTableToPDF();
+      return;
+      // return <PrintPDF data={data} columns={columns} fileName={fileName} />
     }
     else if(selected == "xls") {
       csvLinkRef.current.link.click();
@@ -134,12 +143,14 @@ export const ExportModal = ({isOpen, setIsOpen, printTableToPDF, data, columns, 
                   </div>
 
                   <div className="mt-4 flex space-x-2 justify-center">
-                    <Button
-                      size={'sm'}
+                    <div
                       onClick={handleExport}
-                    >
-                      Export
-                    </Button>
+                      className='bg-cyan-800 hover:bg-cyan-700 border pl-4 pt-1 rounded-md text-white w-20 h-9'
+                    > 
+                    {
+                      (selected == "pdf") ? (<PrintPDF data={data} columns={pdfColumns} fileName={fileName} />) : "Export"
+                    }
+                    </div>
                     <Button
                       size={'sm'}
                       color={'gray'}
