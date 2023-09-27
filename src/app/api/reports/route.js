@@ -208,23 +208,22 @@ export const handleDbReportsFetch = async (
         toDate: endDate?.toISOString().split('T')[0],
       }),
     };
-    console.log(requestName, customerId.split(" ")[0], startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
     const response = await fetch(
       `http://localhost:8083/iifl/db/${requestName}`,
       requestOptions
     );
-    console.log(response);
-    if (response.status) {
-        console.log('enter')
+    if (response.status === 200) {
       const responseText = await response.json();
-      console.log(responseText);
       return responseText;
-    } else {
-      const errorText = await response.text();
-      throw new Error(`Failed to fetch data: ${errorText}`);
+    } 
+    else if (response.status === 404) {
+      return response.status;
+    }
+    else {
+      return response.status;
     }
   } catch (error) {
-    console.log(error);
+    return error.message;
   }
 };
 
@@ -248,20 +247,21 @@ export const handleLiveReportsFetch = async (
         toDate: endDate.toISOString().split('T')[0],
       }),
     };
-    console.log(requestName, customerId, startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]);
     const response = await fetch(
       `http://localhost:8085/partner/live/${requestName}`,
       requestOptions
     );
-    console.log(response);
-    if (response.ok) {
+    if (response.status === 200) {
       const responseText = await response.json();
       return responseText;
-    } else {
-      const errorText = await response.text();
-      throw new Error(`Failed to fetch data: ${errorText}`);
+    } 
+    else if (response.status === 404) {
+      return response.status;
+    }
+    else {
+      return response.status;
     }
   } catch (error) {
-    console.log(error);
+    return error.message;
   }
 };
