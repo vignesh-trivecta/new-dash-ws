@@ -69,11 +69,7 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
   }
     
   function handleExport() {
-    if(selected == "pdf"){
-      return;
-      // return <PrintPDF data={data} columns={columns} fileName={fileName} />
-    }
-    else if(selected == "xls") {
+    if(selected == "xls") {
       csvLinkRef.current.link.click();
     }
   }
@@ -144,11 +140,16 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
 
                   <div className="mt-4 flex space-x-2 justify-center">
                     <div
-                      onClick={handleExport}
-                      className='bg-cyan-800 hover:bg-cyan-700 border pl-4 pt-1 rounded-md text-white w-20 h-9'
                     > 
                     {
-                      (selected == "pdf") ? (<PrintPDF data={data} columns={pdfColumns} fileName={fileName} />) : "Export"
+                      (selected == "pdf") 
+                      ? (<PrintPDF data={data} columns={pdfColumns} fileName={fileName} />) 
+                      : <Button
+                          onClick={handleExport}
+                          size={'sm'}
+                        >
+                          Export
+                        </Button>
                     }
                     </div>
                     <Button
