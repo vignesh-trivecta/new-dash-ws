@@ -38,8 +38,6 @@ const FilterComponent = ({props, fetch, setFetch}) => {
     const [localEndDate, setLocalEndDate] = useState(endDate);
     const [list, setList] = useState([]);
 
-
-
         // // finding current time and allowing Date radio button to be displayed
         // // only when current IST time is greater than 3pm or 15:00 hrs
         // const currentTime = new Date();
@@ -95,7 +93,7 @@ const FilterComponent = ({props, fetch, setFetch}) => {
         }
         else {
             console.log("you are on reports page");
-            // return;
+            return;
         }
         dispatch(setToggle(!toggle));
     }
@@ -116,28 +114,25 @@ const FilterComponent = ({props, fetch, setFetch}) => {
         const fetchData = async () => {
             const customersData = await getCustomers();
             let arr = [];
-            for(let i=0; i<customersData.length; i++) {
-                arr.push(customersData[i].customerId + " - " + customersData[i].name)
+            for(let i=0; i<customersData?.length; i++) {
+                arr.push(customersData[i]?.customerId + " - " + customersData[i]?.name)
             }
             setList(arr);
         };
-
         fetchData();
-
-
     }, []);
 
     useEffect(() => {
         // finding current time and allowing Date radio button to be displayed
         // only when current IST time is greater than 3pm or 15:00 hrs
         const currentTime = new Date();
-        const currentOffset = currentTime.getTimezoneOffset();
+        const currentOffset = currentTime?.getTimezoneOffset();
         const ISTOffset = 330;   // IST offset UTC +5:30 
-        const ISTTime = new Date(currentTime.getTime() + (ISTOffset + currentOffset)*60000);
+        const ISTTime = new Date(currentTime?.getTime() + (ISTOffset + currentOffset)*60000);
 
         // // IST Time now represents the time in IST coordinates
-        const hoursIST = ISTTime.getHours()
-        const minutesIST = ISTTime.getMinutes()
+        const hoursIST = ISTTime?.getHours()
+        const minutesIST = ISTTime?.getMinutes()
         if((hoursIST > 9) && (hoursIST <16)){
             setNow(true);
         }
@@ -173,7 +168,7 @@ const FilterComponent = ({props, fetch, setFetch}) => {
                         >
                             <option disabled value="">-Select -</option>
                             {
-                                list.map((id, index) => (
+                                list?.map((id, index) => (
                                     <option 
                                         key={index} 
                                         value={id} 
