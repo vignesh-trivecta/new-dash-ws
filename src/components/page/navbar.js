@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navbar, Dropdown } from "flowbite-react";
 import Image from "next/image";
@@ -13,6 +13,7 @@ const DashNavbar = function () {
   
   // local state variables 
   const [showSidebar, setShowSidebar] = useState(false);
+  // const [time, setTime] = useState(new Date());
   
   // redux
   const dispatch = useDispatch();
@@ -20,6 +21,19 @@ const DashNavbar = function () {
   const email = useSelector((state) => state.user.email);
     
   const router = useRouter();
+
+  // useEffect(() => {
+  //   // Create an interval and store its ID
+  //   const intervalId = setInterval(() => {
+  //     let newTime = new Date();
+  //     console.log('triggered', newTime);
+  //     setTime(newTime);
+  //   }, 60000);
+  //   // Return a cleanup function to clear the interval when the component unmounts
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // },[])
   
   return (
     <Navbar fluid className="border-b-2">
