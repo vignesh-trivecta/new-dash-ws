@@ -2,42 +2,31 @@
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { handleDbReportsFetch } from "@/app/api/reports/route";
+import { handleDbReportsFetch, handleLiveReportsFetch } from "@/app/api/reports/route";
+import ReportsTable from "@/components/admin/reportsTable";
+import FilteredData from "@/components/admin/filteredData";
 import ExportRow from "@/components/page/exportRow";
 import FilterComponent from "@/components/page/filterComp";
-import ReportsTable from "@/components/admin/reportsTable";
-import print from "print-js";
-import FilteredData from "@/components/admin/filteredData";
 import Breadcrumbs from "@/components/page/breadcrumb";
 
 const Margin = () => {
 
   // local state
-  const [datas, setDatas] = useState([]);
+  const [tableData, setTableData] = useState([]);
 
   // redux
   const customerId = useSelector((state) => state.report.customerId);
-  const broker = useSelector((state) => state.report.broker);
   const reportType = useSelector((state) => state.report.reportType);
-
   const startDate = useSelector((state) => state.report.startDate);
   const endDate = useSelector((state) => state.report.endDate);
   const toggle = useSelector((state) => state.report.toggle);
 
-  // table to PDF
-  const printTableToPDF = () => {
-    const tableId = "table-to-print";
-    printJS({
-      printable: tableId,
-      type: "html",
-      style:
-        "Td { border: 1px solid #D1D5DB !important;} Th { border: 1px solid #D1D5DB !important;}",
-    });
-  };
-
+  // Data for breadcrumb
   const ids = [{ Reports: "/admin/reports" }, { Margin: "" }];
 
-  const columns = ["Adjusted Ledger Balance ₹", "Gross Holding Value ₹", "Gross Margin ₹", "Available Margin ₹"]
+  // column/header data for excel and pdf
+  const excelColumns = ["Adjusted Ledger Balance ₹", "Gross Holding Value ₹", "Gross Margin ₹", "Available Margin ₹"];
+  const pdfColumns = ["Adjusted Ledger Balance", "Gross Holding Value", "Gross Margin", "Available Margin"];
 
   // useEffect to fetch table data from backend
   useEffect(() => {
@@ -51,7 +40,7 @@ const Margin = () => {
           endDate
         );
         console.log(response);
-        // setDatas(response);
+        // setTableData(response);
       }
       else if (reportType === "Post") { // DB data endpoint
         console.log('post')
@@ -62,10 +51,10 @@ const Margin = () => {
           endDate
         );
         console.log(response);
-        setDatas(response);
+        setTableData(response);
       }
       else {
-        setDatas([])
+        setTableData([])
       }
     };
     fetchMargin();
@@ -75,28 +64,38 @@ const Margin = () => {
     <div className="container mx-auto mt-4 h-full" style={{ width: "95%" }}>
       <div className=" flex justify-between">
         <div>
-          <Breadcrumbs len={ids.length} ids={ids} />
+          <Breadcrumbs 
+            len={ids.length} 
+            ids={ids} 
+          />
         </div>
         <div className="flex justify-end space-x-2">
-          <div className="relative">
-            <FilterComponent props={'margin'} />
-          </div>
           <div>
             <ExportRow
-              printTableToPDF={() => {
-                printTableToPDF();
-              }}
-              data={datas}
+              data={tableData}
+              columns={excelColumns}
+              pdfColumns={pdfColumns}
+              fileName={'margin'}
+            />
+          </div>
+          <div className="relative">
+            <FilterComponent 
+              props={'margin'} 
             />
           </div>
         </div>
       </div>
-      <div>
-        <FilteredData />
-      </div>
-      <div className="overflow-auto">
-        <div id="table-to-print">
-          <ReportsTable columns={columns} datas={datas} />
+      <div id="table-to-print">
+        <div>
+          <FilteredData />
+        </div>
+        <div className="overflow-auto">
+          <div>
+            <ReportsTable 
+              columns={excelColumns} 
+              datas={tableData} 
+            />
+          </div>
         </div>
       </div>
     </div>
