@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation';
 const ReportsTable = ({columns, datas, tooltipData}) => {
 
   const pathName = usePathname();
-
+ 
   const renderTooltipContent = (index) => {
     if (pathName === "/admin/reports/orderBook") {
       return `Exchange Order Id: ${tooltipData && tooltipData[index]?.exchangeOrderId} <br /> Exchange Type: ${tooltipData && tooltipData[index]?.exchangeType}`;
@@ -22,13 +22,14 @@ const ReportsTable = ({columns, datas, tooltipData}) => {
   
   return (
     <>
-    <div>
+    <div className='mt-4' style={{ height: '380px' }}>
       {
         (datas?.length !== 0) && datas
         ?
-        <Table className="border mt-4 overflow-hidden">
-          <Thead className="border">
-            <Tr className="border">
+        <div className={'overflow-y-scroll border'}  style={{ height: '380px' }}>
+        <Table className="" >
+          <Thead className="">
+            <Tr className="">
               {
                 columns?.map((heading, index) => {
                   return (
@@ -65,6 +66,7 @@ const ReportsTable = ({columns, datas, tooltipData}) => {
             ))}
           </Tbody>
         </Table>
+        </div>
         :
         <div className='mt-4'>
           <p>No records found!</p>
