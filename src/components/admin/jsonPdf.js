@@ -4,6 +4,7 @@ import 'jspdf-autotable';
 import { useSelector } from 'react-redux';
 import stringFormatter from '@/utils/stringFormatter';
 import formatDate from '@/utils/format-date';
+import { Button } from 'flowbite-react';
 
 const PrintPDF = ({data, columns, fileName}) => {
 
@@ -48,19 +49,19 @@ const PrintPDF = ({data, columns, fileName}) => {
     })
 
     // Main table
-    doc.autoTable({
-      head: [columns],
-      body: rows,
+    doc.autoTable(columns, rows,
+      {
       theme: 'grid',
       styles: {
         overflow: 'linebreak',
       },
+      didDrawPage: function () {
+        // Footer
+        doc.setFontSize(10);
+        const pageHeight = doc.internal.pageSize.height;
+        doc.text(footer, 10, pageHeight - 10);
+      }
     });
-
-    // Footer
-    doc.setFontSize(12);
-    const pageHeight = doc.internal.pageSize.height;
-    doc.text(footer, 10, pageHeight - 10);
 
     // Save or print the PDF
     doc.save(`${fileName}.pdf`); // To save the PDF
@@ -69,7 +70,12 @@ const PrintPDF = ({data, columns, fileName}) => {
 
   return (
     <div>
-      <button onClick={generatePDF}>Export</button>
+      <Button 
+        size={'sm'}
+        onClick={generatePDF}
+      >
+        Export
+      </Button>
     </div>
   );
 };
