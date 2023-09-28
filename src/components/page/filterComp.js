@@ -9,12 +9,9 @@ import { usePathname } from "next/navigation";
 import { BiFilterAlt } from "react-icons/bi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getBroker, handleDbReportsFetch, handleLiveReportsFetch } from "@/app/api/reports/route";
+import { getBroker, handleDbReportsFetch, handleLiveReportsFetch, isMarketOpen } from "@/app/api/reports/route";
 
-const FilterComponent = ({props, fetch, setFetch}) => {
-
-    // to get url pathname
-    const pathName = usePathname();
+const FilterComponent = ({props}) => {
     
     // redux state
     const dispatch = useDispatch();
@@ -37,6 +34,7 @@ const FilterComponent = ({props, fetch, setFetch}) => {
     const [localStartDate, setLocalStartDate] = useState(startDate);
     const [localEndDate, setLocalEndDate] = useState(endDate);
     const [list, setList] = useState([]);
+    const [isTodayDisabled, setIsTodayDisabled] = useState(false);
 
         // // finding current time and allowing Date radio button to be displayed
         // // only when current IST time is greater than 3pm or 15:00 hrs
@@ -73,6 +71,7 @@ const FilterComponent = ({props, fetch, setFetch}) => {
         dispatch(setToggle(!toggle));
     }
 
+    // function handling when filter button is clicked
     const handleFilter = async (e) => {
         e.preventDefault();
         dispatch(setToggle(!toggle));
@@ -83,21 +82,22 @@ const FilterComponent = ({props, fetch, setFetch}) => {
         dispatch(setStartDate(localStartDate));
         dispatch(setEndDate(localEndDate));
 
-        if (pathName !== '/admin/reports') {
-            if (localReportType === 'Market') {
-                const response = await handleLiveReportsFetch(props ?? '', localCustomerId, localStartDate, localEndDate);
-            }
-            else if (localReportType === 'Post') {
-                const response = handleDbReportsFetch(props ?? '', localCustomerId, localStartDate, localEndDate);
-            }
-        }
-        else {
-            console.log("you are on reports page");
-            return;
-        }
+        // if (pathName !== '/admin/reports') {
+        //     if (localReportType === 'Market') {
+        //         const response = await handleLiveReportsFetch(props ?? '', localCustomerId, localStartDate, localEndDate);
+        //     }
+        //     else if (localReportType === 'Post') {
+        //         const response = handleDbReportsFetch(props ?? '', localCustomerId, localStartDate, localEndDate);
+        //     }
+        // }
+        // else {
+        //     console.log("you are on reports page");
+        //     return;
+        // }
         dispatch(setToggle(!toggle));
     }
 
+    // endpoint which sets broker based on customer selection
     const handleCustomerSelection = async (e) => {
         setLocalCustomerId(e.target.value);
         const response = await getBroker((e.target.value).split(' ')[0]);
@@ -141,6 +141,18 @@ const FilterComponent = ({props, fetch, setFetch}) => {
         }
     })
 
+    // checking whether today market is open or closed and setting date radio button based on that
+    const isButtonDisabled = async () => {
+        const response = await isMarketOpen();
+        if (response === "Open") {
+            setIsTodayDisabled(false);
+        }
+        else {
+            setIsTodayDisabled(true);
+        }
+    }
+    isButtonDisabled();
+
     return (
         <div>
             <form onSubmit={handleFilter}>
@@ -153,8 +165,11 @@ const FilterComponent = ({props, fetch, setFetch}) => {
                     </div>
                     )}
                 className="px-4 py-2 w-max"
-            >
-                <h1 className="mb-2 font-semibold">Filter</h1>
+            >   
+                <div className="flex justify-between">
+                    <h1 className="mb-2 font-semibold">Filter</h1>
+                    <h2 className=""><span className="underline">Market:</span><span className="font-semibold"> {isTodayDisabled ? "Closed" : "Open"}</span></h2>
+                </div>
                 <div className="space-y-2">
 
                     {/* Customer Id */}
@@ -209,7 +224,8 @@ const FilterComponent = ({props, fetch, setFetch}) => {
                             <Label value="Date" className="col-start-1 row-start-2 text-sm" />
                             <div className=" col-start-2 row-start-2">
                                 <input 
-                                required
+                                    required
+                                    disabled={isTodayDisabled}
                                     id="today" 
                                     name="date" 
                                     type="radio" 
@@ -220,7 +236,7 @@ const FilterComponent = ({props, fetch, setFetch}) => {
                                 }} />
                                 <label htmlFor="today" className="ml-1 text-sm">Today</label>
                                 <input 
-                                required
+                                    required
                                     id="custom" 
                                     name="date" 
                                     type="radio" 
