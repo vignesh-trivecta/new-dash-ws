@@ -1,20 +1,21 @@
-'use client';
-
 import React from 'react';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import stringFormatter from '@/utils/stringFormatter';
 import { usePathname } from 'next/navigation';
+import { useSelector } from 'react-redux';
 
 const ReportsTable = ({columns, datas, tooltipData}) => {
 
   const pathName = usePathname();
+
+  const time = useSelector((state) => state.user.timeFormat);
  
   const renderTooltipContent = (index) => {
-    if (pathName === "/admin/reports/orderBook") {
+    if (pathName === "/admin/reports/orderbook") {
       return `Exchange Order Id: ${tooltipData && tooltipData[index]?.exchangeOrderId} <br /> Exchange Type: ${tooltipData && tooltipData[index]?.exchangeType}`;
-    } else if (pathName === "/admin/reports/tradeBook") {
+    } else if (pathName === "/admin/reports/tradebook") {
       return `Exchange Order Id: ${tooltipData && tooltipData[index]?.exchangeOrderId} <br /> Exchange Trade Id: ${tooltipData && tooltipData[index]?.exchangeTradeId}`;
     }
     return;
@@ -59,7 +60,7 @@ const ReportsTable = ({columns, datas, tooltipData}) => {
                     className={`text-sm p-2 ${typeof(value) == 'string' ? 'text-center' : 'text-center'}`} 
                     key={subIndex}
                   >
-                    {stringFormatter(value)}
+                    {stringFormatter(value, time)}
                   </Td>
                 ))}
               </Tr>
