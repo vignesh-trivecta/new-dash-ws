@@ -15,10 +15,10 @@ function formatDate(inputDate) {
   ];
 
   const dateParts = inputDate.split("-");
-  if (dateParts.length === 3) {
+  if (dateParts?.length === 3 && dateParts) {
     const year = dateParts[0];
     const monthIndex = parseInt(dateParts[1]) - 1; // Subtract 1 because months are zero-based
-    const day = dateParts[2];
+    const day = dateParts[2].split(' ')[0];
 
     if (!isNaN(monthIndex)) {
       const month = months[monthIndex];
@@ -31,4 +31,3 @@ function formatDate(inputDate) {
 }
 
 export default formatDate;
-
