@@ -8,7 +8,7 @@ yesterday.setDate(today.getDate() - 1);
 const initialState = {
     customerId: "",
     broker: "",
-    dateType: "today",
+    dateType: "custom",
     startDate: yesterday,
     endDate: yesterday,
     toggle: false,
