@@ -7,6 +7,7 @@ const initialState = {
     phone: '',
     loggedIn: false,
     adminLoginStatus: false,
+    timeFormat: '12',
 }
 
 // creating new slice
@@ -29,9 +30,12 @@ const userSlice = createSlice({
         setAdminLoginStatus: (state, action) => {
             state.adminLoginStatus = action.payload;
           },
+        setTimeFormat: (state, action) => {
+            state.timeFormat = action.payload;
+          },
     }
 });
 
-export const { setUsername, setEmail, setPhone, setLoggedIn, setAdminLoginStatus } = userSlice.actions;
+export const { setUsername, setEmail, setPhone, setLoggedIn, setAdminLoginStatus, setTimeFormat } = userSlice.actions;
 
 export default userSlice.reducer;
