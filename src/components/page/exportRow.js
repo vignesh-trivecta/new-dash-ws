@@ -8,10 +8,11 @@ import { CSVLink } from "react-csv";
 import { useSelector } from "react-redux";
 import stringFormatter from "@/utils/stringFormatter";
 import PrintPDF from "../admin/jsonPdf";
+import { usePathname } from "next/navigation";
 
 export default function ExportRow({data, columns, pdfColumns, fileName}) {
 
-  let [isOpen, setIsOpen] = useState(false)
+  let [isOpen, setIsOpen] = useState(false);
 
   return (
     <div>
@@ -41,6 +42,8 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
 
   const [selected, setSelected] = useState('xls');
   const csvLinkRef = useRef();
+  console.log(fileName)
+
 
   // redux
   const customerId = useSelector((state) => state.report.customerId);
