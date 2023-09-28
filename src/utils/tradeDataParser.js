@@ -2,7 +2,7 @@ const tradeDataParser = (response) => {
     let tooltipDatas = [];
     let mainDatas = [];
   
-    if ((response?.length !== 0 && response  !== undefined) && response !== 404) {
+    if ((response?.length !== 0 && response  !== undefined) && response !== 404 && response) {
       for (let data of response) {
         tooltipDatas.push({
           exchangeOrderId: data.exchangeOrderId,
