@@ -29,10 +29,12 @@ const Page = ({ params }) => {
   const endDate = useSelector((state) => state.report.endDate);
   const toggle = useSelector((state) => state.report.toggle);
 
+  const param = params.id;
+
   let excelColumns;
   let pdfColumns;
 
-  if( params.id === 'holdings') {
+  if( params.id === 'holding') {
     excelColumns = holdingColumns;
     pdfColumns = holdingColumns;
   } 
@@ -70,8 +72,10 @@ const Page = ({ params }) => {
           startDate,
           endDate
         );
-        console.log(response);
-        // setData(response);
+        if (response.message === "Success") {
+          setTableData(response[param]);
+        }
+        
       }
       else if (reportType === "Post") { // DB data endpoint
         const response = await handleDbReportsFetch(
@@ -80,7 +84,7 @@ const Page = ({ params }) => {
           startDate,
           endDate
         );
-
+        
         if (params.id === 'orderbook') {
             const { mainDatas, tooltipDatas} = orderDataParser(response);
             setTableData(mainDatas);
@@ -139,6 +143,7 @@ const Page = ({ params }) => {
                 columns={excelColumns} 
                 datas={tableData} 
                 tooltipData={tooltipData} 
+                param={param}
             />
         </div>
       </div>
