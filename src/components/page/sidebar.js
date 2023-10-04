@@ -170,7 +170,7 @@ const ExampleSidebar = function () {
       </Transition.Root>
       </>
       
-      <Sidebar ariaLabel="Sidebar with multi-level dropdown example" style={{height: '85vh'}} className="border-r-2" >
+      <Sidebar aria-label="Sidebar with multi-level dropdown example" style={{height: '85vh'}} className="border-r-2" >
         <div className="flex flex-col justify-between py-2">
           <div>
             <Sidebar.Items>
