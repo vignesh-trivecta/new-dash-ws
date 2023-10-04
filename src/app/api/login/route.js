@@ -1,3 +1,4 @@
+// API to login the admin into wealth spring
 export const loginAPI = async (token) => {
 
     try{
@@ -20,6 +21,23 @@ export const loginAPI = async (token) => {
         }
     }
     catch(error){
-        console.log(error)
+        return error.message;
+    }
+}
+
+// API to login the IIFL partner account
+export const partnerLogin = async () => {
+    try {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }
+
+        const respone = await fetch("http://localhost:8085/partner/login", requestOptions);
+
+    } catch (error) {
+        return error.message;
     }
 }
