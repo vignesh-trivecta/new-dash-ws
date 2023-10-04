@@ -91,11 +91,9 @@ const LoginAuth = () => {
   const submitLogin = async (values) => {
     // destructuring values object
     const { username, password, captcha } = values;
-    console.log("enter 1");
 
     // checking if login credentials are correct
     if (username != null && password !== null && captcha === captchaValue) {
-      console.log("enter 2");
 
       // signing the username, password with secret key
       // using jwt to create a authentication token
@@ -106,7 +104,6 @@ const LoginAuth = () => {
         "WepyWestTestEastWepyWestTestEast"
       );
       const token = jwt.sign({ encryptedUser, encryptedPassword }, "admin12");
-      console.log(token);
 
       // posting the authorized token to backend,
       // based on the received respone 200 or 404
@@ -199,7 +196,7 @@ const LoginAuth = () => {
                     onBlur={handleBlur}
                     value={values.username}
                     placeholder="Username"
-                    ariaLabel="username"
+                    aria-label="username"
                   />
                 </div>
                 {/* If validation is not passed show errors */}
@@ -225,7 +222,7 @@ const LoginAuth = () => {
                         onBlur={handleBlur}
                         value={values.password}
                         placeholder="Password"
-                        ariaLabel="password"
+                        aria-label="password"
                       />
                       <button
                         className="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-gray-300 rounded-r-lg hover:bg-gray-400 focus:bg-gray-500"
@@ -235,7 +232,7 @@ const LoginAuth = () => {
                       >
                         <svg
                           className="w-4 h-4 text-gray-800 dark:text-white"
-                          ariaHidden="true"
+                          aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 20 14"
@@ -267,7 +264,7 @@ const LoginAuth = () => {
                         onBlur={handleBlur}
                         value={values.password}
                         placeholder="Password"
-                        ariaLabel="password"
+                        aria-label="password"
                       />
                       <button
                         className="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-gray-300 rounded-r-lg hover:bg-gray-400 focus:bg-gray-500"
@@ -277,7 +274,7 @@ const LoginAuth = () => {
                       >
                         <svg
                           className="w-4 h-4 text-gray-800 dark:text-white"
-                          ariaHidden="true"
+                          aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 20 18"
@@ -310,7 +307,7 @@ const LoginAuth = () => {
                       className="select-none pointer-events-none draggable block w-full text-gray-700 bg-gray-100 border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600"
                       type="text"
                       value={captchaValue}
-                      ariaLabel="Captcha"
+                      aria-label="Captcha"
                     />
                     {/* button to regenerate captcha */}
                     <button
@@ -321,7 +318,7 @@ const LoginAuth = () => {
                     >
                       <svg
                         className="w-3 h-3 text-gray-800 dark:text-white"
-                        ariaHidden="true"
+                        aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 20 18"
