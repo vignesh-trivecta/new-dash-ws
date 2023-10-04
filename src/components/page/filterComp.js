@@ -29,12 +29,15 @@ const FilterComponent = ({props}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [localCustomerId, setLocalCustomerId] = useState(customerId);
     const [localBroker, setLocalBroker] = useState(broker);
-    const [localReportType, setLocalReportType] = useState('');
+    const [localReportType, setLocalReportType] = useState(reportType);
     const [localDateType, setLocalDateType] = useState(dateType);
     const [localStartDate, setLocalStartDate] = useState(startDate);
     const [localEndDate, setLocalEndDate] = useState(endDate);
     const [list, setList] = useState([]);
     const [isTodayDisabled, setIsTodayDisabled] = useState(false);
+
+    const today = new Date();
+
 
         // // finding current time and allowing Date radio button to be displayed
         // // only when current IST time is greater than 3pm or 15:00 hrs
@@ -79,8 +82,15 @@ const FilterComponent = ({props}) => {
         dispatch(setBroker(localBroker));
         dispatch(setReportType(localReportType));
         dispatch(setDateType(localDateType));
-        dispatch(setStartDate(localStartDate));
-        dispatch(setEndDate(localEndDate));
+
+        if (localDateType === "custom") {
+            dispatch(setStartDate(localStartDate));
+            dispatch(setEndDate(localEndDate));
+        }
+        else {
+            dispatch(setStartDate(today));
+            dispatch(setEndDate(today));
+        }
 
         // if (pathName !== '/admin/reports') {
         //     if (localReportType === 'Market') {
@@ -198,7 +208,7 @@ const FilterComponent = ({props}) => {
                     {/* Broker */}
                     <div className="flex flex-col">
                         <label className="font-medium text-sm">Broker</label>
-                        <select value={localBroker} required onChange={(e) => {setLocalBroker(e.target.value)}} className="border border-gray-200 rounded-md w-full text-sm" name="broker" id="broker" >
+                        <select value={localBroker} required onChange={(e) => {setLocalBroker(e.target.value); console.log(e.target.value)}} className="border border-gray-200 rounded-md w-full text-sm" name="broker" id="broker" >
                             <option disabled value="">-Select -</option>
                             <option value="AXIS">AXIS</option>
                             <option value="IIFL">IIFL</option>
@@ -208,7 +218,7 @@ const FilterComponent = ({props}) => {
                     {/* Report Type */}
                     <div className="flex flex-col">
                         <label className="font-medium text-sm">Report Type</label>
-                        <select value={localReportType} required onChange={(e) => {setLocalReportType(e.target.value)}} className="border border-gray-200 rounded-md w-full text-sm" name="broker" id="broker" >
+                        <select value={localReportType} required onChange={(e) => {setLocalReportType(e.target.value); console.log(e.target.value)}} className="border border-gray-200 rounded-md w-full text-sm" name="broker" id="broker" >
                             <option disabled value="">-Select -</option>
                             <option value="Market">Market Hours</option>
                             <option value="Post">Post Market</option>
