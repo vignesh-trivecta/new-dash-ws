@@ -125,7 +125,7 @@ export const handleLiveReportsFetch = async (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        customerId: customerId,
+        customerId: customerId.split(' ')[0],
         fromDate: startDate.toISOString().split('T')[0],
         toDate: endDate.toISOString().split('T')[0],
       }),
