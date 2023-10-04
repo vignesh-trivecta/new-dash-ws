@@ -42,8 +42,6 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
 
   const [selected, setSelected] = useState('xls');
   const csvLinkRef = useRef();
-  console.log(fileName)
-
 
   // redux
   const customerId = useSelector((state) => state.report.customerId);
