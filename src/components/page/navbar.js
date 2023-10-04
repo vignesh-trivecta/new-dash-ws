@@ -26,8 +26,6 @@ const DashNavbar = function () {
   const [showSidebar, setShowSidebar] = useState(false);
   const [time, setTime] = useState(timeFormat);
 
-  console.log(timeFormat);
-
   // useEffect(() => {
   //   // Create an interval and store its ID
   //   const intervalId = setInterval(() => {
@@ -93,7 +91,7 @@ const DashNavbar = function () {
               label={
                 <svg
                   className="w-6 h-6 text-gray-800 dark:text-white hidden md:block"
-                  ariaHidden="true"
+                  aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 20 20"
