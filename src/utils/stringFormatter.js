@@ -1,21 +1,30 @@
 import formatDate from "./format-date";
 
-const stringFormatter = (str, time) => {
+const stringFormatter = (str, time, param) => {
     if (typeof str === 'string' && str?.includes('-') && str?.split('-').length === 3 && str) {
         if (str?.includes(' ') || str?.includes('T')) {
-            const date = str?.split(' ') || str?.split('T');
+            let date;
+            if (str.includes(' ')) {
+                date = str?.split(' ')
+            }
+            else if(str.includes('T')) {
+                date = str?.split('T');
+            }
             const dateTime = new Date(str);
             let formattedTime;
 
-            if (time === 12) {
-                formattedTime = dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            } else {
-                formattedTime = dateTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+            if(param !== "ledger") {
+                if (time === 12) {
+                    formattedTime = dateTime?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true  });
+                } else {
+                    formattedTime = dateTime?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                    formattedTime = formattedTime?.slice(0, -3); // Remove the last colon and seconds;
+                }
+            }
+            else {
+                return formatDate(str)
             }
 
-            if (time !== 12) {
-                formattedTime = formattedTime.slice(0, -3); // Remove the last colon and seconds
-            }
             return (
                 formatDate(date[0]) 
                 + " | " 
