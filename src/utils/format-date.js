@@ -13,8 +13,15 @@ function formatDate(inputDate) {
     "Nov",
     "Dec",
   ];
+  let dateParts;
+  if (inputDate.includes('T')) {
+    dateParts = inputDate.split('T')[0];
+    dateParts = dateParts.split("-");
+  }
+  else {
+    dateParts = inputDate.split("-");
+  }
 
-  const dateParts = inputDate.split("-");
   if (dateParts?.length === 3 && dateParts) {
     const year = dateParts[0];
     const monthIndex = parseInt(dateParts[1]) - 1; // Subtract 1 because months are zero-based
