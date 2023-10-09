@@ -4,7 +4,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAdminLogin, setPath } from '@/store/reportSlice';
 import ReportsList from '@/components/page/reportsList'
-import { partnerLogin } from '@/app/api/reports/route';
+import { partnerLogin } from "@/app/api/login/route";
 import FilterComponent from '@/components/page/filterComp';
 import { usePathname } from 'next/navigation';
 
