@@ -72,8 +72,20 @@ const Page = ({ params }) => {
           startDate,
           endDate
         );
+
         if (response.message === "Success") {
-          setTableData(response[param]);
+          if (params.id === 'orderbook') {
+            const { mainDatas, tooltipDatas} = orderDataParser(response[param]);
+            setTableData(mainDatas);
+            setTooltipData(tooltipDatas);
+          }
+          else if (params.id === 'tradebook') {
+              const { mainDatas, tooltipDatas} = tradeDataParser(response[param]);
+              setTableData(mainDatas);
+              setTooltipData(tooltipDatas);
+          } else {
+              setTableData(response[param]);
+          }
         }
         
       }
