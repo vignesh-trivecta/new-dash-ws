@@ -87,9 +87,6 @@ const CustomerMapping = () => {
         if(status){
             setStatus(status);
         }
-        else{
-            console.log('error')
-        }
     }
 
 
