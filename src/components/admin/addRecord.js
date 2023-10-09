@@ -68,7 +68,6 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         e.preventDefault();
         const postData = async() => {
             let data;
-            console.log(investmentVal)
             if(pathname == '/admin/baskets/create'){
                 data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice);
                 if(data === true){
