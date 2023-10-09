@@ -10,9 +10,13 @@ const PlaceOrder = () => {
     // url search params
     const searchParams = useSearchParams();
     const ssoId = searchParams.get('ssoId');
+    console.log(ssoId);
     
     // local state
-    const [showSpinner, setShowSpinner] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(true);
+    const [show, setShow] = useState(false); // show the order placed page
+    const [status, setStatus] = useState(false); // show the spinner or failed page
+    const [showBasket, setShowBasket] = useState(false); // show or not show the basket in orders placed page
     
     // redux
     const basketData = useSelector((state) => state.client.basketData);
