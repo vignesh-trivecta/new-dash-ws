@@ -37,7 +37,6 @@ const UpdateBasket = ({ params }) => {
   useEffect( () => {
     const gettingRecords = async () => {
       const response = await getBasketValue(basketName, adminId);
-      console.log(response)
       setInvestmentVal(response[0].basketInvestAmt);
       setTransType(response[0].transactionType);
     };
