@@ -20,7 +20,6 @@ const PrintPDF = ({data, columns, fileName}) => {
   const generatePDF = () => {
 
     const doc = new jsPDF();
-    console.log(data)
 
     const footer = `Report Generated On: ${now}`;
     const title = `Customer ${fileName.toUpperCase()} Report`
