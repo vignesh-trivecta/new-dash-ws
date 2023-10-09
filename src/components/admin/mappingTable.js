@@ -20,16 +20,10 @@ const MappingTable = ({ data, index, status, setStatus }) => {
 
     // handle customer mapping
     const handleMapping = async (customerId) => {
-        console.log('enter handlemapping')
         const response = await mapBasket(basketName, adminId, customerId, broker);
-        console.log(response);
         const status = await getCustomerStatus(basketName);
-        console.log(basketName, status)
         if(status){
             setStatus(status);
-        }
-        else{
-            console.log('error')
         }
     }
 
