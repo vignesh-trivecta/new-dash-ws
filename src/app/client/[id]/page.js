@@ -30,7 +30,6 @@ const Client = ({ params }) => {
     const response = await validateOtp(basketLink, otp);
     if(response){
       dispatch(setBasketData(response));
-      console.log(response)
       router.push('/client/basket');
     }
   }
