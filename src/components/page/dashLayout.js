@@ -9,23 +9,23 @@ const DashLayout = ({children}) => {
   // local state variable
   const [windowWidth, setWindowWidth] = useState(0);
 
-  // // useEffect with event listener to check the window width 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setWindowWidth(window.innerWidth);
-  //   };
+  // useEffect with event listener to check the window width 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
-  //   // Initial window width
-  //   setWindowWidth(window.innerWidth);
+    // Initial window width
+    setWindowWidth(window.innerWidth);
 
-  //   // Event listener for window resize
-  //   window.addEventListener('resize', handleResize);
+    // Event listener for window resize
+    window.addEventListener('resize', handleResize);
 
-  //   // Clean up event listener on component unmount
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize);
-  //   };
-  // }, []);
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   let width = windowWidth > 768;
 
@@ -42,7 +42,7 @@ const DashLayout = ({children}) => {
 
 const MainContent = function ({ children }) {
   return (
-    <main className="relative w-full overflow-y-scroll pl-4" style={{ height: '80vh' }}>
+    <main className="relative w-full overflow-y-auto pl-4" style={{ height: '90vh' }}>
       {children}
     </main>
   );
