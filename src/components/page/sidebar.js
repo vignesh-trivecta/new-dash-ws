@@ -178,7 +178,7 @@ const ExampleSidebar = function () {
                 <Sidebar.Item
                   icon={HiChartPie}
                   className={
-                    "/admin/dashboard" === pathname ? "bg-gray-100 dark:bg-gray-700" : ""
+                    "/admin/dashboard" === pathname ? "bg-gray-200 dark:bg-gray-700" : ""
                   }
                 >
                   {isLinkDisabled 
@@ -190,7 +190,7 @@ const ExampleSidebar = function () {
                   icon={HiUserGroup}
                   className={
                     "/admin/customers" === pathname
-                      ? "bg-gray-100 dark:bg-gray-700"
+                      ? "bg-gray-200 dark:bg-gray-700"
                       : ""
                   }
                 >
@@ -207,7 +207,7 @@ const ExampleSidebar = function () {
                           icon={HiPencilAlt}
                           className={
                             "/admin/baskets/create" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
                               : " -ml-3"
                           }
                       >
@@ -219,7 +219,7 @@ const ExampleSidebar = function () {
                           icon={AiOutlineFolderView}
                           className={
                             "/admin/baskets/view" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
                               : " -ml-3"
                           }
                       >
@@ -232,7 +232,7 @@ const ExampleSidebar = function () {
                           icon={AiOutlineUserAdd}
                           className={
                             "/admin/baskets/customerMapping" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
                               : " -ml-3"
                           }
                       >
@@ -246,7 +246,7 @@ const ExampleSidebar = function () {
                   icon={CgFileDocument}
                   className={
                     "/admin/reports" === pathname
-                      ? "bg-gray-100 dark:bg-gray-700"
+                      ? "bg-gray-200 dark:bg-gray-700"
                       : ""
                   }
                 >
