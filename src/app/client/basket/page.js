@@ -11,11 +11,16 @@ import { clientConfirmsBasket, getAxisUrl } from '@/app/api/client/route';
 import { segregate } from '@/utils/priceSegregator';
 import { clientLogin } from '@/app/api/login/route';
 
+export const metadata = {
+    title: 'Wealth Spring | Orders Page',
+}
+
 const BasketPage = () => {
 
     // redux
     const basketData = useSelector((state) => state.client.basketData);
     const customerId = basketData.customerId;
+    console.log(basketData);
 
     // local state
     const [show, setShow] = useState(false); // show the basket page or completed page
