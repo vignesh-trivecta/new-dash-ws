@@ -113,32 +113,34 @@ const DashNavbar = function () {
                 <span className="block text-center text-sm font-medium">
                   {email}
                 </span>
-                <div className="flex items-center space-x-1 mt-4">
-                  <span>Time Format: </span>
-                  <input
-                    type="radio"
-                    name="timeFormat"
-                    id="12hr"
-                    value={12}
-                    defaultChecked={time === 12}
-                    onChange={() => {
-                      setTime(12);
-                      dispatch(setTimeFormat(12));
-                    }}
-                  />
-                  <label htmlFor="12hr">12 Hr</label>
-                  <input
-                    type="radio"
-                    name="timeFormat"
-                    id="24hr"
-                    value={24}
-                    defaultChecked={time === 24}
-                    onChange={() => {
-                      setTime(24);
-                      dispatch(setTimeFormat(24));
-                    }}
-                  />
-                  <label htmlFor="24hr">24 Hr</label>
+                <div className="flex flex-col space-y-1 mt-4">
+                  <span className="underline">Time Format: </span>
+                  <div className="space-x-1">
+                    <input
+                      type="radio"
+                      name="timeFormat"
+                      id="12hr"
+                      value={12}
+                      defaultChecked={time === 12}
+                      onChange={() => {
+                        setTime(12);
+                        dispatch(setTimeFormat(12));
+                      }}
+                    />
+                    <label htmlFor="12hr">12 Hr</label>
+                    <input
+                      type="radio"
+                      name="timeFormat"
+                      id="24hr"
+                      value={24}
+                      defaultChecked={time === 24}
+                      onChange={() => {
+                        setTime(24);
+                        dispatch(setTimeFormat(24));
+                      }}
+                    />
+                    <label htmlFor="24hr">24 Hr</label>
+                  </div>
                 </div>
               </Dropdown.Header>
               <Dropdown.Item className=" flex justify-center hover:bg-white">
