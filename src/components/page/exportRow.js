@@ -170,3 +170,4 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
     </>
   )
 }
+
