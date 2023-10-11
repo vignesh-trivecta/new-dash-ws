@@ -54,6 +54,7 @@ export const validateOtp = async(basketLink, otp) => {
 }
 
 // API call to make when client confirms the basket shown to them
+// mock of IIFL login
 export const clientConfirmsBasket = async(basketData) => {
     try{
         const requestOptions = {
@@ -70,7 +71,6 @@ export const clientConfirmsBasket = async(basketData) => {
         }
         const response = await fetch("http://localhost:8084/place/order", requestOptions);
         console.log(response);
-        console.log(response);
 
         if(response.ok) {
             const responseText = await response.text();
@@ -80,6 +80,66 @@ export const clientConfirmsBasket = async(basketData) => {
         } else {
             const errorText = await response.text();
             console.log(errorText);
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+// API call to get the redirect URL for axis 
+export const getAxisUrl = async (customerId) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "customerId": customerId,
+            })
+        }
+        const response = await fetch("http://localhost:8090/axis/client/login", requestOptions);
+        console.log(response);
+
+        if(response.status === 200) {
+            const responseText = await response.json();
+            return responseText.url;
+        } else {
+            return false;
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
+// API call to place the AXIS customer orders 
+export const postAxisOrders = async (customerId, ssoId, basketName, customerName, basketData) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "customerId": customerId,
+                "ssoId": ssoId,
+                "basketName": basketName,
+                "customerName": customerName,
+                "rows": basketData
+            })
+        }
+        console.log(customerId, ssoId, basketName, customerName, basketData)
+        const response = await fetch("http://localhost:8090/axis/client/tokens", requestOptions);
+        console.log(response);
+
+        if(response.status === 200) {
+            const responseText = await response.json();
+            console.log(responseText.body)
+            return responseText.body;
+        } else {
+            return false;
         }
     }
     catch(error){
