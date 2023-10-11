@@ -9,10 +9,6 @@ import Line from "@/../public/line.png";
 import Image from "next/image";
 import { partnerLogin } from "@/app/api/login/route";
 
-export const metadata = {
-    title: 'Wealth Spring | Dashboard',
-}
-
 const DashCards = () => {   
 
     // useEffect to login the partner to IIFL whenever the admin logs in
