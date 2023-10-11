@@ -44,48 +44,67 @@ const BasketPage = () => {
     // OAuth login redirect after click on submit button
     const handleConfirm = async (e) => {
         e.preventDefault();
+        console.log('enter confirm clicked')
         // setShow(true);
-        const res = await clientLogin(customerId);
-        if (true) {
-            const response = await clientConfirmsBasket(basketData);
-            if(response){
-                setData(response);
-                setShow(true);
-                setStatus(true);
-            }
-        }
+        // const res = await clientLogin(customerId);
+        // if (true) {
+        //     const response = await clientConfirmsBasket(basketData);
+        //     if(response){
+        //         setData(response);
+        //         setShow(true);
+        //         setStatus(true);
+        //     }
+        // }
 
         // setShow(true);
 
         // // IIFL redirect logic
-        // if (broker === 'iifl') {
-        //     var f = document.createElement('form');
-        //     f.action = 'https://ttweb.indiainfoline.com/trade/Login.aspx';
-        //     f.method = 'POST';
+        if (broker === 'IIFL') {
+
+
+            // const res = await clientLogin(customerId);
+            // if (true) {
+            //     const response = await clientConfirmsBasket(basketData);
+            //     if(response){
+            //         setData(response);
+            //         setShow(true);
+            //         setStatus(true);
+            //     }
+            // }
+
+
+            var f = document.createElement('form');
+            f.action = 'https://ttweb.indiainfoline.com/trade/Login.aspx';
+            f.method = 'POST';
     
-        //     var i1 = document.createElement('input');
-        //     i1.type = 'hidden';
-        //     i1.name = 'VP';
-        //     i1.value = 'https://www.google.co.in/';
-        //     f.appendChild(i1);
+            var i1 = document.createElement('input');
+            i1.type = 'hidden';
+            i1.name = 'VP';
+            i1.value = 'https://www.google.co.in/';
+            f.appendChild(i1);
     
-        //     var i2 = document.createElement('input');
-        //     i2.type = 'hidden';
-        //     i2.name = 'UserKey';
-        //     i2.value = 'zPBLyrSExfrFMjnNnIvgycdpkTtlaGRv';
-        //     f.appendChild(i2);
+            var i2 = document.createElement('input');
+            i2.type = 'hidden';
+            i2.name = 'UserKey';
+            i2.value = 'zPBLyrSExfrFMjnNnIvgycdpkTtlaGRv';
+            f.appendChild(i2);
     
-        //     document.body.appendChild(f);
-        //     f.submit();
-        // }
-        // // axis redirect logic
-        // else if(broker === 'axis') {
-        //     console.log(url);
-        //     router.push(url);
-        //     // router.push("/client/placeOrder");
-        //     // setShow(true);
-        //     // setStatus(false);
-        // }
+            document.body.appendChild(f);
+            f.submit();
+        }
+        // axis redirect logic
+        else if(broker === 'AXIS') {
+            console.log('enter')
+
+                    console.log(url);
+                    router.push(url);
+                    // setData(response);
+                    // setShow(true);
+                    // setStatus(true);
+            // router.push("/client/placeOrder");
+            // setShow(true);
+            // setStatus(false);
+        }
     }
 
     useEffect(() => {
@@ -94,6 +113,7 @@ const BasketPage = () => {
     
             if (response) {
                 setUrl(response);
+                console.log(response);
             }
             // setUrl(response);
         }
