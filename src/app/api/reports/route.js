@@ -1,30 +1,3 @@
-// API endpoint to login the partner into IIFL programatically
-export const partnerLogin = async () => {
-  try {
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    const response = await fetch(
-      "http://localhost:8085/partner/login",
-      requestOptions
-    );
-
-    if (response.ok) {
-      const responseText = await response.text();
-      const data = JSON.parse(responseText);
-      return data;
-    } else {
-      const errorText = await response.text();
-      throw new Error(`Failed to fetch data: ${errorText}`);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 // API endpoint to get broker based on customer Id
 export const getBroker = async (customerId) => {
   try {
@@ -134,6 +107,7 @@ export const handleLiveReportsFetch = async (
       `http://localhost:8085/partner/live/${requestName}`,
       requestOptions
     );
+    console.log(response)
     if (response.status === 200) {
       const responseText = await response.json();
       return responseText;
