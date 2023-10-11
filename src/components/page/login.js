@@ -90,15 +90,11 @@ const LoginAuth = () => {
 
   // onsubmit function
   const submitLogin = async (values) => {
-    console.log('enter')
     // destructuring values object
     const { username, password, captcha } = values;
-    console.log(username, password, captcha, captchaValue)
 
     // checking if login credentials are correct
     if (username !== null && password !== null && captcha === captchaValue) {
-      console.log('enter')
-
 
       // signing the username, password with secret key
       // using jwt to create a authentication token
@@ -109,7 +105,6 @@ const LoginAuth = () => {
         "WepyWestTestEastWepyWestTestEast"
       );
       const token = jwt.sign({ encryptedUser, encryptedPassword }, "admin12");
-      console.log(token)
 
       // posting the authorized token to backend,
       // based on the received respone 200 or 404
@@ -126,11 +121,9 @@ const LoginAuth = () => {
       }
     } 
     else if(captcha !== captchaValue) {
-      console.log('enter else if')
       setErrorMsg("Invalid credentials! Try again");
     }
     else {
-      console.log("enter else")
       setErrorMsg("Network error! Try after some time.")
     }
   }
