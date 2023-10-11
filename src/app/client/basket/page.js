@@ -11,10 +11,6 @@ import { clientConfirmsBasket, getAxisUrl } from '@/app/api/client/route';
 import { segregate } from '@/utils/priceSegregator';
 import { clientLogin } from '@/app/api/login/route';
 
-export const metadata = {
-    title: 'Wealth Spring | Orders Page',
-}
-
 const BasketPage = () => {
 
     // redux
