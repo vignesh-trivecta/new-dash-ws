@@ -21,22 +21,35 @@ const Client = ({ params }) => {
   const dispatch = useDispatch();
 
   // local state
-  const [otp, setOtp] = useState(null);
+  const [otp, setOtp] = useState('');
   const [error, setError] = useState(false);
+  const [message, setMessage] = useState('');
 
   // function to verify the OTP entered by user
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await validateOtp(basketLink, otp);
-    if(response){
+    if (response === 'server error') {
+      setMessage("Server error! Please try after some time.")
+    }
+    else if (response) {
       dispatch(setBasketData(response));
       router.push('/client/basket');
+    }
+    else {
+      setMessage("Invalid OTP");
     }
   }
 
   // function to generate new OTP
   const otpGeneration = async () => {
-    const data = await generateOtp(basketLink);
+    const response = await generateOtp(basketLink);
+    if (response) {
+      setMessage('');
+    }
+    else {
+      setMessage('OTP generation failed! Try again.')
+    }
   }
 
   // useEffect that generates a new OTP whenever the page loads
@@ -56,10 +69,11 @@ const Client = ({ params }) => {
             <Button color='gray' type='button' className='' onClick={otpGeneration}>Resend OTP</Button>
             <Button onClick={handleSubmit} type='submit' className=' '>Submit</Button>
           </div>
+          <p className='font-bold text-red-500 mt-4 flex justify-center'>{message}</p>
         </div>
       </div>
     </div>
   )
 }
 
-export default Client
+export default Client;
