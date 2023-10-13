@@ -60,7 +60,7 @@ const Page = ({ params }) => {
   const ids = [{ Reports: "/admin/reports" }, { [title]: "" }];
 
   // column/header data for excel and pdf
-  // const columns = ["Script", "Exchange", "Quantity", "Current Price", "Current Value", "% Change"]
+  // const columns = ["Scripts", "Exchange", "Quantity", "Current Price", "Current Value", "% Change"]
 
   // useEffect to fetch table data from backend
   useEffect(() => {
@@ -96,6 +96,8 @@ const Page = ({ params }) => {
           startDate,
           endDate
         );
+
+        console.log(response);
         
         if (params.id === 'orderbook') {
             const { mainDatas, tooltipDatas} = orderDataParser(response);
