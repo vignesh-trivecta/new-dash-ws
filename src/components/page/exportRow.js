@@ -1,46 +1,51 @@
-'use client';
+"use client";
 
 import { BiExport } from "react-icons/bi";
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useRef, useState } from 'react'
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useRef, useState } from "react";
 import { Button } from "flowbite-react";
 import { CSVLink } from "react-csv";
 import { useSelector } from "react-redux";
-import stringFormatter from "@/utils/stringFormatter";
+import stringFormatter from "@/utils/formatter/stringFormatter";
 import PrintPDF from "../admin/jsonPdf";
 import { usePathname } from "next/navigation";
 
-export default function ExportRow({data, columns, pdfColumns, fileName}) {
-
+export default function ExportRow({ data, columns, pdfColumns, fileName }) {
   let [isOpen, setIsOpen] = useState(false);
 
   return (
     <div>
-        <button 
-        onClick={() => {setIsOpen(true)}}
-        className="rounded-lg bg-gray-100 p-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-200">
-          <BiExport className=" h-5 w-5 text-gray-500" aria-hidden="true" />
-        </button>
-        {
-          isOpen 
-          && 
-          <ExportModal 
-            isOpen={isOpen} 
-            setIsOpen={setIsOpen} 
-            data={data} 
-            columns={columns} 
-            pdfColumns={pdfColumns}
-            fileName={fileName} 
-          />
-        }
+      <button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+        className="rounded-lg bg-gray-100 p-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-200"
+      >
+        <BiExport className=" h-5 w-5 text-gray-500" aria-hidden="true" />
+      </button>
+      {isOpen && (
+        <ExportModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          data={data}
+          columns={columns}
+          pdfColumns={pdfColumns}
+          fileName={fileName}
+        />
+      )}
     </div>
-  )
+  );
 }
 
-
-export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileName}) => {
-
-  const [selected, setSelected] = useState('xls');
+export const ExportModal = ({
+  isOpen,
+  setIsOpen,
+  data,
+  columns,
+  pdfColumns,
+  fileName,
+}) => {
+  const [selected, setSelected] = useState("xls");
   const csvLinkRef = useRef();
 
   // redux
@@ -50,27 +55,37 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
   const startDate = useSelector((state) => state.report.startDate);
   const endDate = useSelector((state) => state.report.endDate);
 
-  const now = stringFormatter(new Date().toISOString())
+  const now = stringFormatter(new Date().toISOString());
 
   const header = [
-    ["Customer Id", "Customer Name", "Broker", "Report Type", "From", "To", "Report Generated On"],
-    [customerId.split('-')[0], customerId.split('-')[1], broker, reportType, stringFormatter(startDate.toISOString()).split(' ')[0], stringFormatter(endDate.toISOString()).split(' ')[0], now],
-  ]
+    [
+      "Customer Id",
+      "Customer Name",
+      "Broker",
+      "Report Type",
+      "From",
+      "To",
+      "Report Generated On",
+    ],
+    [
+      customerId.split("-")[0],
+      customerId.split("-")[1],
+      broker,
+      reportType,
+      stringFormatter(startDate.toISOString()).split(" ")[0],
+      stringFormatter(endDate.toISOString()).split(" ")[0],
+      now,
+    ],
+  ];
 
+  const csvData = [header[0], header[1], ["", "", ""], columns];
 
-  const csvData = [
-    header[0],
-    header[1],
-    ['', '', ''],
-    columns,
-  ]
-
-  for(let i=0; i<data.length; i++) {
-    csvData.push(Object.values(data[i]))
+  for (let i = 0; i < data.length; i++) {
+    csvData.push(Object.values(data[i]));
   }
-    
+
   function handleExport() {
-    if(selected == "xls") {
+    if (selected == "xls") {
       csvLinkRef.current.link.click();
     }
   }
@@ -80,11 +95,11 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
   }
 
   function closeModal() {
-    setIsOpen(false)
+    setIsOpen(false);
   }
 
   function openModal() {
-    setIsOpen(true)
+    setIsOpen(true);
   }
 
   return (
@@ -94,8 +109,7 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
         ref={csvLinkRef}
         data={csvData}
         className="btn btn-primary"
-      >
-      </CSVLink>
+      ></CSVLink>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
@@ -130,34 +144,46 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
                   </Dialog.Title>
                   <div className="mt-2 flex items-center justify-center space-x-4">
                     <label className="" htmlFor="xls">
-                      <input value='xls' checked={selected === "xls"} onChange={handleClick} type="radio" className="mr-1" name="xls" id="xls" />
+                      <input
+                        value="xls"
+                        checked={selected === "xls"}
+                        onChange={handleClick}
+                        type="radio"
+                        className="mr-1"
+                        name="xls"
+                        id="xls"
+                      />
                       XLS
                     </label>
                     <label className="" htmlFor="pdf">
-                      <input value='pdf' checked={selected === "pdf"} onChange={handleClick} type="radio" className="mr-1" name="pdf" id="pdf" />
+                      <input
+                        value="pdf"
+                        checked={selected === "pdf"}
+                        onChange={handleClick}
+                        type="radio"
+                        className="mr-1"
+                        name="pdf"
+                        id="pdf"
+                      />
                       PDF
                     </label>
                   </div>
 
                   <div className="mt-4 flex space-x-2 justify-center">
-                    <div
-                    > 
-                    {
-                      (selected == "pdf") 
-                      ? (<PrintPDF data={data} columns={pdfColumns} fileName={fileName} />) 
-                      : <Button
-                          onClick={handleExport}
-                          size={'sm'}
-                        >
+                    <div>
+                      {selected == "pdf" ? (
+                        <PrintPDF
+                          data={data}
+                          columns={pdfColumns}
+                          fileName={fileName}
+                        />
+                      ) : (
+                        <Button onClick={handleExport} size={"sm"}>
                           Export
                         </Button>
-                    }
+                      )}
                     </div>
-                    <Button
-                      size={'sm'}
-                      color={'gray'}
-                      onClick={closeModal}
-                    >
+                    <Button size={"sm"} color={"gray"} onClick={closeModal}>
                       Cancel
                     </Button>
                   </div>
@@ -168,6 +194,5 @@ export const ExportModal = ({isOpen, setIsOpen, data, columns, pdfColumns, fileN
         </Dialog>
       </Transition>
     </>
-  )
-}
-
+  );
+};

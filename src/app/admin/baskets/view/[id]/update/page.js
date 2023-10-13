@@ -9,7 +9,7 @@ import { HiInformationCircle, HiCheckCircle } from "react-icons/hi";
 import { getBasketValue, getSpecificBasket } from "@/app/api/basket/route";
 import BasketRecords from "@/components/admin/table/basketRecords";
 import AddRecord from "@/components/admin/crud/addRecord";
-import { segregate } from "@/utils/priceSegregator";
+import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
 
 const UpdateBasket = ({ params }) => {

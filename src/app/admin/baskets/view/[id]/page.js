@@ -1,27 +1,22 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
-import { Button, Label, Modal, TextInput } from 'flowbite-react';
-import { cloneBasket, getSpecificBasket } from '@/app/api/basket/route';
-import { segregate } from '@/utils/priceSegregator';
-import Breadcrumbs from '@/components/page/breadcrumb';
+import React, { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { cloneBasket, getSpecificBasket } from "@/app/api/basket/route";
+import { segregate } from "@/utils/formatter/priceSegregator";
+import Breadcrumbs from "@/components/page/breadcrumb";
 
 const ViewTable = ({ params }) => {
-  
-  const basketName = (params.id).split('%20').join(' ');
+  const basketName = params.id.split("%20").join(" ");
   let input;
 
-  const ids = [
-    {"View Baskets" : "/admin/baskets/view"},
-    { [basketName] : ""},
-  ]
+  const ids = [{ "View Baskets": "/admin/baskets/view" }, { [basketName]: "" }];
 
   // local state variables
   const [records, setRecords] = useState([]);
   const [res, setRes] = useState(false);
-
 
   // modal elements
   const [openModal, setOpenModal] = useState();
@@ -34,9 +29,9 @@ const ViewTable = ({ params }) => {
   const cancelButtonRef = useRef(null);
 
   // useEffect to fetch the table records
-  useEffect( () => {
+  useEffect(() => {
     const gettingRecords = async () => {
-      const response = await getSpecificBasket( basketName );
+      const response = await getSpecificBasket(basketName);
       setRecords(response);
     };
     gettingRecords();
@@ -45,7 +40,7 @@ const ViewTable = ({ params }) => {
   // useEffect to fetch the table records after deletion or when res changes
   useEffect(() => {
     const gettingRecords = async () => {
-      if (res === 'loading') {
+      if (res === "loading") {
         // Fetch the records after a brief delay to allow the deletion to complete on the server
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
@@ -55,10 +50,9 @@ const ViewTable = ({ params }) => {
     gettingRecords();
   }, [res, params.id]);
 
-
-  const handleClone =  () => {
+  const handleClone = () => {
     props.setOpenModal(undefined);
-  }  
+  };
 
   // const handleDelete = async (e) => {
   //   e.preventDefault();
@@ -75,10 +69,9 @@ const ViewTable = ({ params }) => {
   //     console.error('Error deleting basket:', error);
   //   }
   // };
-  
 
   return (
-    <div className='container mx-auto mt-4' style={{width: '95%'}}>
+    <div className="container mx-auto mt-4" style={{ width: "95%" }}>
       {/* <>
         <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
@@ -152,101 +145,174 @@ const ViewTable = ({ params }) => {
 
       {/* modal for entering new basket name */}
       <>
-        <Modal show={props.openModal === 'form-elements'} size="sm" popup onClose={() => props.setOpenModal(undefined)}>
+        <Modal
+          show={props.openModal === "form-elements"}
+          size="sm"
+          popup
+          onClose={() => props.setOpenModal(undefined)}
+        >
           <Modal.Header />
-          <Modal.Body >
+          <Modal.Body>
             <div className="space-y-6">
               <div>
                 <div className="mb-2 block">
                   <Label htmlFor="email" value="New Basket Name" />
                 </div>
-                <TextInput id="email" className='' autoFocus
-                onChange={(e) => {
-                  input = e.target.value;
-                  // setNewBasketName(e.target.value);
-                  }} required />
+                <TextInput
+                  id="email"
+                  className=""
+                  autoFocus
+                  onChange={(e) => {
+                    input = e.target.value;
+                    // setNewBasketName(e.target.value);
+                  }}
+                  required
+                />
               </div>
-              
+
               <div className="w-full flex justify-center items-center space-x-4">
-                <Button onClick={async() => {let response= await cloneBasket(basketName, input, adminId); setOpenModal(undefined); router.push('/admin/baskets/view')}}>Clone</Button>
-                <Button color='gray' onClick={() => {setOpenModal(undefined)}}>Cancel</Button>
+                <Button
+                  onClick={async () => {
+                    let response = await cloneBasket(
+                      basketName,
+                      input,
+                      adminId
+                    );
+                    setOpenModal(undefined);
+                    router.push("/admin/baskets/view");
+                  }}
+                >
+                  Clone
+                </Button>
+                <Button
+                  color="gray"
+                  onClick={() => {
+                    setOpenModal(undefined);
+                  }}
+                >
+                  Cancel
+                </Button>
               </div>
-              
             </div>
           </Modal.Body>
         </Modal>
       </>
 
-      <div className='flex justify-between'>
+      <div className="flex justify-between">
         <div>
           <Breadcrumbs len={ids.length} ids={ids} />
         </div>
-        <button className='flex border border-gray-200 p-2 rounded-md hover:bg-gray-100' onClick={() => setOpenModal('form-elements')} >
-          <svg className="w-6 h-6 text-gray-500 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 18a.969.969 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V9l4-4m-4 5h5m3-4h5V1m5 1v12a.97.97 0 0 1-.933 1H9.933A.97.97 0 0 1 9 14V5l4-4h5.067A.97.97 0 0 1 19 2Z"/>
+        <button
+          className="flex border border-gray-200 p-2 rounded-md hover:bg-gray-100"
+          onClick={() => setOpenModal("form-elements")}
+        >
+          <svg
+            className="w-6 h-6 text-gray-500 dark:text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 18a.969.969 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V9l4-4m-4 5h5m3-4h5V1m5 1v12a.97.97 0 0 1-.933 1H9.933A.97.97 0 0 1 9 14V5l4-4h5.067A.97.97 0 0 1 19 2Z"
+            />
           </svg>
-          <span className='ml-2'>Clone Basket</span>
+          <span className="ml-2">Clone Basket</span>
         </button>
       </div>
 
       {/* Specific Basket Details table */}
-      <div className='flex mt-6'>
-        <div className={'overflow-y-scroll border'} >
-          <table className='table-fixed w-full ' >
-            <thead className='sticky top-0  bg-gray-50' >
+      <div className="flex mt-6">
+        <div className={"overflow-y-scroll border"}>
+          <table className="table-fixed w-full ">
+            <thead className="sticky top-0  bg-gray-50">
               <tr>
-                <th className='text-left font-medium text-sm p-2' style={{width:'8%'}}>S.No</th>
-                <th className='text-left font-medium text-sm p-2' style={{width: '25%'}}>Scripts</th>
-                <th className='text-left font-medium text-sm'>Exchange</th>
-                <th className='text-left font-medium text-sm'>Order Type</th>
-                <th className='text-left font-medium text-sm'>Weights %</th>
-                <th className='text-center font-medium text-sm'>Price &#8377;</th>
-                <th className='text-center font-medium text-sm'>Limit Price &#8377;</th>
-                <th className='text-center font-medium text-sm'>Quantity</th>
+                <th
+                  className="text-left font-medium text-sm p-2"
+                  style={{ width: "8%" }}
+                >
+                  S.No
+                </th>
+                <th
+                  className="text-left font-medium text-sm p-2"
+                  style={{ width: "25%" }}
+                >
+                  Scripts
+                </th>
+                <th className="text-left font-medium text-sm">Exchange</th>
+                <th className="text-left font-medium text-sm">Order Type</th>
+                <th className="text-left font-medium text-sm">Weights %</th>
+                <th className="text-center font-medium text-sm">
+                  Price &#8377;
+                </th>
+                <th className="text-center font-medium text-sm">
+                  Limit Price &#8377;
+                </th>
+                <th className="text-center font-medium text-sm">Quantity</th>
               </tr>
             </thead>
             <tbody>
-            {records && records?.length > 0 
-              ? (records?.map((record, index) => (
-                <tr className='border-t border-b hover:bg-gray-100'>
-                  <th className="text-left text-sm text-black ">
-                      <div className="ml-4">
-                          {index+1}
+              {records && records?.length > 0 ? (
+                records?.map((record, index) => (
+                  <tr className="border-t border-b hover:bg-gray-100">
+                    <th className="text-left text-sm text-black ">
+                      <div className="ml-4">{index + 1}</div>
+                    </th>
+                    <td className="text-left">
+                      <div className="p-2 text-sm text-black">
+                        {record.instrumentName}
                       </div>
-                  </th>
-                  <td className='text-left'>
-                    <div className='p-2 text-sm text-black'>{record.instrumentName}</div>
-                  </td>
-                  <td className='text-left'>
-                    <div className='p-2 text-sm text-black'>{record.exchangeUsed}</div>
-                  </td>
-                  <td className='text-left'>
-                    <div className='p-2 text-sm text-black'>{record.orderType}</div>
-                  </td>
-                  <td className='text-center'>
-                    <div className='p-2 mr-4 text-sm text-black'>{record.weightValue}</div>              
-                  </td>
-                  <td className='text-right align-middle'>
-                    <div className='p-2 mr-8 text-sm text-black'>{segregate(record.priceValue)}</div>
-                  </td>
-                  <td className='text-right align-middle'>
-                    <div className='p-2 mr-8 text-sm text-black'>{segregate(record.limitPrice ? record.limitPrice : 0)}</div>
-                  </td>
-                  <td className='text-right'>
-                    <div className='p-2 mr-10 text-sm text-black'>{(record.quantityValue)}</div>
-                  </td>
-                </tr>
-              ))) 
-              : <td colSpan="8" style={{ height: '250px', textAlign: 'center' }}>
+                    </td>
+                    <td className="text-left">
+                      <div className="p-2 text-sm text-black">
+                        {record.exchangeUsed}
+                      </div>
+                    </td>
+                    <td className="text-left">
+                      <div className="p-2 text-sm text-black">
+                        {record.orderType}
+                      </div>
+                    </td>
+                    <td className="text-center">
+                      <div className="p-2 mr-4 text-sm text-black">
+                        {record.weightValue}
+                      </div>
+                    </td>
+                    <td className="text-right align-middle">
+                      <div className="p-2 mr-8 text-sm text-black">
+                        {segregate(record.priceValue)}
+                      </div>
+                    </td>
+                    <td className="text-right align-middle">
+                      <div className="p-2 mr-8 text-sm text-black">
+                        {segregate(record.limitPrice ? record.limitPrice : 0)}
+                      </div>
+                    </td>
+                    <td className="text-right">
+                      <div className="p-2 mr-10 text-sm text-black">
+                        {record.quantityValue}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <td
+                  colSpan="8"
+                  style={{ height: "250px", textAlign: "center" }}
+                >
                   No table data
-                </td>  
-            }
-          </tbody>
-        </table>
-      </div>
+                </td>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ViewTable
+export default ViewTable;

@@ -1,5 +1,5 @@
 import UpdateRecord from "../crud/updateRecord";
-import { segregate } from "@/utils/priceSegregator";
+import { segregate } from "@/utils/formatter/priceSegregator";
 import DeleteRecord from "../crud/deleteRecord";
 
 const BasketRecords = ({

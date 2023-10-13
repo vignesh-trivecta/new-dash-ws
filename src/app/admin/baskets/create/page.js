@@ -12,7 +12,7 @@ import { getRecords } from "@/app/api/tempBasket/route";
 import AddRecord from "@/components/admin/crud/addRecord";
 import BasketRecords from "@/components/admin/table/basketRecords";
 import SubmitBasket from "@/components/admin/crud/submitBasket";
-import { segregate } from "@/utils/priceSegregator";
+import { segregate } from "@/utils/formatter/priceSegregator";
 
 const CreateBasket = () => {
   // basket status messages

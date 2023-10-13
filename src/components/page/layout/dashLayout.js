@@ -1,15 +1,14 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import DashNavbar from "./navbar";
 import ExampleSidebar from "./sidebar";
 
-const DashLayout = ({children}) => {
-
+const DashLayout = ({ children }) => {
   // local state variable
   const [windowWidth, setWindowWidth] = useState(0);
 
-  // useEffect with event listener to check the window width 
+  // useEffect with event listener to check the window width
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -19,11 +18,11 @@ const DashLayout = ({children}) => {
     setWindowWidth(window.innerWidth);
 
     // Event listener for window resize
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     // Clean up event listener on component unmount
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -34,7 +33,7 @@ const DashLayout = ({children}) => {
       <DashNavbar />
       <div className="flex items-start">
         {width && <ExampleSidebar />}
-        <MainContent >{children}</MainContent>
+        <MainContent>{children}</MainContent>
       </div>
     </div>
   );
@@ -42,7 +41,10 @@ const DashLayout = ({children}) => {
 
 const MainContent = function ({ children }) {
   return (
-    <main className="relative w-full overflow-y-auto pl-4" style={{ height: '90vh' }}>
+    <main
+      className="relative w-full overflow-y-auto pl-4"
+      style={{ height: "90vh" }}
+    >
       {children}
     </main>
   );

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import stringFormatter from "@/utils/stringFormatter";
+import stringFormatter from "@/utils/formatter/stringFormatter";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
 import TableShimmer from "../../page/tableShimmer";

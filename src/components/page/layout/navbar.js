@@ -76,12 +76,21 @@ const DashNavbar = function () {
               <div>
                 Time:
                 {time === 12
-                  ? ` ${new Date().getHours() > 12
-                      ? (new Date().getHours() - 12 < 10 ? '0' : '') + (new Date().getHours() - 12)
-                      : new Date().getHours()
-                      } : ${(new Date().getMinutes() < 10 ? `0${new Date().getMinutes()}` : new Date().getMinutes() )} ${new Date().getHours() >= 12 ? "PM" : "AM"}`
-                  : ` ${new Date().getHours()} : ${(new Date().getMinutes() < 10 ? `0${new Date().getMinutes()}` : new Date().getMinutes() )}`
-                }
+                  ? ` ${
+                      new Date().getHours() > 12
+                        ? (new Date().getHours() - 12 < 10 ? "0" : "") +
+                          (new Date().getHours() - 12)
+                        : new Date().getHours()
+                    } : ${
+                      new Date().getMinutes() < 10
+                        ? `0${new Date().getMinutes()}`
+                        : new Date().getMinutes()
+                    } ${new Date().getHours() >= 12 ? "PM" : "AM"}`
+                  : ` ${new Date().getHours()} : ${
+                      new Date().getMinutes() < 10
+                        ? `0${new Date().getMinutes()}`
+                        : new Date().getMinutes()
+                    }`}
               </div>
             </div>
             {/* User profile dropdown */}
