@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import TableShimmer from '../page/tableShimmer';
 
 const ReportsTable = ({ columns, datas, tooltipData, param }) => {
+  console.log(columns, datas,tooltipData)
   const pathName = usePathname();
   const time = useSelector((state) => state.user.timeFormat);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,9 +33,12 @@ const ReportsTable = ({ columns, datas, tooltipData, param }) => {
 
   return (
     <div className="mt-4" style={{ height: '380px' }}>
-      {isLoading ? (
-        <TableShimmer datas={datas} /> // Render your shimmer loading UI here
-      ) : datas && datas?.length !== 0 ? (
+      {
+      isLoading ? (
+        // <TableShimmer datas={datas} /> // Render your shimmer loading UI here
+        <></>
+      ) : 
+      datas && datas?.length !== 0 ? (
         <div className="overflow-y-scroll border" style={{ height: '380px' }}>
           <Table className="">
             <Thead className="">
