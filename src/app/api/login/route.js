@@ -9,18 +9,11 @@ export const loginAPI = async (token) => {
               "Authorization": `Bearer ${token}`
             },
         };
-        const response = await fetch("http://localhost:8082/admin/login", requestOptions);
-        console.log(response)
 
-        if (response.status === 200) {
-            const responseText = await response.text();
-            const data = JSON.parse(responseText);
-            console.log(data)
-            return data;
-        } else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
-        }
+        const response = await fetch("http://localhost:8082/admin/login", requestOptions);
+        const responseText = await response.json();
+
+        return responseText;
     }
     catch(error){
         return error.message;
@@ -38,8 +31,7 @@ export const partnerLogin = async () => {
         }
 
         const response = await fetch("http://localhost:8085/partner/login", requestOptions);
-        console.log(response)
-
+        
     } catch (error) {
         return error.message;
     }
@@ -62,9 +54,8 @@ export const clientLogin = async(customerId) => {
         console.log(response)
         if(response.status === 200) {
             return true;
-        } else {
-            return false;
-        }
+        } 
+        return false;
     }
     catch(error){
         console.log(error);
