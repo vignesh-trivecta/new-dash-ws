@@ -109,22 +109,26 @@ const LoginAuth = () => {
       // posting the authorized token to backend,
       // based on the received respone 200 or 404
       // redirecting user to next page
-      try {
-        const login = await loginAPI(token);
+      const login = await loginAPI(token);
+      if (login.statusCode === 200) {
         dispatch(setUsername(username));
         dispatch(setEmail(login.email));
         dispatch(setPhone(login.phone));
         dispatch(setAdminLoginStatus(true));
         router.push("/admin/dashboard");
-      } catch (error) {
-        setErrorMsg("Please try again");
+      }
+      else if (login.statusCode === 404) {
+        setErrorMsg("Invalid credentials! Try again");
+      }
+      else {
+        setErrorMsg(login + ". Please Try after some time");
       }
     } 
     else if(captcha !== captchaValue) {
       setErrorMsg("Invalid credentials! Try again");
     }
     else {
-      setErrorMsg("Network error! Try after some time.")
+      setErrorMsg("Network error! Try after some time")
     }
   }
 
