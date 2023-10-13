@@ -68,6 +68,7 @@ export const handleDbReportsFetch = async (
       `http://localhost:8083/iifl/db/${requestName}`,
       requestOptions
     );
+    console.log(response);
     if (response.status === 200) {
       const responseText = await response.json();
       return responseText;
