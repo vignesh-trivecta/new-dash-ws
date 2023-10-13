@@ -329,7 +329,7 @@ const UpdateRecord = ({ recId, instrumentName, exchange, transType, orderType, w
                     {/* Quantity element */}
                     <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
                         <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                        <input disabled id='quantity' name='quantity' value={segregate(localQuantity) || segregate(lquantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md text-right' />
+                        <input disabled id='quantity' name='quantity' value={(localQuantity) || (lquantity)} type="string" className='absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md text-right' />
                     </div>
                     
                     {/* Limit Input element */}
