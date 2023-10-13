@@ -27,7 +27,7 @@ const BasketRecords = ({ record, index, handleFetch, setHandleFetch, basketName,
         <div className='text-sm text-black'>{segregate(record.limitPrice)}</div>
       </td>
       <td className='text-right'>
-        <div className='text-sm text-black'>{segregate(record.quantityValue)}</div>
+        <div className='text-sm text-black'>{(record.quantityValue)}</div>
       </td>
       <td className="p-2 flex gap-2 ml-4">
         < UpdateRecord 
