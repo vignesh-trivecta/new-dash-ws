@@ -27,12 +27,10 @@ const PlaceOrder = () => {
     const customerId = basketData.customerId;
     const basketName = basketData.basketName;
     const customerName = basketData.customerName;
-    console.log(basketData)
 
     useEffect(() => {
         const placeAxisOrders = async () => {
             const response = await postAxisOrders(customerId, ssoId, basketName, customerName, basketData.rows);
-            console.log(response);
             if (response !== false) {
                 setData(response);
                 setStatus(true);
@@ -67,31 +65,68 @@ const PlaceOrder = () => {
             {
                 status  // show the spinner or order placed page
                 ? // - order placed page
-                (<div className='absolute top-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center space-y-4 w-full'>
+                (<div className='flex flex-col items-center justify-center space-y-4 w-full absolute left-1/2 transform -translate-x-1/2 md:w-1/2 p-4 mt-4'>
                     <div className='flex items-center justify-center space-x-2'>
                         <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
                             <HiCheck className="h-5 w-5" />
                         </div>
-                        <p className='text-sm'>Your order has been placed</p> 
+                        <p>Your order has been placed</p> 
                     </div>
-                    <div className='flex justify-between space-x-8'>
+                    <div className='flex justify-between space-x-8 text-sm md:text-base'>
                         <div className='flex flex-col space-y-2'>
-                            <div className='text-xs'>Basket</div>
-                            <div className='text-sm'>{data?.basketName}</div>
+                            <div className='font-semibold'>Basket</div>
+                            <div>{data?.basketName}</div>
                         </div>
                         <div className='flex flex-col space-y-2'>
-                            <div className='text-xs'>Status</div>
-                            <div className='text-sm'>{data?.basketStatus}</div>
+                            <div className='font-semibold'>Status</div>
+                            <div>{data?.basketStatus}</div>
                         </div>
                         <div className='flex flex-col space-y-2'>
-                            <div className='text-xs'>{data?.scriptStatus}</div>
+                            <div className='font-semibold'>{data?.scriptStatus}</div>
                             <div className='text-sm border border-green-200 h-1/2 rounded-md bg-green-200'></div>
                         </div>
                     </div>
                     <div>
-                        <p className='text-sm'><button onClick={() => { setShowBasket(true)}} className='underline'>Click</button> here to view executed basket</p>
+                        <div className='flex justify-center items-center mt-4'>
+                            <table className='table-fixed border p-2 w-full '>
+                                <thead className='border-b text-sm md:text-base bg-gray-50'>
+                                    <tr>
+                                        <th className='p-2'>S.No</th>
+                                        <th className='p-2'>Scripts</th>
+                                        <th className='p-2'>Price&nbsp;&#8377;</th>
+                                        <th className='p-2'>Quantity</th>
+                                        <th className='p-2'>Total&nbsp;&#8377;</th>
+                                        <th className='p-2'>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody className='text-sm md:text-base'>
+                                    {
+                                        data?.details.map((record, index) => {
+                                            return <tr className='border-b hover:bg-gray-100' key={index}>
+                                                <td className='text-center'>{index+1}</td>
+                                                <td className='p-2 break-words'>{record?.tradingSymbol}</td>
+                                                <td className='text-right sm:pr-4'>{segregate(record?.price)}</td>
+                                                <td className='text-right pr-4 sm:pr-8'>{(record?.quantity)}</td>
+                                                <td className='text-right pr-2 sm:pr-4'>{segregate((record?.price) * (record?.quantity))}</td>
+                                                <td className='text-right pr-2'>{record?.orderStatus}</td>
+                                            </tr>
+                                        })
+                                    }
+                                </tbody>
+                            </table> 
+                        </div> 
                     </div>
-                    {  // inside of the order placed page
+                    {/* <div>
+                        <button onClick={() => {
+                            console.log("button clicked")
+                            window.opener = null;
+                            window.open("", "_self");
+                            window.close();
+                        }}>Close</button>
+                    </div> */}
+
+
+                    {/* {  // inside of the order placed page
                     showBasket // show or not show the basket in orders placed page by using a button click
                         ? // showing the placed order basket
                         <div className='flex justify-center items-center mt-4 text-xs'>
@@ -103,29 +138,28 @@ const PlaceOrder = () => {
                                         <th>Price&nbsp;&#8377;</th>
                                         <th className='p-2'>Quantity</th>
                                         <th className='p-2'>Total&nbsp;&#8377;</th>
-                                        <th className='p-2'>Stauts</th>
+                                        <th className='p-2'>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         data?.details.map((record, index) => {
                                             return <tr className='border-b' key={index}>
-                                                    <td className='text-center'>{index+1}</td>
-                                                    <td className='truncate p-2'>{record?.tradingSymbol}</td>
-                                                    <td className='text-right'>{record?.price}</td>
-                                                    <td className='text-right pr-4'>{segregate(record?.quantity)}</td>
-                                                    <td className='text-right pr-2'>{segregate((record?.price) * (record?.quantity))}</td>
-                                                    <td className='text-right pr-2'>{record?.orderStatus}</td>
+                                                <td className='text-center'>{index+1}</td>
+                                                <td className='truncate p-2'>{record?.tradingSymbol}</td>
+                                                <td className='text-right'>{segregate(record?.price)}</td>
+                                                <td className='text-right pr-4'>{segregate(record?.quantity)}</td>
+                                                <td className='text-right pr-2'>{segregate((record?.price) * (record?.quantity))}</td>
+                                                <td className='text-right pr-2'>{record?.orderStatus}</td>
                                             </tr>
                                         })
                                     }
-                                
                                 </tbody>
                             </table> 
                         </div> 
                         :  // showing empty page 
                         <></>
-                    }
+                    } */}
                 </div>)
                 : // - spinner loading page
                     (<div className='flex flex-col justify-center items-center h-screen'>
