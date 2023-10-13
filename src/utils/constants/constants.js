@@ -1,4 +1,4 @@
-export const holdingColumns = ["Script", "Exchange", "Quantity", "Current Price", "Current Value", "% Change"];
+export const holdingColumns = ["Script", "Quantity", "Current Price", "Current Value", "% Change"];
 export const ledgerExcelColumns = ["Voucher Date", "Voucher Number", "Narration", "Debit/ Credit", "Amount ₹"];
 export const ledgerPdfColumns = ["Voucher Date", "Voucher Number", "Narration", "Debit/ Credit", "Amount"];
 export const marginExcelColumns = ["Adjusted Ledger Balance ₹", "Gross Holding Value ₹", "Gross Margin ₹", "Available Margin ₹"];

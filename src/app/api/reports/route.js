@@ -29,18 +29,23 @@ export const getBroker = async (customerId) => {
 // API endpoint to activate or disable today radio button
 // based on the market condition
 export const isMarketOpen = async () => {
-  const requestOptions = {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }
-
-  const response = await fetch("http://localhost:8083/market/check", requestOptions);
-
-  if (response.status === 200) {
-    const responseText = await response.text();
-    return responseText;
+  try {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  
+    const response = await fetch("http://localhost:8083/market/check", requestOptions);
+  
+    if (response.status === 200) {
+      const responseText = await response.json();
+      console.log(responseText.marketStatus)
+      return responseText.marketStatus;
+    }
+  } catch (error) {
+    console.log(error)
   }
 }
 
@@ -53,6 +58,7 @@ export const handleDbReportsFetch = async (
   endDate
 ) => {
   try {
+
     const requestOptions = {
       method: "POST",
       headers: {
@@ -64,23 +70,25 @@ export const handleDbReportsFetch = async (
         toDate: endDate?.toISOString().split('T')[0],
       }),
     };
+
     const response = await fetch(
       `http://localhost:8083/iifl/db/${requestName}`,
       requestOptions
     );
-    console.log(response);
+
     if (response.status === 200) {
       const responseText = await response.json();
       return responseText;
     } 
     else if (response.status === 404) {
-      return response.status;
+      //return response.status;
     }
     else {
-      return response.status;
+      //return response.status;
     }
   } catch (error) {
-    return error.message;
+    console.log(error)
+    //return error.message;
   }
 };
 

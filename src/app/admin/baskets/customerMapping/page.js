@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBasketAmount, setBasketName } from "@/store/basketSlice";
+import { setBasketAmount } from "@/store/basketSlice";
 import { useRouter } from "next/navigation";
 import { HiCheckCircle } from "react-icons/hi";
 import { Alert } from "flowbite-react";
@@ -23,18 +23,20 @@ const CustomerMapping = () => {
   const dispatch = useDispatch();
   const loggedIn = useSelector((state) => state.user.loggedIn);
   const adminId = useSelector((state) => state.user.username);
-  const basketName = useSelector((state) => state.basket.basketName);
 
   // local state
+  const [basketName, setBasketName] = useState("");
   const [customers, setCustomers] = useState([]);
   const [weblink, setWeblink] = useState(false);
   const [message, setMessage] = useState(false);
   const [status, setStatus] = useState([]);
   const [records, setRecords] = useState([]);
-  const [investmentVal, setInvestmentVal] = useState("");
+  // const [investmentVal, setInvestmentVal] = useState("");
+  const [scripts, setScripts] = useState(0);
   const [basketVal, setBasketVal] = useState("");
   const [transType, setTransType] = useState("");
   const [broker, setBroker] = useState(brokers[0].name);
+  const [enableInputs, setEnableInputs] = useState(basketName == "");
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -60,7 +62,7 @@ const CustomerMapping = () => {
 
   if (weblink) {
     dispatch(setBasketAmount(""));
-    dispatch(setBasketName(""));
+    (setBasketName(""));
     setTimeout(() => {
       setWeblink(false);
       // router.push("/admin/baskets/create");
@@ -69,7 +71,7 @@ const CustomerMapping = () => {
 
   if (message) {
     dispatch(setBasketAmount(""));
-    dispatch(setBasketName(""));
+    (setBasketName(""));
     setTimeout(() => {
       setMessage(false);
       // router.push("/admin/baskets/create");
@@ -78,11 +80,12 @@ const CustomerMapping = () => {
 
   // handle basket selection
   const handleSelection = async (value) => {
-    dispatch(setBasketName(value));
+    (setBasketName(value));
     const response = await getBasketValue(value, adminId);
-    setInvestmentVal(response[0]?.basketInvestAmt);
+    // setInvestmentVal(response[0]?.basketInvestAmt);
     setTransType(response[0]?.transactionType);
     setBasketVal(response[0]?.basketActualValue);
+    setEnableInputs(false);
 
     const status = await getCustomerStatus(value);
     if (status) {
@@ -92,7 +95,7 @@ const CustomerMapping = () => {
 
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
-      <h5 className="font-bold mb-2">Map Basket</h5>
+      <h5 className="font-bold mb-2">Map Customer</h5>
       <div className="flex justify-between">
         {/* Basket Names listbox */}
         <div className="">
@@ -119,7 +122,20 @@ const CustomerMapping = () => {
           </select>
         </div>
 
-        {/* Disabled investment value */}
+        {/* Disabled Scripts number */}
+        <div className="flex flex-col items-left mb-6">
+          <label className="text-black text-sm dark:text-white">
+            # Scripts
+          </label>
+          <input
+            type="text"
+            value={scripts}
+            disabled
+            className="border border-gray-200 bg-gray-50 text-right rounded-lg w-44 text-sm"
+          />
+        </div>
+
+        {/* //Disabled investment value
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">
             Investment &#8377;
@@ -130,7 +146,7 @@ const CustomerMapping = () => {
             disabled
             className="border border-gray-200 bg-gray-50 text-right rounded-lg w-44 text-sm"
           />
-        </div>
+        </div> */}
 
         {/* Basket Type listbox */}
         <div className="">
@@ -171,14 +187,20 @@ const CustomerMapping = () => {
                 <th className="font-medium text-sm text-left break-words">
                   Name
                 </th>
-                <th className="font-medium text-left text-sm w-44 break-words">
+                {/* <th className="font-medium text-left text-sm w-44 break-words">
                   Email
-                </th>
-                <th className="font-medium text-center text-sm break-words">
-                  Contact
-                </th>
+                </th> */}
                 <th className="font-medium text-center text-sm break-words">
                   Broker
+                </th>
+                <th className="font-medium text-center text-sm break-words">
+                  Investment &#8377;
+                </th>
+                <th className="font-medium text-center text-sm break-words">
+                  Quantity
+                </th>
+                <th className="font-medium text-center text-sm break-words">
+                  Total &#8377;
                 </th>
                 <th className="font-medium text-left text-sm break-words">
                   Map Status
@@ -199,6 +221,9 @@ const CustomerMapping = () => {
                     index={index}
                     status={status}
                     setStatus={setStatus}
+                    enableInputs={enableInputs}
+                    basketName={basketName}
+                    basketVal={basketVal}
                   />
                 );
               })}

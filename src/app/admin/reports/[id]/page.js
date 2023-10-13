@@ -73,6 +73,7 @@ const Page = ({ params }) => {
   useEffect(() => {
     const fetchHoldings = async () => {
       if (reportType === "Market") {
+        console.log("MARKET")
         // Live market data endpoint
         const response = await handleLiveReportsFetch(
           params.id,
@@ -100,14 +101,13 @@ const Page = ({ params }) => {
         }
       } else if (reportType === "Post") {
         // DB data endpoint
+        console.log("POST")
         const response = await handleDbReportsFetch(
           params.id,
           customerId,
           startDate,
           endDate
         );
-
-        console.log(response);
 
         if (params.id === "orderbook") {
           const { mainDatas, tooltipDatas } = orderDataParser(response);

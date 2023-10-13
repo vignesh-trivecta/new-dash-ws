@@ -13,6 +13,7 @@ import AddRecord from "@/components/admin/crud/addRecord";
 import BasketRecords from "@/components/admin/table/basketRecords";
 import SubmitBasket from "@/components/admin/crud/submitBasket";
 import { segregate } from "@/utils/formatter/priceSegregator";
+import BasketCategory from "@/components/admin/basketCategory";
 
 const CreateBasket = () => {
   // basket status messages
@@ -189,7 +190,7 @@ const CreateBasket = () => {
         {/* Investment value input to be entered by admin */}
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">
-            Investment &#8377;
+            Max Investment Value &#8377;
           </label>
           <input
             type="text"
@@ -208,7 +209,11 @@ const CreateBasket = () => {
           <p className="text-black text-sm dark:text-white mr-2">
             Basket Category
           </p>
-          <select
+          <div className="relative w-44 z-10 border rounded-md">
+            <BasketCategory />
+            {/* <div className="relative bottom-10 z-20">Add</div> */}
+          </div>
+          {/* <select
             name="transactionType"
             id="transactionType"
             value={""}
@@ -217,7 +222,7 @@ const CreateBasket = () => {
           >
             <option value="BUY">Pharma</option>
             <option value="SELL">Energy</option>
-          </select>
+          </select> */}
         </div>
 
         {/* Transaction Type listbox */}
@@ -229,7 +234,7 @@ const CreateBasket = () => {
             name="transactionType"
             id="transactionType"
             value={transType}
-            className="border border-gray-200 rounded-md  w-24 md:w-44 text-sm"
+            className="border border-gray-200 rounded-md focus:outline-0 w-24 md:w-44 text-sm focus:border-gray-200 focus:ring-0"
             onChange={(e) => setTransType(e.target.value)}
           >
             <option value="BUY">BUY</option>

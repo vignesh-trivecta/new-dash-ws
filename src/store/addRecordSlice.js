@@ -2,15 +2,15 @@ import { createSlice } from '@reduxjs/toolkit';
 
 // initial state values
 const initialState = {
-    recId: "",
-    selectedStock: "",
-    exchange: "",
-    transType: "",
-    orderType: "",
-    weightage: null,
-    quantity: null,
-    price: null,
-    newBasketName: '',
+  recId: "",
+  selectedStock: "",
+  exchange: "",
+  transType: "",
+  orderType: "",
+  weightage: null,
+  quantity: null,
+  price: null,
+  newBasketName: '',
 };
 
 // creating a new slice
