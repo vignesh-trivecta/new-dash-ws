@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import Link from 'next/link';
 import { Tooltip } from 'flowbite-react';
 import { getBasketList } from '@/app/api/basket/route';
-import DeleteBasket from '@/components/admin/deleteBasket';
+import DeleteBasket from '@/components/admin/crud/deleteBasket';
 import { segregate } from '@/utils/priceSegregator';
 import formatDate from '@/utils/format-date';
 

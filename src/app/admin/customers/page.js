@@ -1,4 +1,4 @@
-import CustomerDetails from "@/components/admin/customerDetails";
+import CustomerDetails from "@/components/admin/table/customerDetails";
 
 export const metadata = {
     title: 'Wealth Spring | Customers',

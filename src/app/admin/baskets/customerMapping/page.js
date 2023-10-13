@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { HiCheckCircle } from "react-icons/hi";
 import { Alert } from "flowbite-react";
 import { getBasketList, getBasketValue, getCustomerStatus, getCustomers } from "@/app/api/basket/route";
-import MappingTable from "@/components/admin/mappingTable";
+import MappingTable from "@/components/admin/table/mappingTable";
 import { segregate } from "@/utils/priceSegregator";
 
 const CustomerMapping = () => {
