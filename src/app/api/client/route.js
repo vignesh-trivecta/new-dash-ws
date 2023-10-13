@@ -8,17 +8,14 @@ export const generateOtp = async(basketLink) => {
             }
         }
         const response = await fetch("http://localhost:8083/basket/" + basketLink, requestOptions);
-        console.log(response);
-        if(response.ok){
+        if (response.status === 200) {
             return true;
         }
-        else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
-        }
+        return false;
+
     }
     catch(error){
-        return console.log(error);
+        return false;
     }
 }
 
@@ -37,19 +34,15 @@ export const validateOtp = async(basketLink, otp) => {
         }
         const response = await fetch("http://localhost:8086/basket/" + basketLink, requestOptions);
 
-
-        if(response.ok) {
-            const responseText = await response.text();
-            let data = JSON.parse(responseText);
-            console.log(data)
+        if (response.status === 200) {
+            const data = await response.json();
             return data;
         } else {
-            const errorText = await response.text();
-            console.log(errorText);
+            return false;
         }
     }
     catch(error){
-        console.log(error);
+        return 'server error';
     }
 }
 
@@ -72,14 +65,12 @@ export const clientConfirmsBasket = async(basketData) => {
         const response = await fetch("http://localhost:8084/place/order", requestOptions);
         console.log(response);
 
-        if(response.ok) {
+        if (response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
-            console.log(data);
             return data;
         } else {
             const errorText = await response.text();
-            console.log(errorText);
         }
     }
     catch(error){
@@ -100,9 +91,8 @@ export const getAxisUrl = async (customerId) => {
             })
         }
         const response = await fetch("http://localhost:8090/axis/client/login", requestOptions);
-        console.log(response);
 
-        if(response.status === 200) {
+        if (response.status === 200) {
             const responseText = await response.json();
             return responseText.url;
         } else {
@@ -110,7 +100,7 @@ export const getAxisUrl = async (customerId) => {
         }
     }
     catch(error){
-        console.log(error);
+        return false;
     }
 }
 
@@ -134,7 +124,7 @@ export const postAxisOrders = async (customerId, ssoId, basketName, customerName
         const response = await fetch("http://localhost:8090/axis/client/tokens", requestOptions);
         console.log(response);
 
-        if(response.status === 200) {
+        if (response.status === 200) {
             const responseText = await response.json();
             console.log(responseText.body)
             return responseText.body;
