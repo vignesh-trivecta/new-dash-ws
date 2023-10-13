@@ -11,6 +11,10 @@ import { clientConfirmsBasket, getAxisUrl } from '@/app/api/client/route';
 import { segregate } from '@/utils/priceSegregator';
 import { clientLogin } from '@/app/api/login/route';
 
+export const metadata = {
+    title: 'Wealth Spring | Orders Page',
+}
+
 const BasketPage = () => {
 
     // redux
@@ -25,6 +29,8 @@ const BasketPage = () => {
     const [data, setData] = useState([]);
     const [broker, setBroker] = useState(basketData.customerBroker);
     const [url, setUrl] = useState('');
+    const [message, setMessage] = useState('');
+    const [disableButton, setDisableButton] = useState(false);
 
     // nextjs router
     const router = useRouter();
@@ -90,13 +96,10 @@ const BasketPage = () => {
         }
         // axis redirect logic
         else if(broker === 'AXIS') {
-            console.log('enter')
-
-                    console.log(url);
-                    router.push(url);
-                    // setData(response);
-                    // setShow(true);
-                    // setStatus(true);
+            router.push(url);
+            // setData(response);
+            // setShow(true);
+            // setStatus(true);
             // router.push("/client/placeOrder");
             // setShow(true);
             // setStatus(false);
@@ -109,11 +112,17 @@ const BasketPage = () => {
     
             if (response) {
                 setUrl(response);
-                console.log(response);
+            }
+            else {
+                console.log(response)
+                setDisableButton(true);
+                setMessage(`${basketData.customerBroker}` + " Server Error! Please try after some time.");
             }
             // setUrl(response);
         }
-        getUrl();
+        if (basketData.customerBroker === 'AXIS') {
+            getUrl();
+        }
     }, [])
 
   return (
@@ -154,11 +163,11 @@ const BasketPage = () => {
                                 <thead className='border-b'>
                                     <tr>
                                         <th className='p-2'>S.No</th>
-                                        <th>Script</th>
+                                        <th>Scripts</th>
                                         <th>Price&nbsp;&#8377;</th>
                                         <th className='p-2'>Quantity</th>
                                         <th className='p-2'>Total&nbsp;&#8377;</th>
-                                        <th className='p-2'>Stauts</th>
+                                        <th className='p-2'>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -199,31 +208,31 @@ const BasketPage = () => {
                     <div></div>
                 </div>
                 <div className='p-2'>
-                    <div className='flex md:justify-center space-x-2 text-left'>
+                    <div className='flex sm:justify-center space-x-2 text-left'>
                         <p className=' font-semibold mb-4 text-lg md:text-xl'>Basket name: </p>
                         <p className=' font-semibold mb-4 text-lg md:text-xl'>{basketData?.basketName}</p>
                     </div>
-                    <div className='flex md:justify-center text-sm md:text-base'>
-                        <div>
-                            <p>Basket Value &#8377;</p>
-                            <input disabled type='text' value={segregate((basketValue).toFixed(2))} className='w-20 md:w-32 border-gray-200 bg-gray-50 rounded-md text-right' />
-                        </div>
-                        <div className='ml-4'>
-                            <p>Basket Type</p>
-                            <input disabled type='text' value={basketData?.rows[0]?.transType} className='w-20 md:w-32 border-gray-200 bg-gray-50 rounded-md' />
-                        </div>
-                        <div className='ml-4'>
+                    <div className='flex justify-center space-x-10 text-sm md:text-base'>
+                        <div className=''>
                             <p>No.of Scripts</p>
-                            <input disabled type='number' value={basketData?.rows?.length} className='w-20 md:w-32 border-gray-200 bg-gray-50 rounded-md text-right' />
+                            <input disabled type='number' value={basketData?.rows?.length} className='w-20 sm:w-32 border-gray-200 bg-gray-50 rounded-md text-right' />
+                        </div>
+                        <div className=''>
+                            <p>Basket Type</p>
+                            <input disabled type='text' value={basketData?.rows[0]?.transType} className='w-20 sm:w-32 border-gray-200 bg-gray-50 rounded-md text-center' />
+                        </div>
+                        <div className=''>
+                            <p>Basket Value &#8377;</p>
+                            <input disabled type='text' value={segregate((basketValue).toFixed(2))} className='w-20 sm:w-32 border-gray-200 bg-gray-50 rounded-md text-right' />
                         </div>
                     </div>
                     {/* Table showing baskets to client */}
                     <div className='flex md:justify-center md:items-center mt-4'>
                         <table className='table-fixed border p-2 mr-2'>
-                            <thead className='border-b text-sm md:text-base'>
+                            <thead className='border-b text-sm md:text-base bg-gray-50'>
                                 <tr>
                                     <th className='md:p-2 p-1'>S.No</th>
-                                    <th className='md:p-2 p-1'>Script</th>
+                                    <th className='md:p-2 p-1'>Scripts</th>
                                     <th className='md:p-2 p-1'>Price &#8377;</th>
                                     <th className='md:p-2 p-1'>Quantity</th>
                                     <th className='md:p-2 p-1'>Total &#8377;</th>
@@ -233,11 +242,11 @@ const BasketPage = () => {
                                 {
                                     basketData?.rows?.map((record, index) => {
                                         return (
-                                            <tr className='border-b' key={index}>
+                                            <tr className='border-b hover:bg-gray-100' key={index}>
                                                 <td className='text-center'>{index+1}</td>
-                                                <td className='truncate p-2'>{record?.instrumentName}</td>
-                                                <td className='text-right'>{record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue}</td>
-                                                <td className='text-right pr-4'>{segregate(record?.quantityValue)}</td>
+                                                <td className='truncate p-2 break-words'>{record?.instrumentName}</td>
+                                                <td className='text-right'>{record?.limitPrice != 0 ? segregate(record?.limitPrice) : segregate(record?.priceValue)}</td>
+                                                <td className='text-right pr-4'>{(record?.quantityValue)}</td>
                                                 <td className='text-right pr-2'>{segregate((record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) * (record?.quantityValue))}</td>
                                             </tr>
                                         )
@@ -249,12 +258,23 @@ const BasketPage = () => {
 
                     {/* Button groups */}
                     <div className='flex justify-center space-x-4 mt-4'>
-                        <button className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20' onClick={(e) => {handleConfirm(e)}}>Confirm</button>
-                        <Button color='gray'>Decline</Button>
+                        <button 
+                            className='bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20' 
+                            disabled={disableButton}    
+                            onClick={(e) => {handleConfirm(e)}}
+                        >
+                            Confirm
+                        </button>
+                        <Button 
+                            color='gray'
+                            disabled={disableButton} 
+                        >
+                            Decline
+                        </Button>
                     </div>
+                    <p className='text-red-500 font-bold flex justify-center mt-4'>{message}</p>
                 </div>
             </div>
-        
     </div>
   )
 }
