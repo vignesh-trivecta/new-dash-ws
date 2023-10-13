@@ -233,7 +233,7 @@ const ViewTable = ({ params }) => {
                     <div className='p-2 mr-8 text-sm text-black'>{segregate(record.limitPrice ? record.limitPrice : 0)}</div>
                   </td>
                   <td className='text-right'>
-                    <div className='p-2 mr-10 text-sm text-black'>{segregate(record.quantityValue)}</div>
+                    <div className='p-2 mr-10 text-sm text-black'>{(record.quantityValue)}</div>
                   </td>
                 </tr>
               ))) 
