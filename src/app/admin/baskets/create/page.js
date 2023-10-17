@@ -7,7 +7,7 @@ import { setBasketName } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
 import { HiInformationCircle, HiCheckCircle } from "react-icons/hi";
 import { Alert, Button, Tooltip } from "flowbite-react";
-import { basketNameCheck } from "@/app/api/basket/route";
+import { basketNameCheck, getBasketCategories } from "@/app/api/basket/route";
 import { getRecords } from "@/app/api/tempBasket/route";
 import AddRecord from "@/components/admin/crud/addRecord";
 import BasketRecords from "@/components/admin/table/basketRecords";
@@ -23,6 +23,7 @@ const CreateBasket = () => {
   const msg4 = "Basket Saved Successfully!";
   const msg5 = "Basket Value is lesser than Investment Amount";
   const msg6 = "Basket Value is higher than Investment Amount";
+  const msg7 = "Unable to save basket! Try agian";
 
   // getting the url path
   const pathname = usePathname();
@@ -41,28 +42,26 @@ const CreateBasket = () => {
   const [message, setMessage] = useState("");
   const [transType, setTransType] = useState("BUY");
   const [total, setTotal] = useState(0);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState("");
   const [basketAmount, setBasketAmount] = useState("");
   const [comparison, setComparison] = useState(true); // comparison to check whether basketVal is greater than investmentVal
+  const [basketCategory, setBasketCategory] = useState("");
 
   // basket value variable
   const basketVal = segregate(total);
 
-  // Conditional rendering for buttons based on comparison and existence of total/basketAmount
-  let isButtonDisabled;
-  if (basketAmount !== "" && basketName !== "") {
-    isButtonDisabled = true;
-  } else {
-    isButtonDisabled = false;
-  }
-
   // useEffect for getting records after basket save clicked
   useEffect(() => {
-    setRecords([]);
-    setBasketAmount("");
-    dispatch(setBasketName(""));
-    setMessage(msg4);
-    // setSaved(false);
+
+    if (saved == true) {
+      setRecords([]);
+      setBasketAmount("");
+      dispatch(setBasketName(""));
+      setMessage(msg4);
+    }
+    else {
+      setMessage(msg7);
+    }
   }, [saved]);
 
   // useEffect to set the message at center of table
@@ -210,7 +209,10 @@ const CreateBasket = () => {
             Basket Category
           </p>
           <div className="relative w-44 z-10 border rounded-md">
-            <BasketCategory />
+            <BasketCategory
+              basketCategory={basketCategory}
+              setBasketCategory={setBasketCategory}
+            />
             {/* <div className="relative bottom-10 z-20">Add</div> */}
           </div>
           {/* <select
@@ -334,7 +336,7 @@ const CreateBasket = () => {
         )}
 
         {/* Conditional rendering based on comparison and records.length */}
-        {comparison && basketAmount !== "" && basketName !== "" ? (
+        {comparison && basketAmount !== "" && basketName !== "" && basketCategory !== "" ? (
           // showing active buttons
           <div className="flex justify-center">
             <div>
@@ -347,11 +349,11 @@ const CreateBasket = () => {
             </div>
             <div>
               <SubmitBasket
-                saved={saved}
                 setSaved={setSaved}
                 transType={transType}
                 investmentAmount={basketAmount}
                 actualValue={basketVal}
+                basketCategory={basketCategory}
               />
             </div>
           </div>

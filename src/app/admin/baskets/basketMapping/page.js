@@ -11,7 +11,7 @@ import {
   getBasketValue,
   getCustomers,
 } from "@/app/api/basket/route";
-import { getCustomerStatus } from "@/app/api/basket/getCustomerStatus";
+import { getCustomerStatus } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketMappingTable from "@/components/admin/table/basketMappingTable";
 

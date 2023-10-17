@@ -29,7 +29,7 @@ const BasketPage = () => {
 
   // nextjs router
   const router = useRouter();
-
+  
   // calculating the value of the basket
   let basketValue = 0;
   const dataValue = basketData?.rows?.map((record, index) => {
@@ -67,6 +67,7 @@ const BasketPage = () => {
       //         setStatus(true);
       //     }
       // }
+      console.log("hi");
 
       var f = document.createElement("form");
       f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
@@ -75,18 +76,27 @@ const BasketPage = () => {
       var i1 = document.createElement("input");
       i1.type = "hidden";
       i1.name = "VP";
-      i1.value = "https://www.google.co.in/";
+      i1.value = "http://localhost:3000/client/placeOrder";
       f.appendChild(i1);
 
       var i2 = document.createElement("input");
       i2.type = "hidden";
       i2.name = "UserKey";
-      i2.value = "zPBLyrSExfrFMjnNnIvgycdpkTtlaGRv";
+      i2.value = "iGGlgBzeHZ35T8yxxC5kmW2ziUw7RraD";
       f.appendChild(i2);
 
       document.body.appendChild(f);
       f.submit();
     }
+
+
+
+
+
+
+
+
+
     // axis redirect logic
     else if (broker === "AXIS") {
       router.push(url);

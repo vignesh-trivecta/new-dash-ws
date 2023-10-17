@@ -12,6 +12,8 @@ const PlaceOrder = () => {
   // url search params
   const searchParams = useSearchParams();
   const ssoId = searchParams.get("ssoId");
+  console.log("enter")
+
   console.log(ssoId);
 
   // local state

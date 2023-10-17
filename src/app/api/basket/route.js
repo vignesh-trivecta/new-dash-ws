@@ -1,5 +1,5 @@
 // API call to submit the whole basket to backend
-export const submitBasket = async (adminName, basketName, modelBasket, basketValidity, basketRequests, transType, investmentAmount, basketActualValue) => {
+export const submitBasket = async (adminName, basketName, modelBasket, basketValidity, transType, investmentAmount, basketActualValue, basketCategory, basketRequests) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -11,22 +11,23 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
                 "basketName": basketName,
                 "basketModel": modelBasket,
                 "basketValidity": basketValidity, 
-                "basketRequests": basketRequests,
                 "transType": transType,
                 "basketInvestAmt": Number(investmentAmount),
                 "basketActualValue": Number(basketActualValue),
+                "basketCategory": basketCategory,
+                "basketRequests": basketRequests,
             })
         }
         const response = await fetch('http://localhost:8083/basket/create', requestOptions);
-        if(response.ok){
+        console.log(response)
+        if (response.status == 200) {
             return true;
         }
-        else{
-            return false;
-        }
+        else return false;
+
     }
     catch(error){
-        console.log(error);
+        return false;
     }
 }
 
@@ -89,6 +90,7 @@ export const getSpecificBasket = async(basketName) => {
 
         if(response.ok){
             const jsonData = await response.json();
+            console.log(jsonData);
             return jsonData;
         }
         else {
@@ -345,5 +347,27 @@ export const getCustomerStatus = async (basketName) => {
     }
     catch(error){
         console.log(error);
+    }
+}
+
+// API call to get the basket category list
+export const getBasketCategories = async () => {
+    try {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+
+        const response = await fetch("http://localhost:8083/basket/category", requestOptions);
+        if (response.status == 200) {
+            const data = await response.json();
+            return data;
+        }
+        else return false;
+    }
+    catch(error) {
+        return false;
     }
 }

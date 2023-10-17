@@ -8,12 +8,14 @@ import { getBasketList } from "@/app/api/basket/route";
 import DeleteBasket from "@/components/admin/crud/deleteBasket";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import formatDate from "@/utils/formatter/format-date";
+import ViewFilterComponent from "@/components/page/viewFilterComp";
 
 const Customers = () => {
   // local state
   const [records, setRecords] = useState([]);
   const [handleFetch, setHandleFetch] = useState(false);
   const [filteredBasket, setFilteredBasket] = useState("ALL");
+  const [basketCategory, setBasketCategory] = useState("ALL");
 
   // redux
   const username = useSelector((state) => state.user.username);
@@ -30,7 +32,7 @@ const Customers = () => {
     fetchBaskets();
   }, []);
 
-  // useEffect to update table after deletion
+  // useEffect to update table after deletion or filtering
   useEffect(() => {
     const fetchBaskets = async () => {
       const response = await getBasketList(filteredBasket);
@@ -44,7 +46,7 @@ const Customers = () => {
       <div className="flex justify-between ">
         <h1 className="font-bold">View Baskets</h1>
         {/* Filter selection to filter the baskets */}
-        <div className="flex items-center">
+        {/* <div className="flex items-center">
           <p className="text-black text-sm dark:text-white mr-2">Filter</p>
           <select
             name="basketType"
@@ -64,6 +66,9 @@ const Customers = () => {
             <option value="BUY">Buy</option>
             <option value="SELL">Sell</option>
           </select>
+        </div> */}
+        <div>
+          <ViewFilterComponent />
         </div>
       </div>
       <div className="flex mt-8">
@@ -76,6 +81,9 @@ const Customers = () => {
                 </th>
                 <th className="text-left font-medium text-sm p-2 truncate">
                   Basket Name
+                </th>
+                <th className="text-left font-medium text-sm p-2 truncate">
+                  Basket Category
                 </th>
                 <th className="text-left font-medium text-sm truncate">
                   # Scripts

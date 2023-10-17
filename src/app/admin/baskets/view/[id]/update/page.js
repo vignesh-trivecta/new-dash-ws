@@ -11,6 +11,7 @@ import BasketRecords from "@/components/admin/table/basketRecords";
 import AddRecord from "@/components/admin/crud/addRecord";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
+import BasketCategory from "@/components/admin/basketCategory";
 
 const UpdateBasket = ({ params }) => {
   const adminId = useSelector((state) => state.user.username);
@@ -26,6 +27,7 @@ const UpdateBasket = ({ params }) => {
   const [handleFetch, setHandleFetch] = useState(false);
   const [message, setMessage] = useState("");
   const [transType, setTransType] = useState("");
+  const [basketCategory, setBasketCategory] = useState("");
 
   const pathname = usePathname();
   const router = useRouter();
@@ -35,6 +37,7 @@ const UpdateBasket = ({ params }) => {
   useEffect(() => {
     const gettingRecords = async () => {
       const response = await getBasketValue(basketName, adminId);
+      console.log(response)
       setInvestmentVal(response[0].basketInvestAmt);
       setTransType(response[0].transactionType);
     };
@@ -143,16 +146,32 @@ const UpdateBasket = ({ params }) => {
             </p>
           </div>
         </div>
+
+        {/* Max Investment Value */}
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">
-            Investment
+            Max Investment Value ₹
           </label>
           <input
             type="text"
-            value={investmentVal}
+            value={segregate(investmentVal)}
             className="border border-gray-200 rounded-lg w-44 text-right text-sm"
             onChange={(e) => setInvestmentVal(e.target.value)}
           />
+        </div>
+
+        {/* Basket Category listbox */}
+        <div className="">
+          <p className="text-black text-sm dark:text-white mr-2">
+            Basket Category
+          </p>
+          <div className="relative w-44 z-10 border rounded-md">
+            <BasketCategory
+              basketCategory={basketCategory}
+              setBasketCategory={setBasketCategory}
+            />
+            {/* <div className="relative bottom-10 z-20">Add</div> */}
+          </div>
         </div>
 
         {/* Basket Type listbox */}

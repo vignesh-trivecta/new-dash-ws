@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Tooltip } from "flowbite-react";
 import { mapBasket } from "@/app/api/basket/route";
-import { getCustomerStatus } from "@/app/api/basket/getCustomerStatus";
+import { getCustomerStatus } from "@/app/api/basket/route";
 import { useSelector } from "react-redux";
 import { segregate } from "@/utils/formatter/priceSegregator";
 

@@ -8,12 +8,12 @@ import { setBasketAmount } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
 
 const SubmitBasket = ({
-  saved,
   setSaved,
   transType,
   investmentAmount,
   actualValue,
   mainBasketName,
+  basketCategory
 }) => {
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -48,12 +48,14 @@ const SubmitBasket = ({
       basketName,
       modelBasket,
       basketValidity,
-      basketRequests,
       transType,
       investmentAmount,
-      basketActualValue
+      basketActualValue,
+      basketCategory,
+      basketRequests,
     );
-    setSaved(true);
+    setSaved(response);
+    props.setOpenModal(undefined);
   };
 
   // function to handle check input
@@ -101,7 +103,6 @@ const SubmitBasket = ({
             <div className="flex justify-center mt-10 gap-4">
               <Button
                 onClick={(e) => {
-                  props.setOpenModal(undefined);
                   handleSubmit(e);
                 }}
               >

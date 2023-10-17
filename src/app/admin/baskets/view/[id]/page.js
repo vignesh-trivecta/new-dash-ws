@@ -12,22 +12,20 @@ const ViewTable = ({ params }) => {
   const basketName = params.id.split("%20").join(" ");
   let input;
 
-  const ids = [{ "View Baskets": "/admin/baskets/view" }, { [basketName]: "" }];
-
   // local state variables
   const [records, setRecords] = useState([]);
   const [res, setRes] = useState(false);
-
+  
   // modal elements
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
-
+  
   const adminId = useSelector((state) => state.user.username);
   const router = useRouter();
   const dispatch = useDispatch();
-
+  
   const cancelButtonRef = useRef(null);
-
+  
   // useEffect to fetch the table records
   useEffect(() => {
     const gettingRecords = async () => {
@@ -36,7 +34,7 @@ const ViewTable = ({ params }) => {
     };
     gettingRecords();
   }, []);
-
+  
   // useEffect to fetch the table records after deletion or when res changes
   useEffect(() => {
     const gettingRecords = async () => {
@@ -49,7 +47,12 @@ const ViewTable = ({ params }) => {
     };
     gettingRecords();
   }, [res, params.id]);
-
+  
+  const ids = [
+    { "View Baskets": "/admin/baskets/view" },
+    { [`${basketName} : ${records[0]?.basketCategory}`]: "" }
+  ];
+  
   const handleClone = () => {
     props.setOpenModal(undefined);
   };
@@ -143,7 +146,7 @@ const ViewTable = ({ params }) => {
       </Transition.Root>
       </> */}
 
-      {/* modal for entering new basket name */}
+      {/* modal for entering new basket name - Clone Basket */}
       <>
         <Modal
           show={props.openModal === "form-elements"}

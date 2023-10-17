@@ -33,6 +33,7 @@ const Client = ({ params }) => {
       setMessage("Server error! Please try after some time.")
     }
     else if (response) {
+      console.log(response);
       dispatch(setBasketData(response));
       router.push('/client/basket');
     }
