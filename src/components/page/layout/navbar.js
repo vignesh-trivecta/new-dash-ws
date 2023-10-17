@@ -26,18 +26,18 @@ const DashNavbar = function () {
   const [showSidebar, setShowSidebar] = useState(false);
   const [time, setTime] = useState(timeFormat);
 
-  // useEffect(() => {
-  //   // Create an interval and store its ID
-  //   const intervalId = setInterval(() => {
-  //     let newTime = new Date();
-  //     console.log('triggered', newTime);
-  //     setTime(newTime);
-  //   }, 60000);
-  //   // Return a cleanup function to clear the interval when the component unmounts
-  //   return () => {
-  //     clearInterval(intervalId);
-  //   };
-  // },[])
+  useEffect(() => {
+    // Create an interval and store its ID
+    const intervalId = setInterval(() => {
+      let newTime = new Date();
+      console.log('triggered', newTime);
+      setTime(newTime);
+    }, 60000);
+    // Return a cleanup function to clear the interval when the component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  },[])
 
   return (
     <Navbar fluid className="border-b-2">

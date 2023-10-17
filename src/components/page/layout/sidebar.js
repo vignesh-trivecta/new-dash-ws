@@ -9,6 +9,8 @@ import {
   HiPencilAlt,
   HiUserGroup,
 } from "react-icons/hi";
+import { SlBasket } from "react-icons/sl";
+import { LiaSitemapSolid } from "react-icons/lia";
 import { CgFileDocument } from "react-icons/cg";
 import { AiOutlineFolderView, AiOutlineUserAdd } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
@@ -76,6 +78,20 @@ const ExampleSidebar = function () {
         dispatch(setBasketName(''));
         break;
       case 6:
+        router.push('/admin/baskets/basketMapping');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
+        break;
+      case 7:
+        router.push('/admin/baskets/reports');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
+        break;
+      case 8:
         dispatch(setBasketState(false));
         setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));
@@ -228,6 +244,11 @@ const ExampleSidebar = function () {
                           : ( <Link href="/admin/baskets/view">View</Link> )
                         }
                       </Sidebar.Item>
+                </Sidebar.Collapse>
+                <Sidebar.Collapse
+                  icon={LiaSitemapSolid}
+                  label="Map"
+                >
                       <Sidebar.Item 
                           icon={AiOutlineUserAdd}
                           className={
@@ -237,8 +258,21 @@ const ExampleSidebar = function () {
                           }
                       >
                         {isLinkDisabled 
-                          ? ( <button onClick={() => {setOpen(true); setTab(5);}}>Map Customer</button> ) 
-                          : ( <Link href="/admin/baskets/customerMapping">Map Customer</Link> )
+                          ? ( <button onClick={() => {setOpen(true); setTab(5);}}>Customers</button> ) 
+                          : ( <Link href="/admin/baskets/customerMapping">Customers</Link> )
+                        }
+                      </Sidebar.Item>
+                      <Sidebar.Item 
+                          icon={SlBasket}
+                          className={
+                            "/admin/baskets/basketMapping" === pathname
+                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              : " -ml-3"
+                          }
+                      >
+                        {isLinkDisabled 
+                          ? ( <button onClick={() => {setOpen(true); setTab(6);}}>Baskets</button> ) 
+                          : ( <Link href="/admin/baskets/basketMapping">Baskets</Link> )
                         }
                       </Sidebar.Item>
                 </Sidebar.Collapse>
@@ -251,7 +285,7 @@ const ExampleSidebar = function () {
                   }
                 >
                   {isLinkDisabled 
-                    ? ( <button onClick={() => {setOpen(true); setTab();}}>Reports</button> ) 
+                    ? ( <button onClick={() => {setOpen(true); setTab(7);}}>Reports</button> ) 
                     : ( <Link href="/admin/reports">Reports</Link> )
                   }
                 </Sidebar.Item> 
