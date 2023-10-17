@@ -9,10 +9,10 @@ import { Alert } from "flowbite-react";
 import {
   getBasketList,
   getBasketValue,
-  getCustomerStatus,
   getCustomers,
 } from "@/app/api/basket/route";
-import MappingTable from "@/components/admin/table/mappingTable";
+import { getCustomerStatus } from "@/app/api/basket/getCustomerStatus";
+import CustomerMappingTable from "@/components/admin/table/customerMappingTable";
 import { segregate } from "@/utils/formatter/priceSegregator";
 
 const CustomerMapping = () => {
@@ -62,7 +62,7 @@ const CustomerMapping = () => {
 
   if (weblink) {
     dispatch(setBasketAmount(""));
-    (setBasketName(""));
+    setBasketName("");
     setTimeout(() => {
       setWeblink(false);
       // router.push("/admin/baskets/create");
@@ -71,7 +71,7 @@ const CustomerMapping = () => {
 
   if (message) {
     dispatch(setBasketAmount(""));
-    (setBasketName(""));
+    setBasketName("");
     setTimeout(() => {
       setMessage(false);
       // router.push("/admin/baskets/create");
@@ -80,7 +80,7 @@ const CustomerMapping = () => {
 
   // handle basket selection
   const handleSelection = async (value) => {
-    (setBasketName(value));
+    setBasketName(value);
     const response = await getBasketValue(value, adminId);
     // setInvestmentVal(response[0]?.basketInvestAmt);
     setTransType(response[0]?.transactionType);
@@ -112,7 +112,7 @@ const CustomerMapping = () => {
             }}
           >
             <option disabled value="">
-              -Select -
+              - Select -
             </option>
             {records?.map((record) => (
               <option key={record.basketName} value={record.basketName}>
@@ -120,6 +120,19 @@ const CustomerMapping = () => {
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Disabled Basket Category */}
+        <div className="flex flex-col items-left mb-6">
+          <label className="text-black text-sm dark:text-white">
+            Basket Category
+          </label>
+          <input
+            type="text"
+            value={""}
+            disabled
+            className="border border-gray-200 bg-gray-50 text-right rounded-lg w-44 text-sm"
+          />
         </div>
 
         {/* Disabled Scripts number */}
@@ -135,18 +148,6 @@ const CustomerMapping = () => {
           />
         </div>
 
-        {/* //Disabled investment value
-        <div className="flex flex-col items-left mb-6">
-          <label className="text-black text-sm dark:text-white">
-            Investment &#8377;
-          </label>
-          <input
-            type="text"
-            value={segregate(investmentVal)}
-            disabled
-            className="border border-gray-200 bg-gray-50 text-right rounded-lg w-44 text-sm"
-          />
-        </div> */}
 
         {/* Basket Type listbox */}
         <div className="">
@@ -181,6 +182,9 @@ const CustomerMapping = () => {
           <table className="table-fixed w-full overflow-y-scroll overflow-x-scroll">
             <thead className="border-b sticky top-0 bg-gray-50">
               <tr>
+                <th className="font-medium text-sm text-left p-2 break-words w-16">
+                  S.No
+                </th>
                 <th className="font-medium text-sm text-left p-2 break-words">
                   Customer ID
                 </th>
@@ -197,10 +201,10 @@ const CustomerMapping = () => {
                   Investment &#8377;
                 </th>
                 <th className="font-medium text-center text-sm break-words">
-                  Quantity
+                  # Basket Units
                 </th>
                 <th className="font-medium text-center text-sm break-words">
-                  Total &#8377;
+                  Basket Total &#8377;
                 </th>
                 <th className="font-medium text-left text-sm break-words">
                   Map Status
@@ -216,7 +220,7 @@ const CustomerMapping = () => {
             <tbody className="" style={{ width: "100%" }}>
               {customers?.map((data, index) => {
                 return (
-                  <MappingTable
+                  <CustomerMappingTable
                     data={data}
                     index={index}
                     status={status}

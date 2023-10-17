@@ -59,6 +59,7 @@ export const getBasketList = async(filteredBasket) => {
         }
         if(response.ok){
             const jsonData = await response.json();
+            console.log(jsonData)
             return jsonData;
         }
         else {
@@ -275,8 +276,9 @@ export const getBasketValue = async(basketName, adminId) => {
         const response = await fetch("http://localhost:8083/basket/details", requestOptions);
 
         if(response.ok) {
-            const responseText = await response.text();
-            return JSON.parse(responseText);
+            const data = await response.json();
+            console.log(data);
+            return data;
         } else {
             const errorText = await response.text();
             console.log(errorText);
@@ -333,8 +335,9 @@ export const getCustomerStatus = async (basketName) => {
         }
         const response = await fetch("http://localhost:8083/mappedstatus", requestOptions);
         if(response.ok){
-            const responseText = await response.text();
-            return JSON.parse(responseText);
+            const responseText = await response.json();
+            console.log(responseText);
+            return responseText;
         }
         else{
             return false;
