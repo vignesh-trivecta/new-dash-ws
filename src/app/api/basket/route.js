@@ -292,7 +292,8 @@ export const getBasketValue = async(basketName, adminId) => {
 }
 
 // API to map a basket to a customer
-export const mapBasket = async(basketName, adminId, customerId, brokerName) => {
+export const mapBasket = async(basketName, adminId, customerId, broker, scripts) => {
+    console.log(basketName, adminId, customerId, brokerName, scripts)
     try{
         const requestOptions = {
             method: 'POST',
@@ -303,11 +304,13 @@ export const mapBasket = async(basketName, adminId, customerId, brokerName) => {
                 "basketName": basketName,
                 "adminId": adminId,
                 "customerId": customerId,
-                "brokerName": brokerName,
+                "brokerName": broker,
+                "basketUnits": scripts
             })
         }
         const response = await fetch("http://localhost:8083/customer/map", requestOptions);
-        if(response.ok) {
+        if(response.status === 200) {
+            console.log(response)
             return true;
         } else {
             return false;
@@ -315,6 +318,7 @@ export const mapBasket = async(basketName, adminId, customerId, brokerName) => {
     }
     catch(error){
         console.log(error);
+        return false;
     }
 }
 
@@ -324,7 +328,7 @@ export const sendWeblink = async() => {
 }
 
 // API call to get the mapping, weblink status of customers based on baksetName
-export const getCustomerStatus = async (basketName) => {
+export const getCustomerStatus = async (value) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -332,13 +336,14 @@ export const getCustomerStatus = async (basketName) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "basketName": basketName,
+                "basketName": value,
             })
         }
         const response = await fetch("http://localhost:8083/mappedstatus", requestOptions);
+        console.log(value, response)
         if(response.ok){
             const responseText = await response.json();
-            console.log(responseText);
+            console.log(value, responseText);
             return responseText;
         }
         else{

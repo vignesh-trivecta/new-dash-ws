@@ -14,8 +14,8 @@ const Customers = () => {
   // local state
   const [records, setRecords] = useState([]);
   const [handleFetch, setHandleFetch] = useState(false);
-  const [filteredBasket, setFilteredBasket] = useState("ALL");
   const [basketCategory, setBasketCategory] = useState("ALL");
+  const [basketType, setBasketType] = useState("ALL");
 
   // redux
   const username = useSelector((state) => state.user.username);
@@ -23,23 +23,24 @@ const Customers = () => {
   // sorting the records fetched from backend
   records?.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
 
-  // useEffect to fetch the view table baskets
-  useEffect(() => {
-    const fetchBaskets = async () => {
-      const response = await getBasketList(filteredBasket);
-      setRecords(response);
-    };
-    fetchBaskets();
-  }, []);
+  // // useEffect to fetch the view table baskets
+  // useEffect(() => {
+  //   const fetchBaskets = async () => {
+  //     const response = await getBasketList(basketType);
+  //     setRecords(response);
+  //   };
+  //   fetchBaskets();
+  // }, []);
 
   // useEffect to update table after deletion or filtering
   useEffect(() => {
     const fetchBaskets = async () => {
-      const response = await getBasketList(filteredBasket);
+      const response = await getBasketList(basketType);
       setRecords(response);
     };
     fetchBaskets();
-  }, [handleFetch, filteredBasket]);
+    console.log("modified")
+  }, [handleFetch]);
 
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
@@ -68,7 +69,14 @@ const Customers = () => {
           </select>
         </div> */}
         <div>
-          <ViewFilterComponent />
+          <ViewFilterComponent
+            basketType={basketType}
+            setBasketType={setBasketType}
+            basketCategory={basketCategory}
+            setBasketCategory={setBasketCategory}
+            handleFetch={handleFetch}
+            setHandleFetch={setHandleFetch}
+          />
         </div>
       </div>
       <div className="flex mt-8">

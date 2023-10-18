@@ -5,7 +5,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import stringFormatter from "@/utils/formatter/stringFormatter";
 import { usePathname } from "next/navigation";
 import { useSelector } from "react-redux";
-import TableShimmer from "../../page/tableShimmer";
+import TableShimmer from "../../page/layout/tableShimmer";
 
 const ReportsTable = ({ columns, datas, tooltipData, param }) => {
   console.log(columns, datas, tooltipData);

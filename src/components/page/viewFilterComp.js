@@ -4,32 +4,32 @@ import { useState, useEffect } from "react";
 import { Button, Dropdown, Label } from "flowbite-react";
 import { getBasketCategories } from "@/app/api/basket/route";
 import { BiFilterAlt } from "react-icons/bi";
+import ViewFilterBasketCategory from "../admin/viewFilterBasketCategory";
 
-const ViewFilterComponent = ({}) => {
+const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBasketCategory, handleFetch, setHandleFetch}) => {
     
     // local state
     const [basketCategoryList, setBasketCategoryList] = useState([]);
-    const [basketCategory, setBasketCategory] = useState("ALL");
-    const [filteredBasket, setFilteredBasket] = useState("ALL");
 
 
-    // handling customer selection for basket category
-    const handleCustomerSelection = (e) => {
-        e.preventDefault();
-        const newValue = e.target.value;
-        setBasketCategory(newValue);
-    }
+
+    // // handling customer selection for basket category
+    // const handleCustomerSelection = (e) => {
+    //     e.preventDefault();
+    //     const newValue = e.target.value;
+    //     setBasketCategory(newValue);
+    // }
 
     // function to reset filter menu options
     const resetFilters = () => {
         setBasketCategory("");
-        setFilteredBasket("");
+        setBasketType("");
     }
 
     // function handling when filter button is clicked
     const handleFilter = async (e) => {
         e.preventDefault();
-
+        setHandleFetch(handleFetch);
     }
 
     // useEffect to fetch basket category data to show in dropdown
@@ -61,7 +61,7 @@ const ViewFilterComponent = ({}) => {
                 <div className="space-y-2">
 
                     {/* Basket Category */}
-                    <div className="flex flex-col">
+                    {/* <div className="flex flex-col">
                         <label className="font-medium text-sm">Basket Category</label>
                         <select 
                             className="rounded-md border-gray-200 text-sm"
@@ -83,6 +83,17 @@ const ViewFilterComponent = ({}) => {
                                 ))
                             }
                         </select>
+                    </div> */}
+                    <div>
+                        <label className="font-medium text-sm">Basket Category</label>
+                        <div className="border rounded-md">
+                            <ViewFilterBasketCategory
+                                basketCategory={basketCategory} 
+                                setBasketCategory={setBasketCategory} 
+                                handleFetch={handleFetch} 
+                                setHandleFetch={setHandleFetch}
+                            />
+                        </div>
                     </div>
 
                     {/* Basket Type */}
@@ -91,9 +102,10 @@ const ViewFilterComponent = ({}) => {
                         <select
                             name="basketType"
                             id="basketType"
-                            value={filteredBasket}
+                            value={basketType}
                             onChange={(e) => {
-                            setFilteredBasket(e.target.value);
+                                setBasketType(e.target.value);
+                                setHandleFetch(!handleFetch);
                             }}
                             className="border border-gray-200 rounded-md text-sm"
                         >

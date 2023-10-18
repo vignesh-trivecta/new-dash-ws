@@ -82,12 +82,15 @@ const CustomerMapping = () => {
   const handleSelection = async (value) => {
     setBasketName(value);
     const response = await getBasketValue(value, adminId);
+    console.log(response);
     // setInvestmentVal(response[0]?.basketInvestAmt);
     setTransType(response[0]?.transactionType);
     setBasketVal(response[0]?.basketActualValue);
+    setScripts(response[0]?.noOfScripts);
     setEnableInputs(false);
 
     const status = await getCustomerStatus(value);
+    console.log(status)
     if (status) {
       setStatus(status);
     }
@@ -103,8 +106,6 @@ const CustomerMapping = () => {
             Select Basket
           </p>
           <select
-            name="transactionType"
-            id="transactionType"
             className="border border-gray-200 rounded-md w-44 text-sm"
             defaultValue={""}
             onChange={(e) => {
@@ -228,6 +229,7 @@ const CustomerMapping = () => {
                     enableInputs={enableInputs}
                     basketName={basketName}
                     basketVal={basketVal}
+                    scripts={scripts}
                   />
                 );
               })}

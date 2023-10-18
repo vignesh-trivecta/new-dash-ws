@@ -13,9 +13,12 @@ const CustomerMappingTable = ({
   enableInputs,
   basketName,
   basketVal,
+  scripts,
 }) => {
   // broker inputs
   const brokers = [{ name: "AXIS" }, { name: "IIFL" }];
+
+  console.log(status)
 
   // redux
   const adminId = useSelector((state) => state.user.username);
@@ -38,7 +41,7 @@ const CustomerMappingTable = ({
       adminId,
       customerId,
       broker,
-      basketVal
+      scripts
     );
     const status = await getCustomerStatus(basketName);
     if (status) {
@@ -140,6 +143,7 @@ const CustomerMappingTable = ({
       <td>
         <div className="ml-8">
           {status.find((obj) => {
+            console.log(obj.customerId === data.customerId)
             return obj.customerId === data.customerId;
           }) ? (
             <svg

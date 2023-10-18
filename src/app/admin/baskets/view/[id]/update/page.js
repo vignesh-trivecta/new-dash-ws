@@ -12,6 +12,8 @@ import AddRecord from "@/components/admin/crud/addRecord";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
 import BasketCategory from "@/components/admin/basketCategory";
+import TableShimmer from "@/components/page/layout/tableShimmer";
+import RowShimmer from "@/components/page/layout/rowShimmer";
 
 const UpdateBasket = ({ params }) => {
   const adminId = useSelector((state) => state.user.username);
@@ -28,16 +30,15 @@ const UpdateBasket = ({ params }) => {
   const [message, setMessage] = useState("");
   const [transType, setTransType] = useState("");
   const [basketCategory, setBasketCategory] = useState("");
+  const [investmentVal, setInvestmentVal] = useState("");
 
   const pathname = usePathname();
   const router = useRouter();
 
-  const [investmentVal, setInvestmentVal] = useState("");
   // useEffect to fetch
   useEffect(() => {
     const gettingRecords = async () => {
       const response = await getBasketValue(basketName, adminId);
-      console.log(response)
       setInvestmentVal(response[0].basketInvestAmt);
       setTransType(response[0].transactionType);
     };
@@ -66,6 +67,7 @@ const UpdateBasket = ({ params }) => {
       const response = await getSpecificBasket(basketName);
       console.log(response);
       setRecords(response || []);
+      setBasketCategory(response[0]?.basketCategory || "");
     };
     fetchData();
   }, [handleFetch]);
@@ -165,34 +167,30 @@ const UpdateBasket = ({ params }) => {
           <p className="text-black text-sm dark:text-white mr-2">
             Basket Category
           </p>
-          <div className="relative w-44 z-10 border rounded-md">
-            <BasketCategory
-              basketCategory={basketCategory}
-              setBasketCategory={setBasketCategory}
+          <div className="">
+            <input 
+              type="text" 
+              className="border border-gray-200 rounded-lg w-44 text-left text-sm bg-gray-50"
+              value={basketCategory} disabled 
             />
-            {/* <div className="relative bottom-10 z-20">Add</div> */}
           </div>
         </div>
 
-        {/* Basket Type listbox */}
         <div className="">
           <p className="text-black text-sm dark:text-white mr-2">
             Transaction Type
           </p>
-          <select
+          <input
             name="transactionType"
             id="transactionType"
+            type="text"
             value={transType}
-            onChange={(e) => setTransType(e.target.value)}
-            className="border border-gray-200 rounded-md w-32 text-sm"
-          >
-            <option value="BUY">BUY</option>
-            <option value="SELL">SELL</option>
-          </select>
+            className="border border-gray-200 rounded-lg w-44 text-left text-sm bg-gray-50"
+          />
         </div>
         <div className="flex flex-col items-left mb-6">
           <p className="text-black text-sm dark:text-white mr-2">
-            Basket Value
+            Basket Value ₹
           </p>
           <input
             disabled
@@ -203,9 +201,11 @@ const UpdateBasket = ({ params }) => {
         </div>
       </div>
 
-      {/* Table showing Basket Records */}
       <div className="flex mt-2">
-        <div className={"overflow-y-scroll border"} style={{ height: "300px" }}>
+        <div
+          className={"overflow-y-scroll border"}
+          style={{ height: "300px" }}
+        >
           <table className="table-fixed w-full ">
             <thead className="sticky top-0  bg-gray-50">
               <tr>
@@ -310,8 +310,8 @@ const UpdateBasket = ({ params }) => {
         ) : (
           <div className="flex justify-center">
             {/* <Tooltip className='overflow-hidden' content="Enter Basket name and Investment amount!">
-                  <Button disabled className='mr-8'>Map to Customer</Button>
-                </Tooltip> */}
+              <Button disabled className='mr-8'>Map to Customer</Button>
+            </Tooltip> */}
 
             <Tooltip
               className="overflow-hidden"
