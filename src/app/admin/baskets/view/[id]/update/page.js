@@ -168,10 +168,11 @@ const UpdateBasket = ({ params }) => {
             Basket Category
           </p>
           <div className="">
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="border border-gray-200 rounded-lg w-44 text-left text-sm bg-gray-50"
-              value={basketCategory} disabled 
+              value={basketCategory}
+              disabled
             />
           </div>
         </div>
@@ -202,10 +203,7 @@ const UpdateBasket = ({ params }) => {
       </div>
 
       <div className="flex mt-2">
-        <div
-          className={"overflow-y-scroll border"}
-          style={{ height: "300px" }}
-        >
+        <div className={"overflow-y-scroll border"} style={{ height: "300px" }}>
           <table className="table-fixed w-full ">
             <thead className="sticky top-0  bg-gray-50">
               <tr>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBasketAmount } from "@/store/basketSlice";
 import { useRouter } from "next/navigation";
-import { HiCheckCircle } from "react-icons/hi";
+import { HiCheckCircle, HiInformationCircle } from "react-icons/hi";
 import { Alert, Button } from "flowbite-react";
 import {
   getBasketList,
@@ -14,6 +14,7 @@ import {
 import { getCustomerStatus } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketMappingTable from "@/components/admin/table/basketMappingTable";
+import { sendMultipleBaskets } from "@/app/api/map/baskets/route";
 
 const BasketMapping = () => {
   // broker inputs
@@ -22,7 +23,6 @@ const BasketMapping = () => {
 
   // redux
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.user.loggedIn);
   const adminId = useSelector((state) => state.user.username);
 
   // local state
@@ -30,17 +30,23 @@ const BasketMapping = () => {
   const [customerId, setCustomerId] = useState("");
   const [customers, setCustomers] = useState([]);
   const [weblink, setWeblink] = useState(false);
-  const [message, setMessage] = useState(false);
+  const [message, setMessage] = useState("");
   const [status, setStatus] = useState([]);
   const [records, setRecords] = useState([]);
-  const [investment, setInvestment] = useState("");
+  const [investment, setInvestment] = useState(null);
+  const [totalBasketValue, setTotalBasketValue] = useState(0);
+  const [total, setTotal] = useState({});
   const [scripts, setScripts] = useState(0);
   const [basketVal, setBasketVal] = useState("");
   const [transType, setTransType] = useState("");
   const [broker, setBroker] = useState(brokers[0].name);
   const [enableInputs, setEnableInputs] = useState(customerId == "");
+  const [enableButtons, setEnableButtons] = useState(true);
+  const [enableMap, setEnableMap] = useState(basketName == "");
+  const [enableWeblink, setEnableWeblink] = useState(basketName == "");
   const [checkedBaskets, setCheckedBaskets] = useState([]);
-
+  const [errorHighlight, setErrorHighlight] = useState(false);
+  const [basketData, setBasketData] = useState({});
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -53,12 +59,10 @@ const BasketMapping = () => {
   useEffect(() => {
     const fetchBaskets = async () => {
       const response = await getBasketList();
-      console.log(response);
       setRecords(response);
     };
     const fetchData = async () => {
       const customersData = await getCustomers();
-      console.log(customersData);
       setCustomers(customersData);
     };
 
@@ -66,29 +70,46 @@ const BasketMapping = () => {
     fetchData();
   }, []);
 
-  if (weblink) {
-    dispatch(setBasketAmount(""));
-    setBasketName("");
-    setTimeout(() => {
-      setWeblink(false);
-      // router.push("/admin/baskets/create");
-    }, 3000);
-  }
+  useEffect(() => {
+    if (Number(totalBasketValue) == Number(investment)) {
+      setEnableButtons(true);
+      setMessage("");
+    } else if (Number(totalBasketValue) > Number(investment)) {
+      setErrorHighlight(true);
+      setMessage("Basket Total is higher than Investment")
+      setEnableButtons(true);
+    } else {
+      setMessage("");
+      setErrorHighlight(false);
+      setEnableButtons(false);
+    }
+    if (Number(totalBasketValue) === 0) {
+      setEnableButtons(true);
+    }
+  }, [investment, totalBasketValue]);
 
-  if (message) {
-    dispatch(setBasketAmount(""));
-    setBasketName("");
-    setTimeout(() => {
-      setMessage(false);
-      // router.push("/admin/baskets/create");
-    }, 3000);
-  }
+  // if (weblink) {
+  //   dispatch(setBasketAmount(""));
+  //   setBasketName("");
+  //   setTimeout(() => {
+  //     setWeblink(false);
+  //     // router.push("/admin/baskets/create");
+  //   }, 3000);
+  // }
+
+  // if (message) {
+  //   dispatch(setBasketAmount(""));
+  //   setBasketName("");
+  //   setTimeout(() => {
+  //     setMessage(false);
+  //     // router.push("/admin/baskets/create");
+  //   }, 3000);
+  // }
 
   // handle selection
   const handleSelection = async (value) => {
     setCustomerId(value);
     setEnableInputs(false);
-    console.log(value);
     // const response = await getBasketValue(value, adminId);
     // // setInvestmentVal(response[0]?.basketInvestAmt);
     // setTransType(response[0]?.transactionType);
@@ -101,6 +122,26 @@ const BasketMapping = () => {
     // }
   };
 
+  // handle map click
+  const handleMapClick = async () => {
+    const response = await sendMultipleBaskets(
+      basketData,
+      adminId,
+      customerId,
+      broker
+    );
+    console.log(response);
+  };
+
+  useEffect(() => {
+    console.log(basketData)
+    console.log(Object.keys(basketData))
+    const result = Object.values(total).reduce((acc, curr) => {
+      return acc + curr;
+    }, 0);
+    setTotalBasketValue(result);
+  }, [total]);
+
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
       <h5 className="font-bold mb-2">Map Baskets</h5>
@@ -111,8 +152,8 @@ const BasketMapping = () => {
             Select Customer
           </p>
           <select
-            name="transactionType"
-            id="transactionType"
+            name="customer"
+            id="customer"
             className="border border-gray-200 rounded-md w-44 text-sm"
             defaultValue={""}
             onChange={(e) => {
@@ -156,9 +197,9 @@ const BasketMapping = () => {
             type="text"
             value={segregate(investment)}
             onChange={(e) => {
-                // Remove commas from the input value before updating state
-                const newValue = e.target.value.replace(/,/g, "");
-                setInvestment(newValue);
+              // Remove commas from the input value before updating state
+              const newValue = e.target.value.replace(/,/g, "");
+              setInvestment(newValue);
             }}
             className="border border-gray-200  text-right rounded-lg w-44 text-sm"
           />
@@ -180,19 +221,23 @@ const BasketMapping = () => {
         {/* Disabled basket value */}
         <div className="flex flex-col items-left mb-6">
           <p className="text-black text-sm dark:text-white mr-2">
-            Total Basket value &#8377;
+            Basket Total &#8377;
           </p>
           <input
             disabled
             type="text"
-            value={""}
-            className="border border-gray-200 rounded-lg w-44 text-right bg-gray-50 text-sm"
+            value={segregate(totalBasketValue)}
+            className={`border rounded-lg w-44 text-right bg-gray-50 text-sm ${
+              errorHighlight ? "border-red-500 " : "border-gray-200"
+            }`}
           />
         </div>
 
         <div className="flex justify-between mt-4 space-x-4">
-            <Button>Map</Button>
-            <Button>Send Weblink</Button>
+          <Button disabled={enableButtons} onClick={handleMapClick}>
+            Map
+          </Button>
+          <Button disabled={enableButtons}>Send Weblink</Button>
         </div>
       </div>
 
@@ -221,9 +266,7 @@ const BasketMapping = () => {
                 <th className="font-medium mr-4 text-sm break-words">
                   Basket value &#8377;
                 </th>
-                <th className="font-medium text-sm break-words">
-                  Quantity
-                </th>
+                <th className="font-medium text-sm break-words">Quantity</th>
                 {/* <th className="font-medium mr-4 text-sm break-words">
                   Broker
                 </th>
@@ -257,38 +300,29 @@ const BasketMapping = () => {
                     basketVal={basketVal}
                     checkedBaskets={checkedBaskets}
                     setCheckedBaskets={setCheckedBaskets}
+                    totalBasketValue={totalBasketValue}
+                    setTotalBasketValue={setTotalBasketValue}
+                    investment={investment}
+                    basketData={basketData}
+                    setBasketData={setBasketData}
+                    total={total}
+                    setTotal={setTotal}
                   />
                 );
               })}
             </tbody>
           </table>
         </div>
-        {weblink ? (
-          <Alert
-            className="absolute bottom-0 left-2 bg-green-200 text-green-500"
-            icon={HiCheckCircle}
-            rounded
-          >
-            <span className="w-4 h-4 text-green-500">
-              Weblink sent successfully!
-            </span>
-          </Alert>
-        ) : (
-          <></>
-        )}
-        {message ? (
-          <Alert
-            className="absolute bottom-0 left-2 bg-green-200 text-green-500"
-            icon={HiCheckCircle}
-            rounded
-          >
-            <span className="w-4 h-4 text-green-500">
-              Basket mapped successfully!
-            </span>
-          </Alert>
-        ) : (
-          <></>
-        )}
+      </div>
+      <div className="mt-2 w-96">
+        <Alert
+          color="warning"
+          rounded
+          className="h-12"
+          icon={HiInformationCircle}
+        >
+          <span className="w-4 h-4">{message}</span>
+        </Alert>
       </div>
     </div>
   );

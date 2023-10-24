@@ -18,8 +18,12 @@ export default function BasketCategory({setBasketCategory}) {
             .toLowerCase()
             .replace(/\s+/g, "")
             .startsWith(query.toLowerCase().replace(/\s+/g, ""))
-        );
+  );
 
+  const createCategory = async (e) => {
+
+  }
+      
   // to get the basket category
   useEffect(() => {
     async function getCategory() {
@@ -35,7 +39,7 @@ export default function BasketCategory({setBasketCategory}) {
     <div className="">
       <Combobox value={selected} onChange={(selected) => {
         setSelected(selected);
-        setBasketCategory(selected)
+        setBasketCategory(selected);
       }}>
         <div className="relative mt-1 h-8">
           <div className="relative h-8 w-full cursor-default overflow-hidden rounded-lg bg-white text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">

@@ -15,14 +15,10 @@ const Reports = () => {
 
     // redux
     const dispatch = useDispatch();
-    const loggedIn = useSelector((state) => state.report.adminLogin);
 
     // function to login the admin to the IIFL page
     const handleClick = async () => {
-        // const response = await partnerLogin();
-        // if(response) {
-        //     setLoggedIn(true);
-        // }
+
         dispatch(setAdminLogin(true));
     }
 

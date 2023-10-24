@@ -21,6 +21,7 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
         const response = await fetch('http://localhost:8083/basket/create', requestOptions);
         console.log(response)
         if (response.status == 200) {
+            console.log(response.status)
             return true;
         }
         else return false;
@@ -87,6 +88,8 @@ export const getSpecificBasket = async(basketName) => {
             })
         }
         const response = await fetch("http://localhost:8083/view/basket", requestOptions);
+
+        console.log(response)
 
         if(response.ok){
             const jsonData = await response.json();
@@ -277,7 +280,8 @@ export const getBasketValue = async(basketName, adminId) => {
         }
         const response = await fetch("http://localhost:8083/basket/details", requestOptions);
 
-        if(response.ok) {
+        console.log(response);
+        if(response.status === 200) {
             const data = await response.json();
             console.log(data);
             return data;
@@ -293,7 +297,7 @@ export const getBasketValue = async(basketName, adminId) => {
 
 // API to map a basket to a customer
 export const mapBasket = async(basketName, adminId, customerId, broker, scripts) => {
-    console.log(basketName, adminId, customerId, brokerName, scripts)
+    console.log(basketName, adminId, customerId, broker, scripts)
     try{
         const requestOptions = {
             method: 'POST',
@@ -310,6 +314,8 @@ export const mapBasket = async(basketName, adminId, customerId, broker, scripts)
         }
         const response = await fetch("http://localhost:8083/customer/map", requestOptions);
         if(response.status === 200) {
+            const data = await response.json();
+            console.log(data)
             console.log(response)
             return true;
         } else {
@@ -328,7 +334,7 @@ export const sendWeblink = async() => {
 }
 
 // API call to get the mapping, weblink status of customers based on baksetName
-export const getCustomerStatus = async (value) => {
+export const getCustomerStatus = async (basketName) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -336,22 +342,23 @@ export const getCustomerStatus = async (value) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "basketName": value,
+                "basketName": basketName,
             })
         }
         const response = await fetch("http://localhost:8083/mappedstatus", requestOptions);
-        console.log(value, response)
-        if(response.ok){
+        console.log(response);
+
+        if(response.status === 200){
             const responseText = await response.json();
-            console.log(value, responseText);
+            console.log(responseText);
             return responseText;
         }
         else{
-            return false;
+            return [];
         }
     }
     catch(error){
-        console.log(error);
+        return [];
     }
 }
 

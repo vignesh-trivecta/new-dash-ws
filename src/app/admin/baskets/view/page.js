@@ -39,7 +39,7 @@ const Customers = () => {
       setRecords(response);
     };
     fetchBaskets();
-    console.log("modified")
+    console.log("modified");
   }, [handleFetch]);
 
   return (
@@ -123,6 +123,11 @@ const Customers = () => {
                     <td className="text-left">
                       <div className="text-sm text-black p-2 truncate">
                         {record.basketName}
+                      </div>
+                    </td>
+                    <td className="text-left">
+                      <div className="text-sm text-black p-2 truncate">
+                        {record.basketCategory}
                       </div>
                     </td>
                     <td className="text-left">

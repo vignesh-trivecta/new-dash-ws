@@ -96,6 +96,7 @@ const Page = ({ params }) => {
             setTableData(mainDatas);
             setTooltipData(tooltipDatas);
           } else {
+            console.log(response)
             setTableData(response[param]);
           }
         }

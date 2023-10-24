@@ -1,41 +1,67 @@
 import React, { useEffect, useState } from "react";
 import { Tooltip } from "flowbite-react";
 import { mapBasket } from "@/app/api/basket/route";
-import { getCustomerStatus } from "@/app/api/basket/route";
 import { useSelector } from "react-redux";
 import { segregate } from "@/utils/formatter/priceSegregator";
 
 const CustomerMappingTable = ({
   data,
   index,
-  status,
-  setStatus,
   enableInputs,
   basketName,
   basketVal,
   scripts,
+  enableBroker,
+  setMessage,
+  status
 }) => {
-  // broker inputs
-  const brokers = [{ name: "AXIS" }, { name: "IIFL" }];
-
-  console.log(status)
 
   // redux
-  const adminId = useSelector((state) => state.user.username);
+  const adminId = useSelector((state) => state.user.username);  
 
   // local state
-  const [broker, setBroker] = useState(brokers[0].name);
+  const [broker, setBroker] = useState("");
   const [investment, setInvestment] = useState("");
   const [quantity, setQuantity] = useState("");
   const [total, setTotal] = useState("");
   const [highlight, setHighlight] = useState(false);
-  const [enableButtons, setEnableButtons] = useState(basketName == "");
-  const [enableMap, setEnableMap] = useState(basketName == "");
-  const [enableWeblink, setEnableWeblink] = useState(basketName == "");
+  const [enableMap, setEnableMap] = useState(false);
+  const [enableWeblink, setEnableWeblink] = useState(false);
+  const [mapCondition, setMapCondition] = useState(false);
+  const [webCondition, setWebCondition] = useState(false);
+
+  useEffect(() => {
+    setBroker("");
+    setInvestment("");
+    setQuantity("");
+    setTotal("");
+  }, [status])
+
+  useEffect(() => {
+    const map = status.map((obj) => {
+      const customer = obj.customerId;
+      const brk = obj.brokerName;
+      const map = obj.mapStatus;
+      // const web = obj.webLinkStatus;
+      if ((customer == data.customerId) && (brk == broker) && (map)) {
+        return true;
+      }
+    }).includes(true);
+    const web = status.map((obj) => {
+      const customer = obj.customerId;
+      const brk = obj.brokerName;
+      const web = obj.webLinkStatus;
+      if ((customer == data.customerId) && (brk == broker) && (web)) {
+        return true;
+      }
+    }).includes(true);
+
+    setMapCondition(map);
+    setWebCondition(web);
+  },[status, broker])
 
   // handle customer mapping
   const handleMapping = async (customerId) => {
-    console.log("clicked");
     const response = await mapBasket(
       basketName,
       adminId,
@@ -43,27 +69,45 @@ const CustomerMappingTable = ({
       broker,
       scripts
     );
-    const status = await getCustomerStatus(basketName);
-    if (status) {
-      setStatus(status);
-    }
   };
+
+  // handle broker selection
+  const handleBrokerSelection = async (e) => {
+    const broker = e.target.value;
+    setBroker(broker);
+  }
 
   // handle weblink
   const handleWeblink = async () => {};
 
   useEffect(() => {
     if (Number(investment) !== 0 && Number(quantity) !== 0) {
-      setEnableButtons(false);
+      // setEnableButtons(false);
+      if (mapCondition) {
+        setEnableMap(true)
+      } else {
+        setEnableMap(false);
+      }
+      if (webCondition) {
+        setEnableWeblink(true);
+      } else {
+        setEnableWeblink(false);
+      }
     } else {
-      setEnableButtons(true);
+      // setEnableButtons(true);
+      setEnableMap(true);
+      setEnableWeblink(true);
     }
 
     if (Number(total) > Number(investment)) {
       setHighlight(true);
-      setEnableButtons(true);
+      setMessage("Basket Total is greater than Investment")
+      // setEnableButtons(true);
+      setEnableMap(true);
+      setEnableWeblink(true);
     } else {
       setHighlight(false);
+      setMessage("")
     }
   }, [investment, quantity]);
 
@@ -83,8 +127,12 @@ const CustomerMappingTable = ({
         <select
           className="text-xs border-gray-200 rounded-md"
           value={broker}
-          onChange={(e) => setBroker(e.target.value)}
+          onChange={handleBrokerSelection}
+          disabled={enableBroker}
         >
+          <option disabled className="text-sm" value={""}>
+            - Select -
+          </option>
           <option className="text-sm" value={"AXIS"}>
             AXIS
           </option>
@@ -142,10 +190,7 @@ const CustomerMappingTable = ({
       {/* Map status */}
       <td>
         <div className="ml-8">
-          {status.find((obj) => {
-            console.log(obj.customerId === data.customerId)
-            return obj.customerId === data.customerId;
-          }) ? (
+          { mapCondition ? (
             <svg
               className="w-4 h-4 text-green-500 dark:text-white"
               aria-hidden="true"
@@ -178,34 +223,52 @@ const CustomerMappingTable = ({
               />
             </svg>
           )}
-        </div>
+          </div>
       </td>
       {/* Weblink status */}
       <td>
-        <div className="ml-6">
-          <svg
-            className="w-4 h-4 text-red-500 dark:text-white"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 16 12"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1"
-              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-            />
-          </svg>
-        </div>
+        <div className="ml-8">
+          { webCondition ? (
+            <svg
+              className="w-4 h-4 text-green-500 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 16 12"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1"
+                d="M1 5.917 5.724 10.5 15 1.5"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="w-4 h-4 text-red-500 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 16 12"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+          )}
+          </div>
       </td>
       {/* Actions button group */}
       <td className=" flex text-sm text-black mt-2 ml-6 space-x-2">
         {/* Map customer */}
         <Tooltip content="Map Customer">
           <button
-            disabled={enableButtons}
+            disabled={enableMap}
             className=""
             onClick={() => {
               handleMapping(data.customerId);
@@ -230,7 +293,7 @@ const CustomerMappingTable = ({
         </Tooltip>
         {/* Send Weblink */}
         <Tooltip content="Send Weblink">
-          <button disabled={enableButtons} className="">
+          <button disabled={enableWeblink} className="">
             <svg
               className="w-4 h-4 text-gray-800 dark:text-white"
               aria-hidden="true"

@@ -73,9 +73,9 @@ const ReportsTable = ({ columns, datas, tooltipData, param }) => {
                     {Object.values(data)?.map((value, subIndex) => (
                       <Td
                         className={`text-sm p-2 ${
-                          typeof value === "string"
-                            ? "text-center"
-                            : "text-center"
+                          typeof value === "number"
+                            ? "text-right"
+                            : (/[A-Z]/g.test(value) && /[A-Z]/g.exec(value).length > 3 ? "text-left" : "text-center")
                         }`}
                         key={subIndex}
                       >

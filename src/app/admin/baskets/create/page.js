@@ -42,7 +42,8 @@ const CreateBasket = () => {
   const [message, setMessage] = useState("");
   const [transType, setTransType] = useState("BUY");
   const [total, setTotal] = useState(0);
-  const [saved, setSaved] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [saveMsg, setSaveMsg] = useState("");
   const [basketAmount, setBasketAmount] = useState("");
   const [comparison, setComparison] = useState(true); // comparison to check whether basketVal is greater than investmentVal
   const [basketCategory, setBasketCategory] = useState("");
@@ -52,14 +53,13 @@ const CreateBasket = () => {
 
   // useEffect for getting records after basket save clicked
   useEffect(() => {
-
-    if (saved == true) {
+    console.log("saved");
+    if (saveMsg == true) {
       setRecords([]);
       setBasketAmount("");
       dispatch(setBasketName(""));
       setMessage(msg4);
-    }
-    else {
+    } else {
       setMessage(msg7);
     }
   }, [saved]);
@@ -319,14 +319,14 @@ const CreateBasket = () => {
         {/* Message area showing the status of basket operations */}
         {message !== msg4 ? (
           <div>
-            <Alert color="warning" icon={HiInformationCircle} rounded>
+            <Alert className="w-96" color="warning" icon={HiInformationCircle} rounded>
               <span className="w-4 h-4">{message}</span>
             </Alert>
           </div>
         ) : (
           <div>
             <Alert
-              className="bg-green-200 text-green-500"
+              className="bg-green-200 text-green-500 w-96"
               icon={HiCheckCircle}
               rounded
             >
@@ -336,7 +336,10 @@ const CreateBasket = () => {
         )}
 
         {/* Conditional rendering based on comparison and records.length */}
-        {comparison && basketAmount !== "" && basketName !== "" && basketCategory !== "" ? (
+        {comparison &&
+        basketAmount !== "" &&
+        basketName !== "" &&
+        basketCategory !== "" ? (
           // showing active buttons
           <div className="flex justify-center">
             <div>
@@ -349,11 +352,14 @@ const CreateBasket = () => {
             </div>
             <div>
               <SubmitBasket
+                saved={saved}
                 setSaved={setSaved}
                 transType={transType}
                 investmentAmount={basketAmount}
                 actualValue={basketVal}
                 basketCategory={basketCategory}
+                saveMsg={saveMsg}
+                setSaveMsg={setSaveMsg}
               />
             </div>
           </div>

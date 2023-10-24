@@ -8,12 +8,15 @@ import { setBasketAmount } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
 
 const SubmitBasket = ({
+  saved,
   setSaved,
   transType,
   investmentAmount,
   actualValue,
   mainBasketName,
-  basketCategory
+  basketCategory,
+  saveMsg,
+  setSaveMsg
 }) => {
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -54,7 +57,10 @@ const SubmitBasket = ({
       basketCategory,
       basketRequests,
     );
-    setSaved(response);
+    console.log(response);
+    setSaveMsg(response);
+    setSaved(!saved);
+    console.log("reset message")
     props.setOpenModal(undefined);
   };
 

@@ -4,24 +4,21 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBasketAmount } from "@/store/basketSlice";
 import { useRouter } from "next/navigation";
-import { HiCheckCircle } from "react-icons/hi";
+import { HiCheckCircle, HiInformationCircle } from "react-icons/hi";
 import { Alert } from "flowbite-react";
 import {
   getBasketList,
   getBasketValue,
+  getCustomerStatus,
   getCustomers,
 } from "@/app/api/basket/route";
-import { getCustomerStatus } from "@/app/api/basket/route";
 import CustomerMappingTable from "@/components/admin/table/customerMappingTable";
 import { segregate } from "@/utils/formatter/priceSegregator";
 
 const CustomerMapping = () => {
-  // broker inputs
-  const brokers = [{ name: "AXIS" }, { name: "IIFL" }];
 
   // redux
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.user.loggedIn);
   const adminId = useSelector((state) => state.user.username);
 
   // local state
@@ -29,14 +26,15 @@ const CustomerMapping = () => {
   const [customers, setCustomers] = useState([]);
   const [weblink, setWeblink] = useState(false);
   const [message, setMessage] = useState(false);
-  const [status, setStatus] = useState([]);
   const [records, setRecords] = useState([]);
   // const [investmentVal, setInvestmentVal] = useState("");
+  const [basketCategory, setBasketCategory] = useState("");
   const [scripts, setScripts] = useState(0);
   const [basketVal, setBasketVal] = useState("");
   const [transType, setTransType] = useState("");
-  const [broker, setBroker] = useState(brokers[0].name);
+  const [enableBroker, setEnableBroker] = useState(true);
   const [enableInputs, setEnableInputs] = useState(basketName == "");
+  const [status, setStatus] = useState([]);
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -47,53 +45,52 @@ const CustomerMapping = () => {
 
   // useEffect to fetch the view table baskets
   useEffect(() => {
-    const fetchBaskets = async () => {
+
+    const fetchData = async () => {
       const response = await getBasketList();
       setRecords(response);
-    };
-    const fetchData = async () => {
+      console.log(response);
+
       const customersData = await getCustomers();
       setCustomers(customersData);
     };
 
-    fetchBaskets();
     fetchData();
   }, []);
 
-  if (weblink) {
-    dispatch(setBasketAmount(""));
-    setBasketName("");
-    setTimeout(() => {
-      setWeblink(false);
-      // router.push("/admin/baskets/create");
-    }, 3000);
-  }
+  // if (weblink) {
+  //   dispatch(setBasketAmount(""));
+  //   setBasketName("");
+  //   setTimeout(() => {
+  //     setWeblink(false);
+  //     // router.push("/admin/baskets/create");
+  //   }, 3000);
+  // }
 
-  if (message) {
-    dispatch(setBasketAmount(""));
-    setBasketName("");
-    setTimeout(() => {
-      setMessage(false);
-      // router.push("/admin/baskets/create");
-    }, 3000);
-  }
+  // if (message) {
+  //   dispatch(setBasketAmount(""));
+  //   setBasketName("");
+  //   setTimeout(() => {
+  //     setMessage(false);
+  //     // router.push("/admin/baskets/create");
+  //   }, 3000);
+  // }
 
   // handle basket selection
-  const handleSelection = async (value) => {
+  const handleBasketSelection = async (value) => {
+    setEnableBroker(false);
     setBasketName(value);
+
     const response = await getBasketValue(value, adminId);
-    console.log(response);
-    // setInvestmentVal(response[0]?.basketInvestAmt);
+    
     setTransType(response[0]?.transactionType);
     setBasketVal(response[0]?.basketActualValue);
     setScripts(response[0]?.noOfScripts);
+    setBasketCategory(response[0]?.basketCategory);
     setEnableInputs(false);
 
-    const status = await getCustomerStatus(value);
-    console.log(status)
-    if (status) {
-      setStatus(status);
-    }
+    const statusResponse = await getCustomerStatus(value);
+    setStatus(statusResponse);
   };
 
   return (
@@ -109,7 +106,7 @@ const CustomerMapping = () => {
             className="border border-gray-200 rounded-md w-44 text-sm"
             defaultValue={""}
             onChange={(e) => {
-              handleSelection(e.target.value);
+              handleBasketSelection(e.target.value);
             }}
           >
             <option disabled value="">
@@ -130,9 +127,9 @@ const CustomerMapping = () => {
           </label>
           <input
             type="text"
-            value={""}
+            value={basketCategory}
             disabled
-            className="border border-gray-200 bg-gray-50 text-right rounded-lg w-44 text-sm"
+            className="border border-gray-200 bg-gray-50 text-left rounded-lg w-44 text-sm"
           />
         </div>
 
@@ -224,44 +221,29 @@ const CustomerMapping = () => {
                   <CustomerMappingTable
                     data={data}
                     index={index}
-                    status={status}
-                    setStatus={setStatus}
                     enableInputs={enableInputs}
                     basketName={basketName}
                     basketVal={basketVal}
                     scripts={scripts}
+                    enableBroker={enableBroker}
+                    setMessage={setMessage}
+                    status={status}
                   />
                 );
               })}
             </tbody>
           </table>
         </div>
-        {weblink ? (
-          <Alert
-            className="absolute bottom-0 left-2 bg-green-200 text-green-500"
-            icon={HiCheckCircle}
-            rounded
-          >
-            <span className="w-4 h-4 text-green-500">
-              Weblink sent successfully!
-            </span>
-          </Alert>
-        ) : (
-          <></>
-        )}
-        {message ? (
-          <Alert
-            className="absolute bottom-0 left-2 bg-green-200 text-green-500"
-            icon={HiCheckCircle}
-            rounded
-          >
-            <span className="w-4 h-4 text-green-500">
-              Basket mapped successfully!
-            </span>
-          </Alert>
-        ) : (
-          <></>
-        )}
+        <div className="mt-2 w-96">
+        <Alert
+          color="warning"
+          rounded
+          className="h-12"
+          icon={HiInformationCircle}
+        >
+          <span className="w-4 h-4">{message}</span>
+        </Alert>
+      </div>
       </div>
     </div>
   );

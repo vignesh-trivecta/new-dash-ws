@@ -29,7 +29,7 @@ const BasketPage = () => {
 
   // nextjs router
   const router = useRouter();
-  
+
   // calculating the value of the basket
   let basketValue = 0;
   const dataValue = basketData?.rows?.map((record, index) => {
@@ -88,14 +88,6 @@ const BasketPage = () => {
       document.body.appendChild(f);
       f.submit();
     }
-
-
-
-
-
-
-
-
 
     // axis redirect logic
     else if (broker === "AXIS") {

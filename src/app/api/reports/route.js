@@ -119,6 +119,7 @@ export const handleLiveReportsFetch = async (
     console.log(response)
     if (response.status === 200) {
       const responseText = await response.json();
+      console.log(responseText)
       return responseText;
     } 
     else if (response.status === 404) {

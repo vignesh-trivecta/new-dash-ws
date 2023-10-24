@@ -5,7 +5,6 @@ import Image from "next/image";
 import logo from "@/../../public/logo1.png";
 import {
   setAdminLoginStatus,
-  setLoggedIn,
   setTimeFormat,
 } from "@/store/userSlice";
 import { useRouter } from "next/navigation";
@@ -157,7 +156,6 @@ const DashNavbar = function () {
                   className="rounded-md border border-gray-300 p-2 hover:bg-red-500 hover:text-white"
                   onClick={() => {
                     router.push("/");
-                    dispatch(setLoggedIn(false));
                     dispatch(setAdminLoginStatus(false));
                     dispatch(setAdminLogin(false));
                   }}

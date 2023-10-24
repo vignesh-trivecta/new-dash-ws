@@ -14,25 +14,26 @@ const BasketMappingTable = ({
   basketName,
   basketVal,
   checkedBaskets,
-  setCheckedBaskets
+  setCheckedBaskets,
+  setTotalBasketValue,
+  investment,
+  basketData,
+  setBasketData,
+  total,
+  setTotal
 }) => {
   // broker inputs
   const brokers = [{ name: "AXIS" }, { name: "IIFL" }];
-
 
   // redux
   const adminId = useSelector((state) => state.user.username);
 
   // local state
   const [broker, setBroker] = useState(brokers[0].name);
-  const [investment, setInvestment] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [total, setTotal] = useState("");
+  const [quantity, setQuantity] = useState(null);
   const [highlight, setHighlight] = useState(false);
   const [checked, setChecked] = useState(false);
-  const [enableButtons, setEnableButtons] = useState(basketName == "");
-  const [enableMap, setEnableMap] = useState(basketName == "");
-  const [enableWeblink, setEnableWeblink] = useState(basketName == "");
+
 
   // handle customer mapping
   const handleMapping = async (customerId) => {
@@ -53,67 +54,68 @@ const BasketMappingTable = ({
   // handle weblink
   const handleWeblink = async () => {};
 
-  useEffect(() => {
-    if (Number(investment) !== 0 && Number(quantity) !== 0) {
-      setEnableButtons(false);
-    } else {
-      setEnableButtons(true);
-    }
-
-    if (Number(total) > Number(investment)) {
-      setHighlight(true);
-      setEnableButtons(true);
-    } else {
-      setHighlight(false);
-    }
-  }, [investment, quantity]);
-
   return (
     <tr key={index} className="border-b p-2 hover:bg-gray-100">
       <td className="text-sm text-black text-center font-semibold">
         <input 
-            type="checkbox" 
-            checked={checked}
-            value={data.basketName} 
-            onChange={(e) => {
-                if (checked == false) {
-                    const newValue = e.target.value;
-                    setCheckedBaskets([...checkedBaskets, newValue]);
-                    setChecked(true);
-                }
-                else {
-                    const newValue = e.target.value;
-                    const newList = checkedBaskets.filter(arr => arr != newValue);
-                    setCheckedBaskets(newList);
-                    setChecked(false);
-                }
-            }}  
+          type="checkbox" 
+          checked={checked}
+          value={data.basketName} 
+          id={data.basketName}
+          onChange={(e) => {
+            if (checked == false) {
+              const newValue = e.target.value;
+              setCheckedBaskets([...checkedBaskets, newValue]);
+              setChecked(true);
+            }
+            else {
+              const newValue = e.target.value;
+              const newList = checkedBaskets.filter(arr => arr != newValue);
+              setCheckedBaskets(newList);
+              setChecked(false);
+            }
+          }}  
         />
       </td>
       <td className="text-sm text-left text-black p-2 break-words">
         {data.basketName}
       </td>
-      <td className="text-sm text-center text-black break-words">{"PHARMA"}</td>
+      <td className="text-sm text-center text-black break-words">
+        {data.basketCategory}
+      </td>
       <td className="text-sm text-center text-black break-words">
         {data.totalNoOrders}
       </td>
-      <td className="text-sm text-center text-black break-words">{"BUY"}</td>
-      <td className="text-sm text-center text-black">
-        {segregate(data.basketActualValue)}
+      <td className="text-sm text-center text-black break-words">
+        {"BUY"}
+      </td>
+      <td className="text-sm text-right text-black">
+        {segregate(data?.basketActualValue)}
       </td>
       <td className=" text-sm text-black">
         <input 
-            id='quantity'
-            value={segregate(quantity)}
-            disabled={enableInputs}
-            onChange={(e) => {
-                // Remove commas from the input value before updating state
-                const newValue = e.target.value.replace(/,/g, "");
-                setQuantity(newValue);
-                setTotal(basketVal * newValue);
-            }}
-            type='text' 
-            className={`ml-10 w-20 h-8 text-right border-gray-300 rounded-md`}
+          id='quantity'
+          value={segregate(quantity)}
+          disabled={!enableInputs && !checked}
+          onChange={(e) => {
+            // Remove commas from the input value before updating state
+            const newValue = e.target.value.replace(/,/g, "");
+            setQuantity(newValue);
+            setTotal({...total, [data.basketName] : Number(newValue * data.basketActualValue)});
+            
+            if (newValue == "" || newValue == 0 || newValue ==  null) {
+              console.log('empty');
+              delete basketData[data.basketName];
+              return;
+            }
+            setBasketData({
+              ...basketData,
+              [data.basketName] : Number(newValue)
+            })
+            console.log(data.basketName)
+          }}
+          type='text' 
+          className={`ml-10 w-20 h-8 text-right rounded-md ${checked ? ( quantity ? "border-gray-200" :"border-red-500") : "border-gray-200"}`}
         />
       </td>
       {/* <td className="text-sm text-center text-black">
