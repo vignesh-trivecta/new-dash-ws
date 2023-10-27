@@ -77,7 +77,6 @@ const FilterComponent = ({props}) => {
     // function handling when filter button is clicked
     const handleFilter = async (e) => {
         e.preventDefault();
-        dispatch(setToggle(!toggle));
         dispatch(setCustomerId(localCustomerId));
         dispatch(setBroker(localBroker));
         dispatch(setReportType(localReportType));

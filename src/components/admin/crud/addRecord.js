@@ -9,6 +9,7 @@ import { AddRecordMainAPI } from '@/app/api/mainBasket/route';
 import { addRecord } from '@/app/api/tempBasket/route';
 import { setSelectedStock} from '@/store/addRecordSlice';
 import { usePathname } from 'next/navigation';
+import { segreagatorWoComma } from '@/utils/formatter/segregatorWoComma';
 
 const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, mainBasketName }) => {
 
@@ -127,7 +128,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         {/* Price element */}
                         <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
                             <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                            <input disabled id='price' name="price" value={price} type="number" className=' text-right absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200' />
+                            <input disabled id='price' name="price" value={segreagatorWoComma(price)} type="string" className=' text-right pr-2 w-full h-11 bg-gray-50 rounded-md border border-gray-200' />
                         </div>
 
                         {/* Exchange element */}

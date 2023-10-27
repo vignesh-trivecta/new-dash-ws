@@ -15,6 +15,7 @@ import { getCustomerStatus } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketMappingTable from "@/components/admin/table/basketMappingTable";
 import { sendMultipleBaskets } from "@/app/api/map/baskets/route";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const BasketMapping = () => {
   // broker inputs
@@ -131,6 +132,7 @@ const BasketMapping = () => {
       broker
     );
     console.log(response);
+    setMessage(response);
   };
 
   useEffect(() => {
@@ -226,7 +228,7 @@ const BasketMapping = () => {
           <input
             disabled
             type="text"
-            value={segregate(totalBasketValue)}
+            value={segreagatorWoComma(totalBasketValue)}
             className={`border rounded-lg w-44 text-right bg-gray-50 text-sm ${
               errorHighlight ? "border-red-500 " : "border-gray-200"
             }`}

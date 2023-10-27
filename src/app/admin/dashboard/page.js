@@ -20,8 +20,9 @@ const DashCards = () => {
     }, []);
 
     return(
-        <div className='container mx-auto mt-4' style={{width: '95%'}}>
-            <h1 className="font-bold">Dashboard</h1>
+        <div className='container mx-auto mt-4 overflow-hidden' style={{width: '95%'}}>
+            <iframe frameborder={0} width="1000" height="500" src="https://analytics.zoho.in/open-view/298633000000325786/bea6e30a1d1bc77ab8bfcf877648dd97"></iframe>
+            {/* <h1 className="font-bold">Dashboard</h1>
             <div className="flex justify-center gap-4">
                 <div className="border border-gray-50 mb-4">
                     <Image src={Line} alt="line-chart" width={500} />
@@ -39,7 +40,7 @@ const DashCards = () => {
                     <h1 className="text-center underline">Basket Total Value</h1>
                     <Image src={Bar} alt="bar-chart" className="bar-chart" width={500}  />
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

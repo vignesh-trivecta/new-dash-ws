@@ -10,6 +10,7 @@ import { Button, Spinner } from "flowbite-react";
 import { clientConfirmsBasket, getAxisUrl } from "@/app/api/client/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import { clientLogin } from "@/app/api/login/route";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const BasketPage = () => {
   // redux
@@ -58,35 +59,36 @@ const BasketPage = () => {
 
     // // IIFL redirect logic
     if (broker === "IIFL") {
-      // const res = await clientLogin(customerId);
-      // if (true) {
-      //     const response = await clientConfirmsBasket(basketData);
-      //     if(response){
-      //         setData(response);
-      //         setShow(true);
-      //         setStatus(true);
-      //     }
-      // }
+      const res = await clientLogin(customerId);
+      if (true) {
+        // const response = await clientConfirmsBasket(basketData);
+        if(true){
+          // setData(response);
+          setShow(true);
+          setStatus(true);
+          router.push("/client/placeOrder");
+        }
+      }
       console.log("hi");
 
-      var f = document.createElement("form");
-      f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
-      f.method = "POST";
+      // var f = document.createElement("form");
+      // f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
+      // f.method = "POST";
 
-      var i1 = document.createElement("input");
-      i1.type = "hidden";
-      i1.name = "VP";
-      i1.value = "http://localhost:3000/client/placeOrder";
-      f.appendChild(i1);
+      // var i1 = document.createElement("input");
+      // i1.type = "hidden";
+      // i1.name = "VP";
+      // i1.value = "http://localhost:3000/client/placeOrder";
+      // f.appendChild(i1);
 
-      var i2 = document.createElement("input");
-      i2.type = "hidden";
-      i2.name = "UserKey";
-      i2.value = "iGGlgBzeHZ35T8yxxC5kmW2ziUw7RraD";
-      f.appendChild(i2);
+      // var i2 = document.createElement("input");
+      // i2.type = "hidden";
+      // i2.name = "UserKey";
+      // i2.value = "iGGlgBzeHZ35T8yxxC5kmW2ziUw7RraD";
+      // f.appendChild(i2);
 
-      document.body.appendChild(f);
-      f.submit();
+      // document.body.appendChild(f);
+      // f.submit();
     }
 
     // axis redirect logic
@@ -264,14 +266,14 @@ const BasketPage = () => {
                       </td>
                       <td className="text-right">
                         {record?.limitPrice != 0
-                          ? segregate(record?.limitPrice)
-                          : segregate(record?.priceValue)}
+                          ? segreagatorWoComma(record?.limitPrice)
+                          : segreagatorWoComma(record?.priceValue)}
                       </td>
                       <td className="text-right pr-4">
                         {record?.quantityValue}
                       </td>
                       <td className="text-right pr-2">
-                        {segregate(
+                        {segreagatorWoComma(
                           (record?.limitPrice != 0
                             ? record?.limitPrice
                             : record?.priceValue) * record?.quantityValue

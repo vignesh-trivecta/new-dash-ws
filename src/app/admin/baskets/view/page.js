@@ -14,7 +14,7 @@ const Customers = () => {
   // local state
   const [records, setRecords] = useState([]);
   const [handleFetch, setHandleFetch] = useState(false);
-  const [basketCategory, setBasketCategory] = useState("ALL");
+  const [basketCategory, setBasketCategory] = useState("");
   const [basketType, setBasketType] = useState("ALL");
 
   // redux
@@ -34,13 +34,22 @@ const Customers = () => {
 
   // useEffect to update table after deletion or filtering
   useEffect(() => {
-    const fetchBaskets = async () => {
-      const response = await getBasketList(basketType);
-      setRecords(response);
-    };
     fetchBaskets();
-    console.log("modified");
-  }, [handleFetch]);
+  }, []);
+
+
+  const filteredBaskets = async () => {
+    const response = await getBasketList(basketType);
+    const result = response?.filter((obj) => obj?.basketCategory === basketCategory);
+    console.log(result || [])
+    setRecords(result || []);
+  }
+
+  const fetchBaskets = async () => {
+    const response = await getBasketList(basketType);
+    console.log(response);
+    setRecords(response || []);
+  };
 
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
@@ -76,6 +85,8 @@ const Customers = () => {
             setBasketCategory={setBasketCategory}
             handleFetch={handleFetch}
             setHandleFetch={setHandleFetch}
+            filteredBaskets={filteredBaskets}
+            fetchBaskets={fetchBaskets}
           />
         </div>
       </div>
@@ -135,10 +146,8 @@ const Customers = () => {
                         {record.totalNoOrders}
                       </div>
                     </td>
-                    <td className="text-center">
-                      <div className="text-sm text-black p-2 mr-20">
+                    <td className="text-right text-sm pr-14">
                         {segregate(record.basketInvAmount)}
-                      </div>
                     </td>
                     <td className="text-left">
                       <div className="text-sm text-black p-2">

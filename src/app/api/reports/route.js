@@ -74,7 +74,9 @@ export const handleDbReportsFetch = async (
     const response = await fetch(
       `http://localhost:8083/iifl/db/${requestName}`,
       requestOptions
-    );
+      );
+      console.log(response);
+
 
     if (response.status === 200) {
       const responseText = await response.json();
@@ -116,19 +118,18 @@ export const handleLiveReportsFetch = async (
       `http://localhost:8085/partner/live/${requestName}`,
       requestOptions
     );
-    console.log(response)
     if (response.status === 200) {
       const responseText = await response.json();
       console.log(responseText)
       return responseText;
     } 
     else if (response.status === 404) {
-      return response.status;
+      return [];
     }
     else {
-      return response.status;
+      return [];
     }
   } catch (error) {
-    return error.message;
+    return [];
   }
 };

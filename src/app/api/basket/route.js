@@ -314,12 +314,14 @@ export const mapBasket = async(basketName, adminId, customerId, broker, scripts)
         }
         const response = await fetch("http://localhost:8083/customer/map", requestOptions);
         if(response.status === 200) {
-            const data = await response.json();
+            const data = await response.text();
             console.log(data)
             console.log(response)
-            return true;
+            return data;
         } else {
-            return false;
+            const data = await response.text();
+            console.log(data)
+            return data;
         }
     }
     catch(error){
@@ -381,5 +383,34 @@ export const getBasketCategories = async () => {
     }
     catch(error) {
         return false;
+    }
+}
+
+// API call to add a category to the basket category list
+export const addBasketCategory = async (query) => {
+    try {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "basketCategory": query,
+                "basketDescription": "New basket name",
+            })
+        }
+
+        console.log(query)
+        const response = await fetch("http://localhost:8083/add/basket-category", requestOptions);
+        console.log(response);
+        if (response.status === 200) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    catch(error) {
+        return false
     }
 }

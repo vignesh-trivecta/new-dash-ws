@@ -14,10 +14,11 @@ import BasketRecords from "@/components/admin/table/basketRecords";
 import SubmitBasket from "@/components/admin/crud/submitBasket";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketCategory from "@/components/admin/basketCategory";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const CreateBasket = () => {
   // basket status messages
-  const msg1 = "Enter Basket Name and Investment Amount";
+  const msg1 = "Enter Basket Name, Investment Amount and Basket Category";
   const msg2 = "Add scripts to the basket";
   const msg3 = "Basket name exists!";
   const msg4 = "Basket Saved Successfully!";
@@ -49,7 +50,7 @@ const CreateBasket = () => {
   const [basketCategory, setBasketCategory] = useState("");
 
   // basket value variable
-  const basketVal = segregate(total);
+  const basketVal = segreagatorWoComma(total);
 
   // useEffect for getting records after basket save clicked
   useEffect(() => {
@@ -252,7 +253,7 @@ const CreateBasket = () => {
           <input
             disabled
             type="text"
-            value={basketVal}
+            value={(basketVal)}
             className="border border-gray-200 rounded-lg  w-24 md:w-44 bg-gray-50 text-right text-sm"
           />
         </div>

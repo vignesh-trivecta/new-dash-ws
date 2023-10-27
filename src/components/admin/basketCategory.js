@@ -3,7 +3,7 @@
 import { Fragment, useState, useEffect } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
-import { getBasketCategories } from "@/app/api/basket/route";
+import { addBasketCategory, getBasketCategories } from "@/app/api/basket/route";
 
 export default function BasketCategory({setBasketCategory}) {
   const [basketCategoryList, setBasketCategoryList] = useState([]);
@@ -19,10 +19,6 @@ export default function BasketCategory({setBasketCategory}) {
             .replace(/\s+/g, "")
             .startsWith(query.toLowerCase().replace(/\s+/g, ""))
   );
-
-  const createCategory = async (e) => {
-
-  }
       
   // to get the basket category
   useEffect(() => {
@@ -30,10 +26,11 @@ export default function BasketCategory({setBasketCategory}) {
       const response = await getBasketCategories();
       if (response) {
         setBasketCategoryList(response);
+        console.log(response)
       }
     }
     getCategory();
-  }, []);
+  }, [selected]);
 
   return (
     <div className="">
@@ -67,12 +64,21 @@ export default function BasketCategory({setBasketCategory}) {
                 <button
                   className="relative cursor-pointer text-left py-2 px-4 text-gray-700 w-full"
                   onClick={() => {
-                    console.log("click");
+                    console.log("click ", query);
+                    const addCategory = async (query) => {
+                      const res = await addBasketCategory(query);
+                      console.log(res);
+                      if (res) {
+                        setSelected(query);
+                        setQuery("");
+                      }
+                    }
+                    addCategory(query);
                   }}
                 >
                   {`Add "${query}"`}
                 </button>
-              ) : (
+                ) : (
                 filteredPeople.map((basket, index) => (
                   <Combobox.Option
                     key={index}

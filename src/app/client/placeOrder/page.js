@@ -4,46 +4,68 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import { Button, Spinner } from "flowbite-react";
-import { postAxisOrders } from "@/app/api/client/route";
+import { clientConfirmsBasket, postAxisOrders } from "@/app/api/client/route";
 import { HiCheck } from "react-icons/hi";
 import { segregate } from "@/utils/formatter/priceSegregator";
+import { clientLogin } from "@/app/api/login/route";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const PlaceOrder = () => {
   // url search params
   const searchParams = useSearchParams();
   const ssoId = searchParams.get("ssoId");
   console.log("enter");
-
-  console.log(ssoId);
-
+  
   // local state
   const [showSpinner, setShowSpinner] = useState(true);
   const [show, setShow] = useState(false); // show the order placed page
   const [status, setStatus] = useState(false); // show the spinner or failed page
   const [showBasket, setShowBasket] = useState(false); // show or not show the basket in orders placed page
   const [data, setData] = useState([]);
-
+  const [error, setError] = useState("");
+  
   // redux
   const basketData = useSelector((state) => state.client.basketData);
   const customerId = basketData.customerId;
   const basketName = basketData.basketName;
   const customerName = basketData.customerName;
 
-  useEffect(() => {
-    const placeAxisOrders = async () => {
-      const response = await postAxisOrders(
-        customerId,
-        ssoId,
-        basketName,
-        customerName,
-        basketData.rows
-      );
-      if (response !== false) {
-        setData(response);
-        setStatus(true);
+  // function placing orders if broker is IIFL
+  const placeIiflOrders = async () => {
+    console.log("function called")
+    const res = await clientLogin(customerId);
+    if (true) {
+      // const response = await clientConfirmsBasket(basketData);
+      if(response){
+        // setData(response);
+        // setStatus(true);
+        console.log("no data to show")
       }
-    };
-    placeAxisOrders();
+    }
+  }
+
+  // function placing orders if broker is AXIS
+  const placeAxisOrders = async () => {
+    const response = await postAxisOrders(
+      customerId,
+      ssoId,
+      basketName,
+      customerName,
+      basketData.rows
+    );
+    if (response !== false) {
+      setData(response);
+      setStatus(true);
+    }
+  };
+    
+  useEffect(() => {
+    if (basketData.customerBroker === "AXIS") {
+      placeAxisOrders();
+    }
+    else if (basketData.customerBroker === "IIFL") {
+      placeIiflOrders();
+    }
   }, []);
 
   return (
@@ -106,7 +128,7 @@ const PlaceOrder = () => {
                   </tr>
                 </thead>
                 <tbody className="text-sm md:text-base">
-                  {data?.details.map((record, index) => {
+                  {data?.details?.map((record, index) => {
                     return (
                       <tr className="border-b hover:bg-gray-100" key={index}>
                         <td className="text-center">{index + 1}</td>
@@ -114,13 +136,13 @@ const PlaceOrder = () => {
                           {record?.tradingSymbol}
                         </td>
                         <td className="text-right sm:pr-4">
-                          {segregate(record?.price)}
+                          {segreagatorWoComma(record?.price)}
                         </td>
                         <td className="text-right pr-4 sm:pr-8">
                           {record?.quantity}
                         </td>
                         <td className="text-right pr-2 sm:pr-4">
-                          {segregate(record?.price * record?.quantity)}
+                          {segreagatorWoComma(record?.price * record?.quantity)}
                         </td>
                         <td className="text-right pr-2">
                           {record?.orderStatus}

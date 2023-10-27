@@ -37,7 +37,7 @@ export default function ViewFilterBasketCategory({basketCategory, setBasketCateg
       <Combobox value={selected} onChange={(selected) => {
         setSelected(selected);
         setBasketCategory(selected);
-        setHandleFetch(!handleFetch);
+        // setHandleFetch(!handleFetch);
       }}>
         <div className="relative mt-1 h-8">
           <div className="relative h-8 w-full cursor-default overflow-hidden rounded-lg bg-white text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">

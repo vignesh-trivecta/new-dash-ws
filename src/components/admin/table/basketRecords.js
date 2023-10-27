@@ -1,6 +1,7 @@
 import UpdateRecord from "../crud/updateRecord";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import DeleteRecord from "../crud/deleteRecord";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const BasketRecords = ({
   record,
@@ -29,13 +30,13 @@ const BasketRecords = ({
         <div className="text-sm text-black">{record.weightValue}</div>
       </td>
       <td className="text-right">
-        <div className="text-sm text-black">{segregate(record.priceValue)}</div>
+        <div className="text-sm text-black">{segreagatorWoComma(record.priceValue)}</div>
       </td>
       <td className="text-right">
-        <div className="text-sm text-black">{segregate(record.limitPrice)}</div>
+        <div className="text-sm text-black">{segreagatorWoComma(record.limitPrice)}</div>
       </td>
       <td className="text-right">
-        <div className="text-sm text-black">{record.quantityValue}</div>
+        <div className="text-sm text-black">{segregate(record.quantityValue)}</div>
       </td>
       <td className="p-2 flex gap-2 ml-4">
         <UpdateRecord

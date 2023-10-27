@@ -3,6 +3,7 @@ import { Tooltip } from "flowbite-react";
 import { mapBasket } from "@/app/api/basket/route";
 import { useSelector } from "react-redux";
 import { segregate } from "@/utils/formatter/priceSegregator";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const CustomerMappingTable = ({
   data,
@@ -18,6 +19,7 @@ const CustomerMappingTable = ({
 
   // redux
   const adminId = useSelector((state) => state.user.username);  
+  console.log(status)
 
   // local state
   const [broker, setBroker] = useState("");
@@ -29,13 +31,14 @@ const CustomerMappingTable = ({
   const [enableWeblink, setEnableWeblink] = useState(false);
   const [mapCondition, setMapCondition] = useState(false);
   const [webCondition, setWebCondition] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState(false);
 
-  useEffect(() => {
-    setBroker("");
-    setInvestment("");
-    setQuantity("");
-    setTotal("");
-  }, [status])
+  // useEffect(() => {
+  //   setBroker("");
+  //   setInvestment("");
+  //   setQuantity("");
+  //   setTotal("");
+  // }, [status])
 
   useEffect(() => {
     const map = status.map((obj) => {
@@ -69,6 +72,11 @@ const CustomerMappingTable = ({
       broker,
       scripts
     );
+    setMessage(response)
+    // setBroker("");
+    // setInvestment("");
+    // setQuantity("");
+    // setTotal("");
   };
 
   // handle broker selection
@@ -119,10 +127,9 @@ const CustomerMappingTable = ({
       <td className="text-sm text-left text-black p-2 break-words">
         {data.customerId}
       </td>
-      <td className="text-sm text-left text-black break-words">{data.name}</td>
-      {/* <td className="text-sm text-left text-black break-words">
-                {data.email}
-            </td> */}
+      <td className="text-sm text-left text-black break-words">
+        {data.name}
+      </td>
       <td className="text-sm text-center text-black">
         <select
           className="text-xs border-gray-200 rounded-md"
@@ -153,7 +160,7 @@ const CustomerMappingTable = ({
             setTotal(basketVal * quantity);
           }}
           type="text"
-          className={`w-28 h-8 text-right border-gray-300 rounded-md`}
+          className={`w-28 h-8 text-right border-gray-300 rounded-md text-sm`}
         />
       </td>
       <td className=" text-sm text-black">
@@ -168,21 +175,16 @@ const CustomerMappingTable = ({
             setTotal(basketVal * newValue);
           }}
           type="text"
-          className={`ml-2 w-24 h-8 text-right border-gray-300 rounded-md`}
+          className={`ml-2 w-24 h-8 text-right border-gray-300 rounded-md text-sm`}
         />
       </td>
       <td className=" text-sm text-black">
         <input
           disabled
           id="total"
-          value={segregate(total)}
-          onChange={(e) => {
-            // Remove commas from the input value before updating state
-            const newValue = e.target.value.replace(/,/g, "");
-            setTotal(newValue);
-          }}
+          value={segreagatorWoComma(total)}
           type="text"
-          className={`w-28 h-8 text-right border-gray-300 bg-gray-100 rounded-md ${
+          className={`w-28 h-8 text-right border-gray-300 bg-gray-100 rounded-md text-sm ${
             highlight ? "border-red-500" : "border-gray-300"
           }`}
         />

@@ -7,6 +7,7 @@ import { Button, Label, Modal, TextInput } from "flowbite-react";
 import { cloneBasket, getSpecificBasket } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const ViewTable = ({ params }) => {
   const basketName = params.id.split("%20").join(" ");
@@ -287,17 +288,17 @@ const ViewTable = ({ params }) => {
                     </td>
                     <td className="text-right align-middle">
                       <div className="p-2 mr-8 text-sm text-black">
-                        {segregate(record.priceValue)}
+                        {segreagatorWoComma(record.priceValue)}
                       </div>
                     </td>
                     <td className="text-right align-middle">
                       <div className="p-2 mr-8 text-sm text-black">
-                        {segregate(record.limitPrice ? record.limitPrice : 0)}
+                        {segreagatorWoComma(record.limitPrice ? record.limitPrice : 0)}
                       </div>
                     </td>
                     <td className="text-right">
                       <div className="p-2 mr-10 text-sm text-black">
-                        {record.quantityValue}
+                        {segregate(record.quantityValue)}
                       </div>
                     </td>
                   </tr>

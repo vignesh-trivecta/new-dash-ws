@@ -14,6 +14,7 @@ import Breadcrumbs from "@/components/page/breadcrumb";
 import BasketCategory from "@/components/admin/basketCategory";
 import TableShimmer from "@/components/page/layout/tableShimmer";
 import RowShimmer from "@/components/page/layout/rowShimmer";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const UpdateBasket = ({ params }) => {
   const adminId = useSelector((state) => state.user.username);
@@ -112,7 +113,7 @@ const UpdateBasket = ({ params }) => {
 
   // getting investment amount
 
-  const basketVal = segregate(total);
+  const basketVal = segreagatorWoComma(total);
 
   const msg1 = "Enter Basket Name and Investment Amount";
   const msg2 = "Add scripts to the basket";

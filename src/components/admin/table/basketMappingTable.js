@@ -4,6 +4,7 @@ import { mapBasket } from "@/app/api/basket/route";
 import { getCustomerStatus } from "@/app/api/basket/route";
 import { useSelector } from "react-redux";
 import { segregate } from "@/utils/formatter/priceSegregator";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const BasketMappingTable = ({
   data,
@@ -30,9 +31,27 @@ const BasketMappingTable = ({
 
   // local state
   const [broker, setBroker] = useState(brokers[0].name);
-  const [quantity, setQuantity] = useState(null);
+  const [quantity, setQuantity] = useState(0);
   const [highlight, setHighlight] = useState(false);
   const [checked, setChecked] = useState(false);
+
+  const handleQuantityChange = (e) => {
+    // Remove commas from the input value before updating state
+    const newValue = e?.target?.value.replace(/,/g, "") || 0;
+    setQuantity(newValue);
+    setTotal({...total, [data.basketName] : Number(newValue * data.basketActualValue)});
+    
+    if (newValue == "" || newValue == 0 || newValue ==  null) {
+      console.log('empty');
+      delete basketData[data.basketName];
+      return;
+    }
+    setBasketData({
+      ...basketData,
+      [data.basketName] : Number(newValue)
+    })
+    console.log(data.basketName)
+  }
 
 
   // handle customer mapping
@@ -65,13 +84,16 @@ const BasketMappingTable = ({
           onChange={(e) => {
             if (checked == false) {
               const newValue = e.target.value;
+              console.log(newValue)
               setCheckedBaskets([...checkedBaskets, newValue]);
               setChecked(true);
             }
             else {
               const newValue = e.target.value;
               const newList = checkedBaskets.filter(arr => arr != newValue);
+              console.log(newValue, newList)
               setCheckedBaskets(newList);
+              handleQuantityChange(0);
               setChecked(false);
             }
           }}  
@@ -90,7 +112,7 @@ const BasketMappingTable = ({
         {"BUY"}
       </td>
       <td className="text-sm text-right text-black">
-        {segregate(data?.basketActualValue)}
+        {segreagatorWoComma(data?.basketActualValue)}
       </td>
       <td className=" text-sm text-black">
         <input 
@@ -98,21 +120,7 @@ const BasketMappingTable = ({
           value={segregate(quantity)}
           disabled={!enableInputs && !checked}
           onChange={(e) => {
-            // Remove commas from the input value before updating state
-            const newValue = e.target.value.replace(/,/g, "");
-            setQuantity(newValue);
-            setTotal({...total, [data.basketName] : Number(newValue * data.basketActualValue)});
-            
-            if (newValue == "" || newValue == 0 || newValue ==  null) {
-              console.log('empty');
-              delete basketData[data.basketName];
-              return;
-            }
-            setBasketData({
-              ...basketData,
-              [data.basketName] : Number(newValue)
-            })
-            console.log(data.basketName)
+            handleQuantityChange(e);
           }}
           type='text' 
           className={`ml-10 w-20 h-8 text-right rounded-md ${checked ? ( quantity ? "border-gray-200" :"border-red-500") : "border-gray-200"}`}

@@ -24,19 +24,20 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
 
         const jsonData = await response.text();
         console.log(jsonData)
+        return jsonData;
         
-        // if(response.ok){
+        // if(response.status == 200){
         //     const jsonData = await response.json();
         //     console.log(jsonData)
-        //     return jsonData;
+        //     // return jsonData;
         // }
         // else {
-        //     const errorText = await response.text();
-        //     throw new Error(`Failed to fetch data: ${errorText}`);
+        //     const jsonData = await response.text();
+        //     console.log(jsonData)
         // }
     }
     
     catch (error) {
-        console.log(error);
+        console.log(error.message);
     }
 }

@@ -106,6 +106,18 @@ const SubmitBasket = ({
                 className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
             </div>
+            <div>
+              {
+                (basketActualValue < investmentAmount) 
+                ?
+                  <div>
+                    <p className="text-red-500 mt-2 text-md text-center">
+                      Basket Value is Lesser than Investment Amount!
+                    </p>
+                  </div>
+                : <></>
+              }
+            </div>
             <div className="flex justify-center mt-10 gap-4">
               <Button
                 onClick={(e) => {

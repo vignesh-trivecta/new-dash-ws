@@ -6,7 +6,7 @@ import { getBasketCategories } from "@/app/api/basket/route";
 import { BiFilterAlt } from "react-icons/bi";
 import ViewFilterBasketCategory from "../admin/viewFilterBasketCategory";
 
-const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBasketCategory, handleFetch, setHandleFetch}) => {
+const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBasketCategory, handleFetch, setHandleFetch, filteredBaskets, fetchBaskets}) => {
     
     // local state
     const [basketCategoryList, setBasketCategoryList] = useState([]);
@@ -24,12 +24,15 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
     const resetFilters = () => {
         setBasketCategory("");
         setBasketType("");
+        fetchBaskets();
     }
 
     // function handling when filter button is clicked
     const handleFilter = async (e) => {
         e.preventDefault();
-        setHandleFetch(handleFetch);
+        // setHandleFetch(!handleFetch);
+        filteredBaskets();
+        console.log("filter clicked")
     }
 
     // useEffect to fetch basket category data to show in dropdown
@@ -90,8 +93,8 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
                             <ViewFilterBasketCategory
                                 basketCategory={basketCategory} 
                                 setBasketCategory={setBasketCategory} 
-                                handleFetch={handleFetch} 
-                                setHandleFetch={setHandleFetch}
+                                // handleFetch={handleFetch} 
+                                // setHandleFetch={setHandleFetch}
                             />
                         </div>
                     </div>
@@ -105,7 +108,7 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
                             value={basketType}
                             onChange={(e) => {
                                 setBasketType(e.target.value);
-                                setHandleFetch(!handleFetch);
+                                console.log(e.target.value)
                             }}
                             className="border border-gray-200 rounded-md text-sm"
                         >

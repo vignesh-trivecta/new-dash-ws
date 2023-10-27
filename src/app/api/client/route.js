@@ -68,6 +68,7 @@ export const clientConfirmsBasket = async(basketData) => {
         if (response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
+            console.log(data)
             return data;
         } else {
             const errorText = await response.text();
@@ -90,7 +91,9 @@ export const getAxisUrl = async (customerId) => {
                 "customerId": customerId,
             })
         }
+        console.log(customerId)
         const response = await fetch("http://localhost:8090/axis/client/login", requestOptions);
+        console.log(response)
 
         if (response.status === 200) {
             const responseText = await response.json();
@@ -100,6 +103,7 @@ export const getAxisUrl = async (customerId) => {
         }
     }
     catch(error){
+        console.log(error)
         return false;
     }
 }

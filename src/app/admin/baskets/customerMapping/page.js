@@ -14,6 +14,7 @@ import {
 } from "@/app/api/basket/route";
 import CustomerMappingTable from "@/components/admin/table/customerMappingTable";
 import { segregate } from "@/utils/formatter/priceSegregator";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const CustomerMapping = () => {
 
@@ -27,7 +28,6 @@ const CustomerMapping = () => {
   const [weblink, setWeblink] = useState(false);
   const [message, setMessage] = useState(false);
   const [records, setRecords] = useState([]);
-  // const [investmentVal, setInvestmentVal] = useState("");
   const [basketCategory, setBasketCategory] = useState("");
   const [scripts, setScripts] = useState(0);
   const [basketVal, setBasketVal] = useState("");
@@ -43,21 +43,7 @@ const CustomerMapping = () => {
   // nextjs router
   const router = useRouter();
 
-  // useEffect to fetch the view table baskets
-  useEffect(() => {
-
-    const fetchData = async () => {
-      const response = await getBasketList();
-      setRecords(response);
-      console.log(response);
-
-      const customersData = await getCustomers();
-      setCustomers(customersData);
-    };
-
-    fetchData();
-  }, []);
-
+ 
   // if (weblink) {
   //   dispatch(setBasketAmount(""));
   //   setBasketName("");
@@ -75,6 +61,11 @@ const CustomerMapping = () => {
   //     // router.push("/admin/baskets/create");
   //   }, 3000);
   // }
+  
+  const getStatus = async (value) => {
+    const statusResponse = await getCustomerStatus(value);
+    setStatus(statusResponse);
+  }
 
   // handle basket selection
   const handleBasketSelection = async (value) => {
@@ -89,9 +80,26 @@ const CustomerMapping = () => {
     setBasketCategory(response[0]?.basketCategory);
     setEnableInputs(false);
 
-    const statusResponse = await getCustomerStatus(value);
-    setStatus(statusResponse);
+    getStatus(value);
   };
+
+  // useEffect to fetch the view table baskets
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getBasketList();
+      setRecords(response);
+      console.log(response);
+
+      const customersData = await getCustomers();
+      setCustomers(customersData);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    getStatus(basketName);
+  }, [message]);
 
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
@@ -168,7 +176,7 @@ const CustomerMapping = () => {
           <input
             disabled
             type="text"
-            value={segregate(basketVal)}
+            value={segreagatorWoComma(basketVal)}
             className="border border-gray-200 rounded-lg w-44 text-right bg-gray-50 text-sm"
           />
         </div>
