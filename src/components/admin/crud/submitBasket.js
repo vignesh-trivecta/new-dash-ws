@@ -15,7 +15,6 @@ const SubmitBasket = ({
   actualValue,
   mainBasketName,
   basketCategory,
-  saveMsg,
   setSaveMsg
 }) => {
   // modal state variables
@@ -23,6 +22,7 @@ const SubmitBasket = ({
   const props = { openModal, setOpenModal };
 
   let basketActualValue = actualValue?.split(",").join("");
+  console.log(actualValue, investmentAmount)
 
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -83,14 +83,17 @@ const SubmitBasket = ({
         <Modal.Header />
         <Modal.Body>
           <div className="flex flex-col">
-            {!modelBasket ? (
-              <div className="flex items-center justify-center">
-                <label className="mr-4">Basket Validity</label>
-                <ValiditySelector />
-              </div>
-            ) : (
-              <></>
-            )}
+            {Number(basketActualValue) < Number(investmentAmount)
+                ?
+              (<div>
+                <p className="text-red-500 mt-2 text-md text-center">
+                  Basket Value is Lesser than Investment Amount! 
+                </p>
+                <p className="text-red-500 text-md text-center">
+                  Do you want to save?
+                </p>
+              </div>)
+              : <></>}
             <div className="flex items-center justify-center mt-4">
               <label
                 htmlFor="default-checkbox"
@@ -106,19 +109,17 @@ const SubmitBasket = ({
                 className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
               />
             </div>
+            {!modelBasket ? (
+              <div className="flex items-center justify-center mt-2 z-30">
+                <label className="mr-4">Basket Validity</label>
+                <ValiditySelector />
+              </div>
+            ) : (
+              <></>
+            )}
             <div>
-              {
-                (basketActualValue < investmentAmount) 
-                ?
-                  <div>
-                    <p className="text-red-500 mt-2 text-md text-center">
-                      Basket Value is Lesser than Investment Amount!
-                    </p>
-                  </div>
-                : <></>
-              }
             </div>
-            <div className="flex justify-center mt-10 gap-4">
+            <div className="flex justify-center mt-4 gap-4">
               <Button
                 onClick={(e) => {
                   handleSubmit(e);

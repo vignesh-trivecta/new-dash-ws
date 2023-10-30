@@ -52,6 +52,8 @@ const CreateBasket = () => {
   // basket value variable
   const basketVal = segreagatorWoComma(total);
 
+  console.log(records)
+
   // useEffect for getting records after basket save clicked
   useEffect(() => {
     console.log("saved");
@@ -67,7 +69,7 @@ const CreateBasket = () => {
 
   // useEffect to set the message at center of table
   useEffect(() => {
-    if (basketName !== "" && basketAmount !== "") {
+    if (basketName !== "" && basketAmount !== "" && basketCategory !== "") {
       setMessage(msg2);
     } else if (!saved) {
       setMessage(msg1);
@@ -349,6 +351,7 @@ const CreateBasket = () => {
                 setHandleFetch={setHandleFetch}
                 transType={transType}
                 investmentVal={basketAmount}
+                records={records}
               />
             </div>
             <div>

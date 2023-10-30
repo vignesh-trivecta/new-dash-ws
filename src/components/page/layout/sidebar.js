@@ -194,7 +194,7 @@ const ExampleSidebar = function () {
                 <Sidebar.Item
                   icon={HiChartPie}
                   className={
-                    "/admin/dashboard" === pathname ? "bg-gray-100 dark:bg-gray-700" : ""
+                    "/admin/dashboard" === pathname ? "bg-gray-200 dark:bg-gray-700" : ""
                   }
                 >
                   {isLinkDisabled 
@@ -206,7 +206,7 @@ const ExampleSidebar = function () {
                   icon={HiUserGroup}
                   className={
                     "/admin/customers" === pathname
-                      ? "bg-gray-100 dark:bg-gray-700"
+                      ? "bg-gray-200 dark:bg-gray-700"
                       : ""
                   }
                 >
@@ -223,7 +223,7 @@ const ExampleSidebar = function () {
                           icon={HiPencilAlt}
                           className={
                             "/admin/baskets/create" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
                               : " -ml-3"
                           }
                       >
@@ -234,8 +234,10 @@ const ExampleSidebar = function () {
                       <Sidebar.Item 
                           icon={AiOutlineFolderView}
                           className={
-                            "/admin/baskets/view" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                            ("/admin/baskets/view" === pathname
+                            || pathname.startsWith("/admin/baskets/view")
+                            )
+                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
                               : " -ml-3"
                           }
                       >
@@ -253,7 +255,7 @@ const ExampleSidebar = function () {
                           icon={AiOutlineUserAdd}
                           className={
                             "/admin/baskets/customerMapping" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
                               : " -ml-3"
                           }
                       >
@@ -266,7 +268,7 @@ const ExampleSidebar = function () {
                           icon={SlBasket}
                           className={
                             "/admin/baskets/basketMapping" === pathname
-                              ? "bg-gray-100 dark:bg-gray-700 -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
                               : " -ml-3"
                           }
                       >
@@ -279,8 +281,15 @@ const ExampleSidebar = function () {
                 <Sidebar.Item
                   icon={CgFileDocument}
                   className={
-                    "/admin/reports" === pathname
-                      ? "bg-gray-100 dark:bg-gray-700"
+                    ("/admin/reports" === pathname 
+                    || "/admin/reports/holding" === pathname
+                    || "/admin/reports/orderbook" === pathname
+                    || "/admin/reports/tradebook" === pathname
+                    || "/admin/reports/margin" === pathname
+                    || "/admin/reports/ledger" === pathname
+                    
+                    )
+                      ? "bg-gray-200 dark:bg-gray-700"
                       : ""
                   }
                 >

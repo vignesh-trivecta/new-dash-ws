@@ -118,6 +118,7 @@ export const handleLiveReportsFetch = async (
       `http://localhost:8085/partner/live/${requestName}`,
       requestOptions
     );
+    console.log(response)
     if (response.status === 200) {
       const responseText = await response.json();
       console.log(responseText)

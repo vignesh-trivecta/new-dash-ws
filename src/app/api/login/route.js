@@ -49,6 +49,7 @@ export const clientLogin = async(customerId) => {
                 "customerId": customerId,
             })
         }
+        console.log(customerId)
         const response = await fetch("http://localhost:8084/client/login", requestOptions);
 
         console.log(response)

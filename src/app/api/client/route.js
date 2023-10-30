@@ -62,6 +62,7 @@ export const clientConfirmsBasket = async(basketData) => {
                 "rows": basketData.rows,
             })
         }
+        console.log(basketData)
         const response = await fetch("http://localhost:8084/place/order", requestOptions);
         console.log(response);
 

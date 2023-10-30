@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedStock } from "@/store/addRecordSlice";
 
-export default function SearchDropdown({ id, fetch, setFetch }) {
+export default function SearchDropdown({ id, fetch, setFetch, records, setMessage, setDisabledButton }) {
   const [list, setList] = useState([]);
   const [query, setQuery] = useState("");
  
@@ -23,9 +23,20 @@ export default function SearchDropdown({ id, fetch, setFetch }) {
           .toLowerCase()
           .replace(/\s+/g, "")
           .startsWith(query.toLowerCase().replace(/\s+/g, ""))
-  )
+  );
 
-
+  
+  useEffect(() => {
+    const res = records.find((obj) => obj.instrumentName === selectedStock);
+    if (res) {
+      setMessage("Script already present");
+      setDisabledButton(true);
+    }
+    else {
+      setMessage("");
+      setDisabledButton(false);
+    }
+  }, [selectedStock])
     
   useEffect(() => {
     const fetchData = async () => {

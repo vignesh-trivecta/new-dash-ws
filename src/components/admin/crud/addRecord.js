@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Button, Label, Modal } from 'flowbite-react';
+import { Alert, Button, Label, Modal } from 'flowbite-react';
 import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { getEquityPrice, sendWeightage } from '@/app/api/basket/route';
@@ -10,8 +10,9 @@ import { addRecord } from '@/app/api/tempBasket/route';
 import { setSelectedStock} from '@/store/addRecordSlice';
 import { usePathname } from 'next/navigation';
 import { segreagatorWoComma } from '@/utils/formatter/segregatorWoComma';
+import { HiInformationCircle } from 'react-icons/hi';
 
-const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, mainBasketName }) => {
+const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, mainBasketName, records }) => {
 
     const pathname = usePathname();
 
@@ -33,6 +34,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     const [exchange, setExchange] = useState('');
     const [orderType, setOrderType] = useState('LIMIT');
     const [quantity, setQuantity] = useState('');
+    const [message, setMessage] = useState("");
+    const [disabledButton, setDisabledButton] = useState(false);
 
     const [fetch, setFetch] = useState(false);
 
@@ -64,6 +67,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     }, [price])
 
 
+    console.log(records);
+
     // function to submit the modal values and add record to the table
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -82,6 +87,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                 props.setOpenModal(undefined);
             }
         }
+
         postData();
         setWeightage('');
         setLimitPrice('');
@@ -122,7 +128,14 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                     <div className='grid grid-rows-4 grid-cols-3 gap-x- gap-y-4 mt-4'>
                         <Label htmlFor="stock" value="Stock" className='text-sm' />
                         <div className=''>
-                            <SearchDropdown id={"stock"} fetch={fetch} setFetch={setFetch} />
+                            <SearchDropdown 
+                                id={"stock"} 
+                                fetch={fetch} 
+                                setFetch={setFetch} 
+                                records={records} 
+                                setMessage={setMessage}
+                                setDisabledButton={setDisabledButton}
+                            />
                         </div>
 
                         {/* Price element */}
@@ -199,23 +212,35 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                     </div>
 
                     {/* Buttons group */}
-                    <div className="flex justify-end mt-4">
-                        <button type='submit' className="bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20">Add</button>
-                        <Button color="gray"                
-                            onClick={() => {
-                                props.setOpenModal(undefined);
-                                dispatch(setSelectedStock(''));
-                                setWeightage('');
-                                setPrice('');
-                                setLimitPrice('');
-                                setQuantity('');
-                                setExchange('');
-                                setOrderType('');
-                            }}
-                            className="ml-2 text-md" 
-                        >
-                            Cancel
-                        </Button>
+                    <div className="flex justify-between mt-4">
+                        <div>
+                            <Alert
+                                color="warning"
+                                rounded
+                                className="h-12 w-56 max-w-sm"
+                                icon={HiInformationCircle}
+                                >
+                                <span>{message}</span>
+                            </Alert>
+                        </div>
+                        <div className='flex '>
+                            <Button type='submit' disabled={disabledButton}>Add</Button>
+                            <Button color="gray"                
+                                onClick={() => {
+                                    props.setOpenModal(undefined);
+                                    dispatch(setSelectedStock(''));
+                                    setWeightage('');
+                                    setPrice('');
+                                    setLimitPrice('');
+                                    setQuantity('');
+                                    setExchange('');
+                                    setOrderType('');
+                                }}
+                                className="ml-2 text-md" 
+                            >
+                                Cancel
+                            </Button>
+                        </div>
                     </div>
                 </form>
             </Modal.Body>
