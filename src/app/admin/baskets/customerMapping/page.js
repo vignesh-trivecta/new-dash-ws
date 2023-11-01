@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBasketAmount } from "@/store/basketSlice";
 import { useRouter } from "next/navigation";
-import { HiCheckCircle, HiInformationCircle } from "react-icons/hi";
+import { HiInformationCircle } from "react-icons/hi";
 import { Alert } from "flowbite-react";
 import {
   getBasketList,
@@ -13,7 +12,6 @@ import {
   getCustomers,
 } from "@/app/api/basket/route";
 import CustomerMappingTable from "@/components/admin/table/customerMappingTable";
-import { segregate } from "@/utils/formatter/priceSegregator";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const CustomerMapping = () => {
@@ -36,6 +34,7 @@ const CustomerMapping = () => {
   const [enableInputs, setEnableInputs] = useState(basketName == "");
   const [status, setStatus] = useState([]);
 
+
   // modal state variables
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
@@ -43,6 +42,11 @@ const CustomerMapping = () => {
   // nextjs router
   const router = useRouter();
 
+  const msg1 = "Select a basket";
+  const msg2 = "Choose broker";
+  const msg3 = "Enter investment amount";
+  const msg4 = "Enter basket units";
+  const msg5 = "Map Customer/ Send Weblink";
  
   // if (weblink) {
   //   dispatch(setBasketAmount(""));
@@ -88,7 +92,6 @@ const CustomerMapping = () => {
     const fetchData = async () => {
       const response = await getBasketList();
       setRecords(response);
-      console.log(response);
 
       const customersData = await getCustomers();
       setCustomers(customersData);

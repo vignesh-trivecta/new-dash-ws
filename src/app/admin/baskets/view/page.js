@@ -23,19 +23,10 @@ const Customers = () => {
   // sorting the records fetched from backend
   records?.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
 
-  // // useEffect to fetch the view table baskets
-  // useEffect(() => {
-  //   const fetchBaskets = async () => {
-  //     const response = await getBasketList(basketType);
-  //     setRecords(response);
-  //   };
-  //   fetchBaskets();
-  // }, []);
-
   // useEffect to update table after deletion or filtering
   useEffect(() => {
     fetchBaskets();
-  }, []);
+  }, [handleFetch]);
 
 
   const filteredBaskets = async () => {
@@ -47,7 +38,6 @@ const Customers = () => {
 
   const fetchBaskets = async () => {
     const response = await getBasketList(basketType);
-    console.log(response);
     setRecords(response || []);
   };
 

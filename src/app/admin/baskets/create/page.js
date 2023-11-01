@@ -7,7 +7,7 @@ import { setBasketName } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
 import { HiInformationCircle, HiCheckCircle } from "react-icons/hi";
 import { Alert, Button, Tooltip } from "flowbite-react";
-import { basketNameCheck, getBasketCategories } from "@/app/api/basket/route";
+import { basketNameCheck } from "@/app/api/basket/route";
 import { getRecords } from "@/app/api/tempBasket/route";
 import AddRecord from "@/components/admin/crud/addRecord";
 import BasketRecords from "@/components/admin/table/basketRecords";

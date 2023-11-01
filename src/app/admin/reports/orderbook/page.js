@@ -42,10 +42,10 @@ const OrderBook = () => {
           startDate,
           endDate
         );
-        console.log(response);
-        // setDatas(response);
 
-        const { mainDatas, tooltipDatas} = orderDataParser(response);
+        console.log(response)
+
+        const { mainDatas, tooltipDatas} = orderDataParser(response.orderbook);
         setTableData(mainDatas);
         setTooltipData(tooltipDatas);
 

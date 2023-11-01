@@ -66,9 +66,6 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         handleChange();
     }, [price])
 
-
-    console.log(records);
-
     // function to submit the modal values and add record to the table
     const handleSubmit = (e) => {
         e.preventDefault();

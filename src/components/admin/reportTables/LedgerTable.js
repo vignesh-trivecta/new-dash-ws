@@ -71,7 +71,7 @@ const LedgerTable = ({ datas }) => {
                         {stringFormatter(data.narration)}
                     </Td>
                     <Td className="text-right pr-10 text-sm">
-                        {data.debitCreditFlag}
+                        {data.debitCreditFlag.startsWith("D") ? "Debit" : "Credit"}
                     </Td>
                     <Td className="text-sm text-right pr-10">
                         {segreagatorWoComma(data.amount)}

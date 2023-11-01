@@ -2,16 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBasketAmount } from "@/store/basketSlice";
 import { useRouter } from "next/navigation";
-import { HiCheckCircle, HiInformationCircle } from "react-icons/hi";
+import { HiInformationCircle } from "react-icons/hi";
 import { Alert, Button } from "flowbite-react";
 import {
   getBasketList,
-  getBasketValue,
   getCustomers,
 } from "@/app/api/basket/route";
-import { getCustomerStatus } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketMappingTable from "@/components/admin/table/basketMappingTable";
 import { sendMultipleBaskets } from "@/app/api/map/baskets/route";

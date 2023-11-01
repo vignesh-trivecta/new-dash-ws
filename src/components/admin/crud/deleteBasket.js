@@ -9,7 +9,10 @@ const DeleteBasket = ({ handleFetch, setHandleFetch, basketName }) => {
 
     const handleDelete = async() => {
         const response = await deleteBasket( basketName, adminId );
-        setHandleFetch(!handleFetch);
+        if (response) {
+            console.log("deleted");            
+            setHandleFetch(!handleFetch);
+        }
     }
   return (
     <div>

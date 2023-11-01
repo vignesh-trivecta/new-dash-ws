@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
-import { Button, Spinner } from "flowbite-react";
+import { Spinner } from "flowbite-react";
 import { clientConfirmsBasket, postAxisOrders } from "@/app/api/client/route";
 import { HiCheck } from "react-icons/hi";
-import { segregate } from "@/utils/formatter/priceSegregator";
 import { clientLogin } from "@/app/api/login/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
@@ -40,12 +39,6 @@ const PlaceOrder = () => {
         setStatus(true);
         console.log("no data to show")
       }
-      else {
-        setSpinner(false);
-      }
-    }
-    else {
-      setSpinner(false);
     }
   }
 
@@ -62,9 +55,6 @@ const PlaceOrder = () => {
     if (response) {
       setData(response);
       setStatus(true);
-    }
-    else {
-      setSpinner(false);
     }
   };
     

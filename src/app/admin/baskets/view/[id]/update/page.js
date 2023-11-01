@@ -11,9 +11,6 @@ import BasketRecords from "@/components/admin/table/basketRecords";
 import AddRecord from "@/components/admin/crud/addRecord";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
-import BasketCategory from "@/components/admin/basketCategory";
-import TableShimmer from "@/components/page/layout/tableShimmer";
-import RowShimmer from "@/components/page/layout/rowShimmer";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const UpdateBasket = ({ params }) => {

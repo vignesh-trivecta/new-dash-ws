@@ -5,10 +5,8 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Logo from "../../../../public/logo1.png";
-import { HiCheck } from "react-icons/hi";
-import { Button, Spinner } from "flowbite-react";
+import { Button } from "flowbite-react";
 import { clientConfirmsBasket, getAxisUrl } from "@/app/api/client/route";
-import { segregate } from "@/utils/formatter/priceSegregator";
 import { clientLogin } from "@/app/api/login/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
@@ -28,6 +26,8 @@ const BasketPage = () => {
   const [message, setMessage] = useState("");
   const [disableButton, setDisableButton] = useState(false);
   const [showDeclinePage, setShowDeclinePage] = useState(false);
+
+  console.log(basketData)
 
   // nextjs router
   const router = useRouter();
@@ -62,11 +62,9 @@ const BasketPage = () => {
     if (broker === "IIFL") {
       const res = await clientLogin(customerId);
       if (true) {
-        // const response = await clientConfirmsBasket(basketData);
+        const response = await clientConfirmsBasket(basketData);
         if(true){
-          // setData(response);
-          setShow(true);
-          setStatus(true);
+          setData(response);
           router.push("/client/placeOrder");
         }
       }
@@ -295,7 +293,7 @@ const BasketPage = () => {
                 className="bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20"
                 disabled={disableButton}
                 onClick={(e) => {
-                  router.push("/client/placeOrder");
+                  handleConfirm();
 
                 }}
               >

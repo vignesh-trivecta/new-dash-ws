@@ -12,7 +12,6 @@
     "@headlessui/react": "^1.7.16",
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.5",
-    "@tanstack/react-table": "^8.10.7",
     "autoprefixer": "10.4.14",
     "crypto-js": "^4.1.1",
     "flowbite": "^1.8.1",

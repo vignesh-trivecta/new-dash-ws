@@ -1,6 +1,7 @@
 import formatDate from "./format-date";
 
 const stringFormatter = (str, time, param) => {
+  console.log(str)
   if (
     typeof str === "string" &&
     str?.includes("-") &&
@@ -10,6 +11,9 @@ const stringFormatter = (str, time, param) => {
     if (str?.includes(" ") || str?.includes("T")) {
       let date;
       if (str.includes(" ")) {
+        if (str.includes(" ") && str.includes("|")) {
+          return str;
+        }
         date = str?.split(" ");
       } else if (str.includes("T")) {
         date = str?.split("T");
@@ -44,6 +48,7 @@ const stringFormatter = (str, time, param) => {
   if (str?.length > 50) {
     return str?.slice(0, 50);
   }
+  
   return str;
 };
 

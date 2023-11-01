@@ -12,7 +12,7 @@ import {
 import { SlBasket } from "react-icons/sl";
 import { LiaSitemapSolid } from "react-icons/lia";
 import { CgFileDocument } from "react-icons/cg";
-import { AiOutlineFolderView, AiOutlineUserAdd } from "react-icons/ai";
+import { AiFillSetting, AiOutlineFolderView, AiOutlineUserAdd } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { setBasketAmount, setBasketName } from "@/store/basketSlice";
 import { usePathname, useSearchParams } from 'next/navigation';
 import { setBasketState } from "@/store/eventSlice";
+import { BsChatRightTextFill } from "react-icons/bs";
 
 const ExampleSidebar = function () {
 
@@ -186,11 +187,11 @@ const ExampleSidebar = function () {
       </Transition.Root>
       </>
       
-      <Sidebar aria-label="Sidebar with multi-level dropdown example" style={{height: '85vh'}} className="border-r-2" >
-        <div className="flex flex-col justify-between py-2">
+      <Sidebar aria-label="Sidebar with multi-level dropdown example" className="border-r-2 h-screen" >
+        <div className="flex flex-col justify-between">
           <div>
             <Sidebar.Items>
-              <Sidebar.ItemGroup>
+              <Sidebar.ItemGroup className="">
                 <Sidebar.Item
                   icon={HiChartPie}
                   className={
@@ -298,6 +299,28 @@ const ExampleSidebar = function () {
                     : ( <Link href="/admin/reports">Reports</Link> )
                   }
                 </Sidebar.Item> 
+                <Sidebar.Item
+                  icon={BsChatRightTextFill}
+                  className={
+                    "/admin/communication" === pathname ? "bg-gray-200 dark:bg-gray-700" : ""
+                  }
+                >
+                  {isLinkDisabled 
+                    ? ( <button onClick={() => {setOpen(true); setTab(8);}}>Communication</button> ) 
+                    : ( <Link href="/admin/communication">Communication</Link> )
+                  }
+                </Sidebar.Item>
+                <Sidebar.Item
+                  icon={AiFillSetting}
+                  className={
+                    "/admin/settings" === pathname ? "bg-gray-200 dark:bg-gray-700 sm:absolute bottom-2" : "sm:absolute bottom-2"
+                  }
+                >
+                  {isLinkDisabled 
+                    ? ( <button onClick={() => {setOpen(true); setTab(9);}}>Settings</button> ) 
+                    : ( <Link href="/admin/settings">Settings</Link> )
+                  }
+                </Sidebar.Item>
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>

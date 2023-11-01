@@ -42,7 +42,9 @@ const TradeBook = () => {
           endDate
         );
 
-        const { mainDatas, tooltipDatas} = tradeDataParser(response);
+        console.log(response)
+
+        const { mainDatas, tooltipDatas} = tradeDataParser(response.tradeBook);
         setTableData(mainDatas);
         setTooltipData(tooltipDatas);
       }

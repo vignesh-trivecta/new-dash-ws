@@ -13,12 +13,14 @@ export const deleteBasket = async(basketName, adminId) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/full-basket/delete", requestOptions);
+        console.log(response);
 
-        if(response.ok){
+        if(response.status === 200){
             return true;
         }
         else {
             const errorText = await response.text();
+            console.log(errorText)
             throw new Error(`Failed to fetch data: ${errorText}`);
         }
     }
