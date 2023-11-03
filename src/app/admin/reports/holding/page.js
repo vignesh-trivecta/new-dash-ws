@@ -25,7 +25,6 @@ const Holding = () => {
   const endDate = useSelector((state) => state.report.endDate);
   const toggle = useSelector((state) => state.report.toggle);
 
-  console.log(reportType)
   
   // Data for breadcrumb
   const ids = [{ Reports: "/admin/reports" }, { Holding: "" }];
@@ -35,7 +34,6 @@ const Holding = () => {
 
   // useEffect to fetch table data from backend
   useEffect(() => {
-    console.log("enter")
     const fetchHolding = async () => {
 
       if (reportType === "Market") { // Live market data endpoint
@@ -46,11 +44,9 @@ const Holding = () => {
           endDate
         );
         // setData(response);
-        console.log(response.holding)
         setTableData(response.holding);
       }
       else if (reportType === "Post") { // DB data endpoint
-        console.log("enter")
         const response = await handleDbReportsFetch(
           "holding",
           customerId,
@@ -65,8 +61,6 @@ const Holding = () => {
     };
     fetchHolding();
   }, [toggle]);
-
-  console.log(tableData)
 
   return (
     <div className="container mx-auto mt-4 h-full" style={{ width: "95%" }}>

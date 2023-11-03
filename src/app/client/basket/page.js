@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Logo from "../../../../public/logo1.png";
 import { Button } from "flowbite-react";
-import { clientConfirmsBasket, getAxisUrl } from "@/app/api/client/route";
+import { clientConfirmsBasket, directOrderPlacement, getAxisUrl } from "@/app/api/client/route";
 import { clientLogin } from "@/app/api/login/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
@@ -27,19 +27,17 @@ const BasketPage = () => {
   const [disableButton, setDisableButton] = useState(false);
   const [showDeclinePage, setShowDeclinePage] = useState(false);
 
-  console.log(basketData)
-
   // nextjs router
   const router = useRouter();
 
-  // calculating the value of the basket
-  let basketValue = 0;
-  const dataValue = basketData?.rows?.map((record, index) => {
-    let i =
-      (record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) *
-      record?.quantityValue;
-    basketValue = basketValue + i;
-  });
+  // // calculating the value of the basket
+  // let basketValue = 0;
+  // const dataValue = basketData?.rows?.map((record, index) => {
+  //   let i =
+  //     (record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) *
+  //     record?.quantityValue;
+  //   basketValue = basketValue + i;
+  // });
 
   // OAuth login redirect after click on submit button
   const handleConfirm = async (e) => {
@@ -60,14 +58,22 @@ const BasketPage = () => {
 
     // // IIFL redirect logic
     if (broker === "IIFL") {
-      const res = await clientLogin(customerId);
-      if (true) {
-        const response = await clientConfirmsBasket(basketData);
-        if(true){
-          setData(response);
-          router.push("/client/placeOrder");
+
+      if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "Y") {
+        // axisDirectOrderPlacement();
+        router.push("/client/placeOrder");
+      }
+      else if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "N") {
+        const res = await clientLogin(customerId);
+        if (res) {
+          const response = await clientConfirmsBasket(basketData);
+          if(response){
+            setData(response);
+            router.push("/client/placeOrder");
+          }
         }
       }
+
       console.log("hi");
 
       // var f = document.createElement("form");
@@ -92,7 +98,13 @@ const BasketPage = () => {
 
     // axis redirect logic
     else if (broker === "AXIS") {
-      router.push(url);
+      if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "Y") {
+        // axisDirectOrderPlacement();
+        router.push("/client/placeOrder");
+      }
+      else if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "N") {
+        router.push(url);
+      }
       // setData(response);
       // setShow(true);
       // setStatus(true);
@@ -102,24 +114,27 @@ const BasketPage = () => {
     }
   };
 
-  useEffect(() => {
-    const getUrl = async () => {
-      const response = await getAxisUrl(basketData.customerId);
+  const getAndSetUrl = async () => {
+    // login the customer to AXIS
+    const response = await getAxisUrl(basketData.customerId);
 
-      if (response) {
-        setUrl(response);
-      } else {
-        console.log(response);
-        setDisableButton(true);
-        setMessage(
-          `${basketData.customerBroker}` +
-            " Server Error! Please try after some time."
-        );
-      }
-      // setUrl(response);
-    };
-    if (basketData.customerBroker === "AXIS") {
-      getUrl();
+    // if-else after customer login over
+    if (response) {
+      setUrl(response);
+    } else {
+      console.log(response);
+      setDisableButton(true);
+      setMessage(
+        `${basketData.customerBroker}` +
+          "Server Error! Please try after some time."
+      );
+    }
+  };
+
+
+  useEffect(() => {
+    if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "N") {
+      getAndSetUrl();
     }
   }, []);
 
@@ -240,7 +255,7 @@ const BasketPage = () => {
                 <input
                   disabled
                   type="text"
-                  value={segreagatorWoComma(basketValue)}
+                  value={segreagatorWoComma(basketData?.rows[0]?.basketActualValue)}
                   className="w-20 sm:w-28 border-gray-200 bg-gray-50 rounded-md text-right text-xs md:text-sm"
                 />
               </div>

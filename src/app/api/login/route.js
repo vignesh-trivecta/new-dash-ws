@@ -10,6 +10,7 @@ export const loginAPI = async (token) => {
             },
         };
 
+        
         const response = await fetch("http://localhost:8082/admin/login", requestOptions);
         const responseText = await response.json();
 
@@ -61,5 +62,6 @@ export const clientLogin = async(customerId) => {
     }
     catch(error){
         console.log(error);
+        return false;
     }
 }

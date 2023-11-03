@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import { Spinner } from "flowbite-react";
-import { clientConfirmsBasket, postAxisOrders } from "@/app/api/client/route";
+import { clientConfirmsBasket, directOrderPlacement, postAxisOrders } from "@/app/api/client/route";
 import { HiCheck } from "react-icons/hi";
 import { clientLogin } from "@/app/api/login/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
@@ -12,8 +12,8 @@ import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 const PlaceOrder = () => {
   // url search params
   const searchParams = useSearchParams();
-  const ssoId = searchParams.get("ssoId");
-  console.log("enter");
+  const ssoId = searchParams.get("ssoId") || false;
+  console.log(ssoId);
   
   // local state
   const [status, setStatus] = useState(false); // show the spinner or order placed page
@@ -29,20 +29,21 @@ const PlaceOrder = () => {
 
   // IIFL order placement function
   const placeIiflOrders = async () => {
-    console.log("function called")
     const res = await clientLogin(customerId);
-    console.log(res);
     if (res) {
       const response = await clientConfirmsBasket(basketData);
       if(response){
         setData(response);
         setStatus(true);
-        console.log("no data to show")
+      }
+      else {
+        setStatus(false);
+        setSpinner(false);
       }
     }
   }
 
-  // AXIS order placement function
+  // AXIS order placement function using SSO ID
   const placeAxisOrders = async () => {
     const response = await postAxisOrders(
       customerId,
@@ -56,11 +57,34 @@ const PlaceOrder = () => {
       setData(response);
       setStatus(true);
     }
+    else {
+      setStatus(false);
+      setSpinner(false);
+    }
   };
+
+  // AXIS direct order placement function
+  const axisDirectOrderPlacement = async () => {
+    const response = await directOrderPlacement(basketData.customerId, basketData.basketName, basketData.customerName, basketData.rows);
+    if (response.statusCodeValue === 200) {
+      console.log(response.body)
+      setStatus(true);
+      setData(response.body)
+    }
+    else {
+      setStatus(false);
+      setSpinner(false);
+    }
+  }
     
   useEffect(() => {
     if (basketData.customerBroker === "AXIS") {
-      placeAxisOrders();
+      if (!ssoId) {
+        axisDirectOrderPlacement();
+      }
+      else {
+        placeAxisOrders();
+      }
     }
     else if (basketData.customerBroker === "IIFL") {
       placeIiflOrders();

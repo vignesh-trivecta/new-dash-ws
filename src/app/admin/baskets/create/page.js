@@ -52,15 +52,13 @@ const CreateBasket = () => {
   // basket value variable
   const basketVal = segreagatorWoComma(total);
 
-  console.log(records)
-
   // useEffect for getting records after basket save clicked
   useEffect(() => {
-    console.log("saved");
     if (saveMsg == true) {
       setRecords([]);
       setBasketAmount("");
       dispatch(setBasketName(""));
+      setBasketCategory("");
       setMessage(msg4);
     } else {
       setMessage(msg7);

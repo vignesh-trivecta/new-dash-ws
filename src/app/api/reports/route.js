@@ -15,14 +15,14 @@ export const getBroker = async (customerId) => {
       requestOptions
     );
 
-    if (response) {
+    if (response.status === 200) {
       const responseText = await response.json();
       return responseText.customerBroker;
     } else {
       return false;
     }
   } catch (error) {
-    console.log(error);
+    return false;
   }
 };
 
@@ -132,5 +132,22 @@ export const handleLiveReportsFetch = async (
     }
   } catch (error) {
     return [];
+  }
+};
+
+// API endpoint to upload the Exchange data to DB
+export const callToUploadDoc = async () => {
+  try {
+    const response = await fetch("http://localhost:8087/excel/update");
+
+    if (response.status === 200) {
+      const responseText = await response.text();
+      return responseText;
+    } 
+    else {
+      return false;
+    }
+  } catch (error) {
+    return false;
   }
 };

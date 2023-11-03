@@ -31,7 +31,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     const [limitPrice, setLimitPrice] = useState('');
     const [weightage, setWeightage] = useState('');
     const [price, setPrice] = useState('');
-    const [exchange, setExchange] = useState('');
+    const [exchange, setExchange] = useState('NSE');
     const [orderType, setOrderType] = useState('LIMIT');
     const [quantity, setQuantity] = useState('');
     const [message, setMessage] = useState("");
@@ -41,14 +41,15 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
     // function to handle the exchange radio button
     const handleExchange = (exchange) => {
-        (setExchange(exchange));
+        // (setExchange(exchange));
         const fetchPrice = async () => {
             const data = await getEquityPrice(selectedStock, exchange);
-            (setPrice(data));
+            setPrice(data);
         }
-        if(exchange){
-            fetchPrice();
-        }
+        fetchPrice();
+        // if(exchange){
+        //     fetchPrice();
+        // }
     }
 
     useEffect(() => {
@@ -57,7 +58,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
     // Event handler //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
-        setWeightage(e?.target.value );
+        setWeightage(e?.target.value || weightage );
         const quantity = await sendWeightage(e?.target.value || weightage, investmentVal, price);
         setQuantity(quantity);
     };
@@ -100,7 +101,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             setWeightage('');
             setPrice('');
             setQuantity('');
-            setExchange('');
+            setExchange('NSE');
             setOrderType('LIMIT');
         }}
         >
@@ -144,25 +145,25 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         {/* Exchange element */}
                         <Label value="Exchange" className='col-start-1 row-start-2 text-sm' />
                         <div className=' col-start-2 row-start-2'>
-                            <input 
-                            required
+                            {/* <input 
+                                required
                                 id="bse" 
                                 name="exchange" 
                                 type='radio' 
                                 value="BSE"
-                                defaultChecked={exchange === "BSE"}
+                                checked={exchange === "BSE"}
                                 onClick={() => {
                                     handleExchange("BSE");
                             }} />
-                            <label htmlFor='bse' className='ml-1 text-sm'>BSE</label>
+                            <label htmlFor='bse' className='ml-1 text-sm'>BSE</label> */}
                             <input 
-                            required
+                                required
                                 id="nse" 
                                 name="exchange" 
                                 type='radio' 
                                 value="NSE" 
                                 className='ml-1' 
-                                defaultChecked={exchange === "NSE"}
+                                checked={exchange === "NSE"}
                                 onClick={() => {
                                     handleExchange("NSE");
                             }} />

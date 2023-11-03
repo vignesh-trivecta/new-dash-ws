@@ -70,7 +70,7 @@ const CustomerMappingTable = ({
       adminId,
       customerId,
       broker,
-      scripts
+      quantity
     );
     setMessage(response)
     // setBroker("");

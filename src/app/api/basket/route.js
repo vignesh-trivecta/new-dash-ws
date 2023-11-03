@@ -19,7 +19,6 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
             })
         }
         const response = await fetch('http://localhost:8083/basket/create', requestOptions);
-        console.log(response)
         if (response.status == 200) {
             console.log(response.status)
             return true;
@@ -89,11 +88,8 @@ export const getSpecificBasket = async(basketName) => {
         }
         const response = await fetch("http://localhost:8083/view/basket", requestOptions);
 
-        console.log(response)
-
         if(response.ok){
             const jsonData = await response.json();
-            console.log(jsonData);
             return jsonData;
         }
         else {
@@ -296,8 +292,8 @@ export const getBasketValue = async(basketName, adminId) => {
 }
 
 // API to map a basket to a customer
-export const mapBasket = async(basketName, adminId, customerId, broker, scripts) => {
-    console.log(basketName, adminId, customerId, broker, scripts)
+export const mapBasket = async(basketName, adminId, customerId, broker, quantity) => {
+    console.log(basketName, adminId, customerId, broker, quantity)
     try{
         const requestOptions = {
             method: 'POST',
@@ -309,7 +305,7 @@ export const mapBasket = async(basketName, adminId, customerId, broker, scripts)
                 "adminId": adminId,
                 "customerId": customerId,
                 "brokerName": broker,
-                "basketUnits": scripts
+                "basketUnits": quantity
             })
         }
         const response = await fetch("http://localhost:8083/customer/map", requestOptions);

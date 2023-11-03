@@ -63,7 +63,6 @@ const UpdateBasket = ({ params }) => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await getSpecificBasket(basketName);
-      console.log(response);
       setRecords(response || []);
       setBasketCategory(response[0]?.basketCategory || "");
     };

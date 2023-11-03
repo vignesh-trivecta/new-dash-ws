@@ -128,13 +128,10 @@ const BasketMapping = () => {
       customerId,
       broker
     );
-    console.log(response);
     setMessage(response);
   };
 
   useEffect(() => {
-    console.log(basketData)
-    console.log(Object.keys(basketData))
     const result = Object.values(total).reduce((acc, curr) => {
       return acc + curr;
     }, 0);

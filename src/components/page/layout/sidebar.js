@@ -10,7 +10,7 @@ import {
   HiUserGroup,
 } from "react-icons/hi";
 import { SlBasket } from "react-icons/sl";
-import { LiaSitemapSolid } from "react-icons/lia";
+import { LiaSitemapSolid, LiaCalendarCheckSolid } from "react-icons/lia";
 import { CgFileDocument } from "react-icons/cg";
 import { AiFillSetting, AiOutlineFolderView, AiOutlineUserAdd } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,7 @@ import { setBasketAmount, setBasketName } from "@/store/basketSlice";
 import { usePathname, useSearchParams } from 'next/navigation';
 import { setBasketState } from "@/store/eventSlice";
 import { BsChatRightTextFill } from "react-icons/bs";
+import { TbMessage2 } from "react-icons/tb";
 
 const ExampleSidebar = function () {
 
@@ -187,7 +188,7 @@ const ExampleSidebar = function () {
       </Transition.Root>
       </>
       
-      <Sidebar aria-label="Sidebar with multi-level dropdown example" className="border-r-2 h-screen" >
+      <Sidebar aria-label="Sidebar with multi-level dropdown example" className="border-r-2 h-screen  overflow-y-auto" >
         <div className="flex flex-col justify-between">
           <div>
             <Sidebar.Items>
@@ -224,8 +225,8 @@ const ExampleSidebar = function () {
                           icon={HiPencilAlt}
                           className={
                             "/admin/baskets/create" === pathname
-                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
-                              : " -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700 "
+                              : ""
                           }
                       >
                         <Link href="/admin/baskets/create">
@@ -238,8 +239,8 @@ const ExampleSidebar = function () {
                             ("/admin/baskets/view" === pathname
                             || pathname.startsWith("/admin/baskets/view")
                             )
-                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
-                              : " -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700"
+                              : ""
                           }
                       >
                         {isLinkDisabled 
@@ -256,8 +257,8 @@ const ExampleSidebar = function () {
                           icon={AiOutlineUserAdd}
                           className={
                             "/admin/baskets/customerMapping" === pathname
-                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
-                              : " -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700"
+                              : ""
                           }
                       >
                         {isLinkDisabled 
@@ -269,8 +270,8 @@ const ExampleSidebar = function () {
                           icon={SlBasket}
                           className={
                             "/admin/baskets/basketMapping" === pathname
-                              ? "bg-gray-200 dark:bg-gray-700 -ml-3"
-                              : " -ml-3"
+                              ? "bg-gray-200 dark:bg-gray-700"
+                              : ""
                           }
                       >
                         {isLinkDisabled 
@@ -300,7 +301,7 @@ const ExampleSidebar = function () {
                   }
                 </Sidebar.Item> 
                 <Sidebar.Item
-                  icon={BsChatRightTextFill}
+                  icon={TbMessage2}
                   className={
                     "/admin/communication" === pathname ? "bg-gray-200 dark:bg-gray-700" : ""
                   }
@@ -311,16 +312,27 @@ const ExampleSidebar = function () {
                   }
                 </Sidebar.Item>
                 <Sidebar.Item
-                  icon={AiFillSetting}
+                  icon={LiaCalendarCheckSolid}
                   className={
-                    "/admin/settings" === pathname ? "bg-gray-200 dark:bg-gray-700 sm:absolute bottom-2" : "sm:absolute bottom-2"
+                    "/admin/bod-eod" === pathname ? "bg-gray-200 dark:bg-gray-700" : ""
                   }
                 >
                   {isLinkDisabled 
-                    ? ( <button onClick={() => {setOpen(true); setTab(9);}}>Settings</button> ) 
-                    : ( <Link href="/admin/settings">Settings</Link> )
+                    ? ( <button onClick={() => {setOpen(true); setTab(9);}}>BOD/ EOD</button> ) 
+                    : ( <Link href="/admin/bod-eod">BOD/ EOD</Link> )
                   }
                 </Sidebar.Item>
+                {/* <Sidebar.Item
+                  icon={AiFillSetting}
+                  className={
+                    "/admin/settings" === pathname ? "bg-gray-200 dark:bg-gray-700" : ""
+                  }
+                >
+                  {isLinkDisabled 
+                    ? ( <button onClick={() => {setOpen(true); setTab(10);}}>Settings</button> ) 
+                    : ( <Link href="/admin/settings">Settings</Link> )
+                  }
+                </Sidebar.Item> */}
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>

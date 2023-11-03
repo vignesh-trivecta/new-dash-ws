@@ -34,7 +34,6 @@ const TradeBook = () => {
   useEffect(() => {
     const fetchTradeBook = async () => {
       if (reportType === "Market") { // Live market data endpoint
-        console.log("Live market")
         const response = await handleLiveReportsFetch(
           "tradebook",
           customerId,
@@ -42,21 +41,17 @@ const TradeBook = () => {
           endDate
         );
 
-        console.log(response)
-
         const { mainDatas, tooltipDatas} = tradeDataParser(response.tradeBook);
         setTableData(mainDatas);
         setTooltipData(tooltipDatas);
       }
       else if (reportType === "Post") { // DB data endpoint
-        console.log("Post market")
         const response = await handleDbReportsFetch(
           "tradebook",
           customerId,
           startDate,
           endDate
         )
-        console.log(response)
         const { mainDatas, tooltipDatas} = tradeDataParser(response);
         setTableData(mainDatas);
         setTooltipData(tooltipDatas);

@@ -26,7 +26,6 @@ export default function BasketCategory({setBasketCategory}) {
       const response = await getBasketCategories();
       if (response) {
         setBasketCategoryList(response);
-        console.log(response)
       }
     }
     getCategory();
@@ -64,10 +63,8 @@ export default function BasketCategory({setBasketCategory}) {
                 <button
                   className="relative cursor-pointer text-left py-2 px-4 text-gray-700 w-full"
                   onClick={() => {
-                    console.log("click ", query);
                     const addCategory = async (query) => {
                       const res = await addBasketCategory(query);
-                      console.log(res);
                       if (res) {
                         setSelected(query);
                         setQuery("");

@@ -22,7 +22,6 @@ const SubmitBasket = ({
   const props = { openModal, setOpenModal };
 
   let basketActualValue = actualValue?.split(",").join("");
-  console.log(actualValue, investmentAmount)
 
   const dispatch = useDispatch();
   const pathname = usePathname();
@@ -57,10 +56,8 @@ const SubmitBasket = ({
       basketCategory,
       basketRequests,
     );
-    console.log(response);
     setSaveMsg(response);
     setSaved(!saved);
-    console.log("reset message")
     props.setOpenModal(undefined);
   };
 

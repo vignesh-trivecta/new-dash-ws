@@ -32,25 +32,21 @@ const Margin = () => {
   useEffect(() => {
     const fetchMargin = async () => {
       if (reportType === "Market") { // Live market data endpoint
-        console.log('market')
         const response = await handleLiveReportsFetch(
           "margin",
           customerId,
           startDate,
           endDate
         );
-        console.log(response.margin);
         setTableData(response.margin);
       }
       else if (reportType === "Post") { // DB data endpoint
-        console.log('post')
         const response = await handleDbReportsFetch(
           "margin",
           customerId,
           startDate,
           endDate
         );
-        console.log(response);
         setTableData(response);
       }
       else {

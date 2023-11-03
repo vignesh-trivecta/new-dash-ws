@@ -78,8 +78,8 @@ const LoginAuth = () => {
   }, []);
 
   // function to encrypt the username and password using CryptoJS
-  function encryptedCredentials(user, password, SECRET_KEY) {
-    var key = CryptoJS.enc.Utf8.parse(SECRET_KEY);
+  function encryptedCredentials(user, password) {
+    var key = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_AES_SECRET_KEY);
     var iv = CryptoJS.enc.Utf8.parse("testVarTreeFlowe");
     let encryptedUser = CryptoJS.AES.encrypt(user, key, { iv: iv }).toString();
     let encryptedPassword = CryptoJS.AES.encrypt(password, key, {
@@ -98,11 +98,11 @@ const LoginAuth = () => {
 
       // signing the username, password with secret key
       // using jwt to create a authentication token
-
+      
+      console.log(process.env.SECRET_KEY);
       const { encryptedUser, encryptedPassword } = encryptedCredentials(
         username,
         password,
-        "WepyWestTestEastWepyWestTestEast"
       );
       const token = jwt.sign({ encryptedUser, encryptedPassword }, "admin12");
 

@@ -32,25 +32,21 @@ const Ledger = () => {
   useEffect(() => {
     const fetchLedger = async () => {
       if (reportType === "Market") { // Live market data endpoint
-        console.log('market')
         const response = await handleLiveReportsFetch(
           "ledger",
           customerId,
           startDate,
           endDate
         );
-        console.log(response)
         setTableData(response.ledger);
       }
       else if (reportType === "Post") { // DB data endpoint
-        console.log('post')
         const response = await handleDbReportsFetch(
           "ledger",
           customerId,
           startDate,
           endDate
         );
-        console.log(response);
         setTableData(response);
       }
       else {

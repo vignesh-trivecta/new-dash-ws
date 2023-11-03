@@ -2,11 +2,6 @@
 
 // import { PieChart } from "@/components/admin/piechart";
 import React, { useEffect } from "react";
-import Pie from "@/../public/pie.jpeg";
-import Pie2 from "@/../public/pie2.png";
-import Bar from "@/../public/bar.jpeg";
-import Line from "@/../public/line.png";
-import Image from "next/image";
 import { partnerLogin } from "@/app/api/login/route";
 
 const DashCards = () => {   

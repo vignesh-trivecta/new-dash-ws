@@ -1,8 +1,9 @@
 'use client';
 
 import { getCustomers } from '@/app/api/basket/route';
-import { Button } from 'flowbite-react'
+import { Alert, Button } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
+import { HiInformationCircle } from 'react-icons/hi';
 
 const Communication = () => {
 
@@ -12,20 +13,27 @@ const Communication = () => {
   const [customerId, setCustomerId] = useState("");
   const [msgChannel, setMsgChannel] = useState("");
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
+
     if (e.target.id === "customer") {
       setCustomerId(e.target.value);
     } else if (e.target.id === "msgChannel") {
       setMsgChannel(e.target.value);
     } else if (e.target.id === "message") {
-      setMessage(e.target.value);
+      if (e.target.value.length > 9) {
+        setError("Message limit exceeds!");
+      }
+      else {
+        setMessage(e.target.value);
+        setError("");
+      }
     }
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("form submitted");
   }
 
   useEffect(() => {
@@ -82,17 +90,27 @@ const Communication = () => {
           required 
           id="message" 
           name='message'
-          className='mt-4 resize rounded-md border-gray-300' 
+          className={`mt-4 resize-none rounded-md border-gray-300 ${error ? "outline-red-500 outline outline-1" : ""}`}
           rows={10} 
           cols={50}
-          maxLength={1200}
+          maxLength={10}
           placeholder='Enter your message here...'
           onChange={(e) => handleChange(e)}
         >
         </textarea>
-        <Button type="submit" className="self-end">
+        <Button type="submit" className="self-end" disabled={error}>
           Send
         </Button>
+      </div>
+      <div className='absolute bottom-16 w-2/6'>
+        <Alert
+          color="warning"
+          rounded
+          className="h-12"
+          icon={HiInformationCircle}
+        >
+          <span className="w-4 h-4">{error}</span>
+        </Alert>
       </div>
     </form>
   )

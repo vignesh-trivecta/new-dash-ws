@@ -62,21 +62,20 @@ export const clientConfirmsBasket = async(basketData) => {
                 "rows": basketData.rows,
             })
         }
-        console.log(basketData)
         const response = await fetch("http://localhost:8084/place/order", requestOptions);
-        console.log(response);
 
-        if (response.ok) {
+        if (response.status === 200) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
-            console.log(data)
             return data;
         } else {
             const errorText = await response.text();
+            return false;
         }
     }
     catch(error){
         console.log(error);
+        return false;
     }
 }
 
@@ -139,5 +138,40 @@ export const postAxisOrders = async (customerId, ssoId, basketName, customerName
     }
     catch(error){
         console.log(error);
+        return false;
+    }
+}
+
+// API endpoint to make AXIS direct order placement
+export const directOrderPlacement = async (customerId, basketName, customerName, basketData) => {
+    console.log(customerId, basketName, customerName, basketData)
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "customerId": customerId,
+                "basketName": basketName,
+                "customerName": customerName,
+                "rows": basketData
+            })
+        }
+        const response = await fetch("http://localhost:8090/axis/client/direct-order-placement", requestOptions);
+        console.log(response)
+
+        if (response.status === 200) {
+            const responseText = await response.json();
+            console.log(responseText)
+            return responseText;
+        } else {
+            console.log(response)
+            return false;
+        }
+    }
+    catch(error){
+        console.log(error)
+        return false;
     }
 }

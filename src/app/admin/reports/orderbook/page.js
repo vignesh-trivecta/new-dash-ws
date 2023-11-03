@@ -35,15 +35,12 @@ const OrderBook = () => {
   useEffect(() => {
     const fetchOrderBook = async () => {
       if (reportType === "Market") { // Live market data endpoint
-        console.log('market')
         const response = await handleLiveReportsFetch(
           "orderbook",
           customerId,
           startDate,
           endDate
         );
-
-        console.log(response)
 
         const { mainDatas, tooltipDatas} = orderDataParser(response.orderbook);
         setTableData(mainDatas);
