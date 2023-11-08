@@ -19,7 +19,6 @@ const CustomerMappingTable = ({
 
   // redux
   const adminId = useSelector((state) => state.user.username);  
-  console.log(status)
 
   // local state
   const [broker, setBroker] = useState("");

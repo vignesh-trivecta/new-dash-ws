@@ -1,3 +1,5 @@
+import { decrypt } from "@/utils/aesDecryptor";
+
 // API call to submit the whole basket to backend
 export const submitBasket = async (adminName, basketName, modelBasket, basketValidity, transType, investmentAmount, basketActualValue, basketCategory, basketRequests) => {
     try{
@@ -151,7 +153,7 @@ export const basketNameCheck = async (basketName) => {
         }
     }
     catch(error) {
-        console.log(error);
+        return false;
     }
 }
 
@@ -190,10 +192,13 @@ export const getEquityPrice = async (instrumentName, exchange) => {
 export const getInstrumentDetails = async () => {
     try{
         const response = await fetch("http://localhost:8083/instruments")
+
+        console.log(response)
         
-        if(response.ok){
+        if(response.status === 200){
             const jsonData = await response.json();
-            return jsonData;
+            console.log(decrypt(jsonData.payload))
+            return decrypt(jsonData.payload);
         }
         else {
             const errorText = await response.text();

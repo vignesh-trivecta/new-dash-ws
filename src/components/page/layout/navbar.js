@@ -23,20 +23,28 @@ const DashNavbar = function () {
 
   // local state variables
   const [showSidebar, setShowSidebar] = useState(false);
-  const [time, setTime] = useState(timeFormat);
+  const [time, setTime] = useState(new Date());
+  const [timeZone, setTimeZone] = useState(true);
+
+  // Function to update the time
+  const updateTime = () => {
+    setTime(new Date());
+  };
+
+  // Format the time based on the selected format
+  const formatTime = () => {
+    const options = {
+      hour12: !timeZone,
+      hour: 'numeric',
+      minute: 'numeric',
+    };
+    return time.toLocaleTimeString(undefined, options);
+  };
 
   useEffect(() => {
-    // Create an interval and store its ID
-    const intervalId = setInterval(() => {
-      let newTime = new Date();
-      console.log('triggered', newTime);
-      setTime(newTime);
-    }, 60000);
-    // Return a cleanup function to clear the interval when the component unmounts
-    return () => {
-      clearInterval(intervalId);
-    };
-  },[])
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Navbar fluid className="border-b-2">
@@ -73,8 +81,8 @@ const DashNavbar = function () {
             <div>
               <div>Date: {new Date().toUTCString().slice(0, 16)}</div>
               <div>
-                Time:
-                {time === 12
+                Time: {formatTime()}
+                {/* {time === 12
                   ? ` ${
                       new Date().getHours() > 12
                         ? (new Date().getHours() - 12 < 10 ? "0" : "") +
@@ -89,7 +97,7 @@ const DashNavbar = function () {
                       new Date().getMinutes() < 10
                         ? `0${new Date().getMinutes()}`
                         : new Date().getMinutes()
-                    }`}
+                    }`} */}
               </div>
             </div>
             {/* User profile dropdown */}
@@ -128,10 +136,10 @@ const DashNavbar = function () {
                       type="radio"
                       name="timeFormat"
                       id="12hr"
-                      value={12}
-                      defaultChecked={time === 12}
+                      defaultValue={12}
+                      defaultChecked={timeZone === false}
                       onChange={() => {
-                        setTime(12);
+                        setTimeZone(!timeZone);
                         dispatch(setTimeFormat(12));
                       }}
                     />
@@ -140,10 +148,10 @@ const DashNavbar = function () {
                       type="radio"
                       name="timeFormat"
                       id="24hr"
-                      value={24}
-                      defaultChecked={time === 24}
+                      defaultValue={24}
+                      defaultChecked={timeZone === true}
                       onChange={() => {
-                        setTime(24);
+                      setTimeZone(!timeZone);
                         dispatch(setTimeFormat(24));
                       }}
                     />

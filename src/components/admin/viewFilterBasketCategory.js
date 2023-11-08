@@ -6,6 +6,10 @@ import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 import { getBasketCategories } from "@/app/api/basket/route";
 
 export default function ViewFilterBasketCategory({basketCategory, setBasketCategory, handleFetch, setHandleFetch}) {
+  
+  const people = [
+    { id: 1, name: '-Select-' }]
+  
   const [basketCategoryList, setBasketCategoryList] = useState([]);
   const [selected, setSelected] = useState("");
   const [query, setQuery] = useState("");

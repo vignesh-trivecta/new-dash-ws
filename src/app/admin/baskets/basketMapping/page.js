@@ -31,7 +31,7 @@ const BasketMapping = () => {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState([]);
   const [records, setRecords] = useState([]);
-  const [investment, setInvestment] = useState(null);
+  const [investment, setInvestment] = useState(undefined);
   const [totalBasketValue, setTotalBasketValue] = useState(0);
   const [total, setTotal] = useState({});
   const [scripts, setScripts] = useState(0);

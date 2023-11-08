@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { HiInformationCircle } from "react-icons/hi";
@@ -65,7 +65,7 @@ const CustomerMapping = () => {
   //     // router.push("/admin/baskets/create");
   //   }, 3000);
   // }
-  
+
   const getStatus = async (value) => {
     const statusResponse = await getCustomerStatus(value);
     setStatus(statusResponse);
@@ -100,7 +100,15 @@ const CustomerMapping = () => {
     fetchData();
   }, []);
 
+  
+  const isInitialRender = useRef(true);
   useEffect(() => {
+    // Check if it's not the initial render
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+
     getStatus(basketName);
   }, [message]);
 

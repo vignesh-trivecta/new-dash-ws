@@ -289,6 +289,7 @@ const UpdateBasket = ({ params }) => {
                 investmentVal={investmentVal}
                 basketVal={basketVal}
                 mainBasketName={basketName}
+                records={records}
               />
             </div>
             <div>

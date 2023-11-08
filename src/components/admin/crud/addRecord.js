@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Button, Label, Modal } from 'flowbite-react';
 import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +29,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     
     // local state variables
     const [limitPrice, setLimitPrice] = useState('');
-    const [weightage, setWeightage] = useState('');
+    const [weightage, setWeightage] = useState(undefined);
     const [price, setPrice] = useState('');
     const [exchange, setExchange] = useState('NSE');
     const [orderType, setOrderType] = useState('LIMIT');
@@ -40,31 +40,39 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     const [fetch, setFetch] = useState(false);
 
     // function to handle the exchange radio button
-    const handleExchange = (exchange) => {
+    const handleExchange = async (exchange) => {
         // (setExchange(exchange));
-        const fetchPrice = async () => {
-            const data = await getEquityPrice(selectedStock, exchange);
-            setPrice(data);
-        }
-        fetchPrice();
-        // if(exchange){
-        //     fetchPrice();
-        // }
+        const data = await getEquityPrice(selectedStock, exchange);
+        setPrice(data);
     }
 
+
     useEffect(() => {
-        handleExchange(exchange);
+        if (selectedStock !== "") {
+            handleExchange(exchange);
+        }
     }, [fetch])
 
     // Event handler //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
-        setWeightage(e?.target.value || weightage );
-        const quantity = await sendWeightage(e?.target.value || weightage, investmentVal, price);
+        // setWeightage(e?.target.value || weightage );
+        setWeightage(e?.target?.value);
+        // const quantity = await sendWeightage(e?.target?.value || weightage, investmentVal, price);
+        const quantity = await sendWeightage(e?.target?.value, investmentVal, price);
         setQuantity(quantity);
+        if (e?.target?.value > 100 || e?.target?.value < 1 ) {
+            setMessage("Weightage must be between 0-100")
+        }
+        else {
+            setMessage("");
+        }
     };
 
+    const isInitialRender = useRef(true);
     useEffect(() => {
-        handleChange();
+        if (weightage !== "") {
+            handleChange();
+        }
     }, [price])
 
     // function to submit the modal values and add record to the table
@@ -163,7 +171,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                                 type='radio' 
                                 value="NSE" 
                                 className='ml-1' 
-                                checked={exchange === "NSE"}
+                                defaultChecked={exchange === "NSE"}
                                 onClick={() => {
                                     handleExchange("NSE");
                             }} />
@@ -174,11 +182,11 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-sm' />
                         <div className='rounded-md col-start-2 row-start-3 h-10'>
                             <input
-                            required
-                                type='text'
+                                required
+                                type='number'
                                 value={weightage}
                                 onChange={handleChange}
-                                className='w-full border border-gray-200 rounded-md text-right'
+                                className={`${(weightage > 100 || weightage < 1) ? "focus:ring-red-500" : "focus:ring-blue-700"} focus:border-none w-full border border-gray-200 rounded-md text-right`}
                                 
                             />
                             {/* <input type='text' id="weightage" placeholder='Enter...' /> */}
@@ -187,9 +195,9 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         {/* Order Type element */}
                         <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
                         <div className='col-start-2'>
-                            <input required id="market" name="orderType" type='radio' value="MARKET" checked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
+                            <input required id="market" name="orderType" type='radio' value="MARKET" defaultChecked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
                             <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
-                            <input required id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' checked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
+                            <input required id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' defaultChecked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
                             <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
                         </div>
 
@@ -197,7 +205,14 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         {orderType === "LIMIT" && (   
                             <span className='relative ml-8'>
                                 <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                                <input required id="limitInput" name="limitInput" value={limitPrice} onChange={(e) => setLimitPrice(e.target.value)} type="text" className=' text-right absolute w-32 rounded-md border border-gray-200' />                                             
+                                <input 
+                                    required 
+                                    id="limitInput" 
+                                    name="limitInput" 
+                                    value={limitPrice} 
+                                    onChange={(e) => setLimitPrice(e.target.value)} 
+                                    type="number" 
+                                    className=' text-right absolute w-32 rounded-md border border-gray-200' />                                             
                             </span>                             
                         )}
 
@@ -215,14 +230,19 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                             <Alert
                                 color="warning"
                                 rounded
-                                className="h-12 w-56 max-w-sm"
+                                className="h-12 w-56 p-1 flex justify-center max-w-sm"
                                 icon={HiInformationCircle}
                                 >
                                 <span>{message}</span>
                             </Alert>
                         </div>
                         <div className='flex '>
-                            <Button type='submit' disabled={disabledButton}>Add</Button>
+                            <Button 
+                                type='submit' 
+                                disabled={disabledButton || (weightage > 100 || weightage < 1) || selectedStock === ""}
+                            >
+                                Add
+                            </Button>
                             <Button color="gray"                
                                 onClick={() => {
                                     props.setOpenModal(undefined);

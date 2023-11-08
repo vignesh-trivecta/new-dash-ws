@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBasketState } from "@/store/eventSlice";
 import { setBasketName } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
 import { HiInformationCircle, HiCheckCircle } from "react-icons/hi";
 import { Alert, Button, Tooltip } from "flowbite-react";
-import { basketNameCheck } from "@/app/api/basket/route";
+import { basketNameCheck, getInstrumentDetails } from "@/app/api/basket/route";
 import { getRecords } from "@/app/api/tempBasket/route";
 import AddRecord from "@/components/admin/crud/addRecord";
 import BasketRecords from "@/components/admin/table/basketRecords";
@@ -15,6 +15,7 @@ import SubmitBasket from "@/components/admin/crud/submitBasket";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketCategory from "@/components/admin/basketCategory";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
+import CryptoJS from "crypto-js";
 
 const CreateBasket = () => {
   // basket status messages
@@ -37,7 +38,7 @@ const CreateBasket = () => {
   const basketState = useSelector((state) => state.event.basketState);
 
   // local state variables
-  const [namecheck, setNameCheck] = useState(true);
+  const [nameCheck, setNameCheck] = useState(true);
   const [records, setRecords] = useState([]);
   const [handleFetch, setHandleFetch] = useState(false);
   const [message, setMessage] = useState("");
@@ -65,6 +66,18 @@ const CreateBasket = () => {
     }
   }, [saved]);
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const list = await getInstrumentDetails();
+  //     const key = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_AES_SECRET_KEY);
+  //     const iv = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_IV);
+  //     const decrypted = CryptoJS.AES.decrypt(list, key, {iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7}).toString(CryptoJS.enc.Utf8);
+  //     console.log(JSON.parse(decrypted))
+  //   };
+  
+  //   fetchData();
+  // }, []);
+
   // useEffect to set the message at center of table
   useEffect(() => {
     if (basketName !== "" && basketAmount !== "" && basketCategory !== "") {
@@ -79,6 +92,9 @@ const CreateBasket = () => {
     const check = async () => {
       const response = await basketNameCheck(basketName);
       setNameCheck(response);
+      if (!response) {
+        setMessage(msg3);
+      }
     };
     check();
   }, [basketName]);
@@ -90,8 +106,14 @@ const CreateBasket = () => {
     // props.setOpenModal("form-elements");
   }, []);
 
+  const isInitialRender = useRef(true);
   // useffect for add record, update record, delete record
   useEffect(() => {
+    // Check if it's not the initial render
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
     const fetchData = async () => {
       const response = await getRecords(adminId, basketName);
       setRecords(response || []);
@@ -143,7 +165,7 @@ const CreateBasket = () => {
       {/* Investment details row */}
       <div className="flex justify-between">
         {/* Basket Name input */}
-        {namecheck ? ( // checking whether the entered name already exists in the database or not
+        {nameCheck ? ( // checking whether the entered name already exists in the database or not
           <div className="flex flex-col items-center">
             <div className="flex flex-col items-left">
               <label className="text-black text-sm dark:text-white mr-2">
@@ -160,7 +182,7 @@ const CreateBasket = () => {
             </div>
             <div className="ml-8 mt-2">
               <p className="text-xs text-red-500">
-                <div>&nbsp;</div>
+                &nbsp;
               </p>
             </div>
           </div>
@@ -194,6 +216,7 @@ const CreateBasket = () => {
           </label>
           <input
             type="text"
+            disabled={!nameCheck}
             value={segregate(basketAmount)}
             onChange={(e) => {
               // Remove commas from the input value before updating state
@@ -211,8 +234,8 @@ const CreateBasket = () => {
           </p>
           <div className="relative w-44 z-10 border rounded-md">
             <BasketCategory
-              basketCategory={basketCategory}
               setBasketCategory={setBasketCategory}
+              nameCheck={nameCheck}
             />
             {/* <div className="relative bottom-10 z-20">Add</div> */}
           </div>
@@ -237,6 +260,7 @@ const CreateBasket = () => {
             name="transactionType"
             id="transactionType"
             value={transType}
+            disabled={!nameCheck}
             className="border border-gray-200 rounded-md focus:outline-0 w-24 md:w-44 text-sm focus:border-gray-200 focus:ring-0"
             onChange={(e) => setTransType(e.target.value)}
           >
@@ -305,10 +329,10 @@ const CreateBasket = () => {
                   ))
                 ) : (
                   // show empty table
-                  <td
+                  <tr
                     colSpan="8"
                     style={{ height: "250px", textAlign: "center" }}
-                  ></td>
+                  ></tr>
                 )}
               </tbody>
             }
@@ -370,7 +394,7 @@ const CreateBasket = () => {
           <div className="flex justify-center">
             <Tooltip
               className="overflow-hidden"
-              content="Enter Basket name and Investment amount!"
+              content={`${message === "Basket Value is higher than Investment Amount" ? "Basket Value is higher than Investment Amount" : "Enter Basket name and Investment amount!"}`}
             >
               <Button disabled className="">
                 Add Record
@@ -378,7 +402,7 @@ const CreateBasket = () => {
             </Tooltip>
             <Tooltip
               className="overflow-hidden"
-              content="Enter Basket name and Investment amount!"
+              content={`${message === "Basket Value is higher than Investment Amount" ? "Basket Value is higher than Investment Amount" : "Enter Basket name and Investment amount!"}`}
             >
               <Button disabled className="ml-8">
                 Save

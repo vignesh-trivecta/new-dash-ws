@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useEffect, useState, Fragment } from "react";
-import { Button, Label, Modal } from "flowbite-react";
+import { Alert, Button, Label, Modal } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getEquityPrice, sendWeightage } from "@/app/api/basket/route";
 import { updateRecordMainAPI } from "@/app/api/mainBasket/route";
 import { updateRecordAPI } from "@/app/api/tempBasket/route";
 import Link from "next/link";
-import { segregate } from "@/utils/formatter/priceSegregator";
 import { setSelectedStock } from "@/store/addRecordSlice";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { getInstrumentDetails } from "@/app/api/basket/route";
 import { usePathname } from "next/navigation";
+import { HiInformationCircle } from "react-icons/hi";
 
 const UpdateRecord = ({
   recId,
@@ -53,13 +53,16 @@ const UpdateRecord = ({
   const [localExchange, setLocalExchange] = useState(exchange);
   const [localOrderType, setLocalOrderType] = useState(orderType);
   const [toggle, setToggle] = useState(transType);
-  const [limitPrice, setLimitPrice] = useState(lp);
+  const [limitPrice, setLimitPrice] = useState(Number(lp));
   const [fetch, setFetch] = useState(false);
+
+  console.log((localWeightage > 100 || localWeightage < 1) || (localOrderType === "LIMIT" && !limitPrice) || (localOrderType === "LIMIT" && limitPrice < 1))
 
   //search dropdown - local state variables
   const [stocksList, setStocksList] = useState([]);
   const [query, setQuery] = useState("");
   const [localStock, setLocalStock] = useState(instrumentName);
+  const [message, setMessage] = useState("");
 
   const filteredStocksList =
     query === ""
@@ -154,11 +157,17 @@ const UpdateRecord = ({
     setLocalWeightage(e?.target.value);
     // multiple OR statements used to handle 'undefined' being sent to api call issue
     const quantity = await sendWeightage(
-      e?.target.value || localWeightage || lweightage,
+      e?.target.value || localWeightage,
       basketAmount || investmentVal,
       localPrice
     );
     setLocalQuantity(quantity);
+    if (e?.target.value > 100 || e?.target.value < 1) {
+      setMessage("Weightage must be between 0-100")
+    }
+    else {
+      setMessage("");
+    }
   };
 
   useEffect(() => {
@@ -329,7 +338,7 @@ const UpdateRecord = ({
                 className="col-start-1 row-start-2 text-md"
               />
               <div className=" col-start-2 row-start-2">
-                <input
+                {/* <input
                   id="bse"
                   name="exchange"
                   type="radio"
@@ -341,7 +350,7 @@ const UpdateRecord = ({
                 />
                 <label htmlFor="bse" className="ml-1">
                   BSE
-                </label>
+                </label> */}
                 <input
                   id="nse"
                   name="exchange"
@@ -366,12 +375,12 @@ const UpdateRecord = ({
               />
               <div className="rounded-md col-start-2 row-start-3 h-10">
                 <input
-                  type="text"
-                  value={localWeightage || lweightage}
+                  type="number"
+                  value={localWeightage}
                   onChange={(e) => {
                     handleWeightage(e);
                   }}
-                  className="w-full border border-gray-200 rounded-md text-right"
+                  className={`${(localWeightage > 100 || localWeightage < 1) ? "focus:ring-red-500" : "focus:ring-blue-700"} focus:border-none w-full border border-gray-200 rounded-md text-right`}
                 />
               </div>
               {/* <Label htmlFor="weightage" value="Weightage %" className='col-start-1 row-start-3 text-md' />
@@ -459,43 +468,55 @@ const UpdateRecord = ({
                     className="absolute left-2 bg-white px-1 -top-2 text-sm z-10"
                   />
                   <input
+                    type="number"
                     id="limitInput"
                     name="limitInput"
                     value={limitPrice}
                     onChange={(e) => setLimitPrice(e.target.value)}
-                    type="text"
-                    className="absolute w-32 rounded-md border border-gray-200 text-right"
+                    className={`${(limitPrice < 1 || limitPrice === null) ? "focus:ring-red-500" : "focus:ring-blue-700" } focus:border-none absolute w-32 rounded-md border border-gray-200 text-right`}
                   />
                 </span>
               )}
             </div>
 
             {/* Modal Butttons */}
-            <div className="flex justify-end mt-4">
-              <button
-                type="submit"
-                className={`bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20`}
-              >
-                Update
-              </button>
-              <Button
-                color="gray"
-                onClick={() => {
-                  props.setOpenModal(undefined);
-                  setLocalStock(instrumentName);
-                  setLocalPrice(price);
-                  setLocalExchange(exchange);
-                  setLocalOrderType(orderType);
-                  setLocalQuantity(quantity);
-                  setLocalWeightage(weightage);
-                  setLimitPrice(lp);
-                  setToggle(transType);
-                  dispatch(setSelectedStock(instrumentName));
-                }}
-                className="ml-2 text-md"
-              >
-                Cancel
-              </Button>
+            <div className="flex justify-between mt-4">
+              <div>
+                <Alert
+                    color="warning"
+                    rounded
+                    className="h-12 w-56 p-1 flex justify-center max-w-sm"
+                    icon={HiInformationCircle}
+                    >
+                    <span>{message}</span>
+                </Alert>
+              </div>
+              <div className="flex">
+                <Button
+                  type="submit"
+                  disabled={(localWeightage > 100 || localWeightage < 1) || (localOrderType === "LIMIT" && !limitPrice) || (localOrderType === "LIMIT" && limitPrice < 1)}
+                >
+                  Update
+                </Button>
+                <Button
+                  color="gray"
+                  onClick={() => {
+                    props.setOpenModal(undefined);
+                    setLocalStock(instrumentName);
+                    setLocalPrice(price);
+                    setLocalExchange(exchange);
+                    setLocalOrderType(orderType);
+                    setLocalQuantity(quantity);
+                    setLocalWeightage(weightage);
+                    setLimitPrice(lp);
+                    setToggle(transType);
+                    dispatch(setSelectedStock(instrumentName));
+                  }}
+                  className="ml-2 text-md"
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </form>
         </Modal.Body>

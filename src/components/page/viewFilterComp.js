@@ -11,8 +11,6 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
     // local state
     const [basketCategoryList, setBasketCategoryList] = useState([]);
 
-
-
     // // handling customer selection for basket category
     // const handleCustomerSelection = (e) => {
     //     e.preventDefault();
@@ -32,7 +30,6 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
         e.preventDefault();
         // setHandleFetch(!handleFetch);
         filteredBaskets();
-        console.log("filter clicked")
     }
 
     // useEffect to fetch basket category data to show in dropdown

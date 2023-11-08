@@ -18,6 +18,7 @@ import {
 } from "@/store/userSlice";
 import { loginAPI } from "@/app/api/login/route";
 import Link from "next/link";
+import { Button } from "flowbite-react";
 
 const LoginAuth = () => {
 
@@ -26,6 +27,7 @@ const LoginAuth = () => {
   const [captchaValue, setCaptchaValue] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // redux
   const dispatch = useDispatch();
@@ -99,7 +101,7 @@ const LoginAuth = () => {
       // signing the username, password with secret key
       // using jwt to create a authentication token
       
-      console.log(process.env.SECRET_KEY);
+      setLoading(true);
       const { encryptedUser, encryptedPassword } = encryptedCredentials(
         username,
         password,
@@ -118,9 +120,11 @@ const LoginAuth = () => {
         router.push("/admin/dashboard");
       }
       else if (login.statusCode === 404) {
+        setLoading(false);
         setErrorMsg("Invalid credentials! Try again");
       }
       else {
+        setLoading(false);
         setErrorMsg(login + ". Please Try after some time");
       }
     } 
@@ -128,6 +132,7 @@ const LoginAuth = () => {
       setErrorMsg("Invalid credentials! Try again");
     }
     else {
+      setLoading(false);
       setErrorMsg("Network error! Try after some time")
     }
   }
@@ -377,12 +382,14 @@ const LoginAuth = () => {
                 
                 {/* Login button */}
                 <div className="flex justify-center mt-2">
-                  <button
+                  <Button
                     type="submit"
-                    className="px-6 py-2 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                    size={"sm"}
+                    className="text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-400"
+                    isProcessing={loading}
                   >
-                    Log In
-                  </button>
+                    {loading ? `Log In` : "Log In"}
+                  </Button>
                 </div>
               </form>
               {/* End of Login Form */}

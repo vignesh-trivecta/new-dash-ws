@@ -158,7 +158,7 @@ const Customers = () => {
                             >
                               <svg
                                 className="w-4 h-4 text-gray-500 hover:text-gray-800 dark:text-white"
-                                ariaHidden="true"
+                                aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 20 12"
@@ -188,7 +188,7 @@ const Customers = () => {
                                 >
                                   <svg
                                     className="w-4 h-4 text-gray-500 hover:text-gray-800 dark:text-white"
-                                    ariaHidden="true"
+                                    aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="currentColor"
                                     viewBox="0 0 20 18"
@@ -219,7 +219,7 @@ const Customers = () => {
                                 <Link href="#" className="pointer-events-none">
                                   <svg
                                     className="w-4 h-4 text-gray-500 hover:text-gray-800 dark:text-white"
-                                    ariaHidden="true"
+                                    aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="currentColor"
                                     viewBox="0 0 20 18"
@@ -236,7 +236,7 @@ const Customers = () => {
                                 <Link href="#" className="pointer-events-none">
                                   <svg
                                     className="w-4 h-4 text-gray-500 hover:text-red-500 dark:text-white"
-                                    ariaHidden="true"
+                                    aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
                                     viewBox="0 0 20 18"

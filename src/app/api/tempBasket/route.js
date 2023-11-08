@@ -1,3 +1,5 @@
+import { encrypt } from "@/utils/aesEncryptor";
+
 // API call to fetch all records of a basket in temporary table
 export const getRecords = async(adminName, basketName) => {
     try{
@@ -40,22 +42,28 @@ export const addRecord = async(adminName, basketName, selectedStock, exchange, o
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                "adminId": adminName,
-                "basketName": String(basketName),
-                "instrumentName": selectedStock,
-                "exchangeUsed": exchange,
-                "orderType": orderType,
-                "transType": transType,
-                "quantity": quantity,
-                "weightage": Number(weightage),
-                "price": price, 
-                "basketInvAmount": Number(investmentVal),
-                "limitPrice" : Number(limitPrice)      
-            })
+            body: encrypt(JSON.stringify(
+                {
+                    "adminId": adminName,
+                    "basketName": String(basketName),
+                    "instrumentName": selectedStock,
+                    "exchangeUsed": exchange,
+                    "orderType": orderType,
+                    "transType": transType,
+                    "quantity": quantity,
+                    "weightage": Number(weightage),
+                    "price": price, 
+                    "basketInvAmount": Number(investmentVal),
+                    "limitPrice" : Number(limitPrice)      
+                }
+            ))
         };
 
+        console.log(requestOptions)
+
+
         const response = await fetch("http://localhost:8083/basket/temp", requestOptions);
+        console.log(response)
 
         if (response.ok) {
             return true;
