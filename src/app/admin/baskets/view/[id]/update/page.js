@@ -200,7 +200,7 @@ const UpdateBasket = ({ params }) => {
       </div>
 
       <div className="flex mt-2">
-        <div className={"overflow-y-scroll border"} style={{ height: "300px" }}>
+        <div className={"overflow-y-scroll border h-[calc(100vh-320px)]"}>
           <table className="table-fixed w-full ">
             <thead className="sticky top-0  bg-gray-50">
               <tr>

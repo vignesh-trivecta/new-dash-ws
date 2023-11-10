@@ -34,7 +34,6 @@ const CreateBasket = () => {
   const dispatch = useDispatch();
   const adminId = useSelector((state) => state.user.username);
   const basketName = useSelector((state) => state.basket.basketName);
-  // const basketAmount = useSelector((state) => state.basket.basketAmount);
   const basketState = useSelector((state) => state.event.basketState);
 
   // local state variables
@@ -49,6 +48,7 @@ const CreateBasket = () => {
   const [basketAmount, setBasketAmount] = useState("");
   const [comparison, setComparison] = useState(true); // comparison to check whether basketVal is greater than investmentVal
   const [basketCategory, setBasketCategory] = useState("");
+  const [selected, setSelected] = useState("");
 
   // basket value variable
   const basketVal = segreagatorWoComma(total);
@@ -61,6 +61,7 @@ const CreateBasket = () => {
       dispatch(setBasketName(""));
       setBasketCategory("");
       setMessage(msg4);
+      setSelected("")
     } else {
       setMessage(msg7);
     }
@@ -236,6 +237,8 @@ const CreateBasket = () => {
             <BasketCategory
               setBasketCategory={setBasketCategory}
               nameCheck={nameCheck}
+              selected={selected}
+              setSelected={setSelected}
             />
             {/* <div className="relative bottom-10 z-20">Add</div> */}
           </div>
@@ -285,7 +288,7 @@ const CreateBasket = () => {
 
       {/* Table showing Create Basket Records */}
       <div className="flex mt-2">
-        <div className={"overflow-y-scroll border"} style={{ height: "300px" }}>
+        <div className={"overflow-y-scroll border h-[calc(100vh-350px)]"}>
           <table className="table-fixed w-full">
             <thead className="sticky top-0 bg-gray-50">
               <tr>
@@ -331,7 +334,7 @@ const CreateBasket = () => {
                   // show empty table
                   <tr
                     colSpan="8"
-                    style={{ height: "250px", textAlign: "center" }}
+                    className=" h-[calc(100vh-650px)] text-center"
                   ></tr>
                 )}
               </tbody>

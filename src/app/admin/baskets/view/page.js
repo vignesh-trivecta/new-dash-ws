@@ -80,7 +80,7 @@ const Customers = () => {
         </div>
       </div>
       <div className="flex mt-8">
-        <div className={"overflow-y-scroll border"} style={{ height: "400px" }}>
+        <div className={"overflow-y-scroll border h-[calc(100vh-250px)]"}>
           <table className="table-fixed w-full ">
             <thead className="sticky top-0 bg-gray-50">
               <tr>

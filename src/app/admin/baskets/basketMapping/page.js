@@ -40,11 +40,12 @@ const BasketMapping = () => {
   const [broker, setBroker] = useState(brokers[0].name);
   const [enableInputs, setEnableInputs] = useState(customerId == "");
   const [enableButtons, setEnableButtons] = useState(true);
-  const [enableMap, setEnableMap] = useState(basketName == "");
-  const [enableWeblink, setEnableWeblink] = useState(basketName == "");
+  const [enableMap, setEnableMap] = useState(true);
+  const [enableWeblink, setEnableWeblink] = useState(true);
   const [checkedBaskets, setCheckedBaskets] = useState([]);
   const [errorHighlight, setErrorHighlight] = useState(false);
   const [basketData, setBasketData] = useState({});
+  const [alias, setAlias] = useState("");
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -70,19 +71,28 @@ const BasketMapping = () => {
 
   useEffect(() => {
     if (Number(totalBasketValue) == Number(investment)) {
-      setEnableButtons(true);
+      console.log("this 1");
+      setEnableMap(false);
       setMessage("");
     } else if (Number(totalBasketValue) > Number(investment)) {
+      console.log("this 2");
       setErrorHighlight(true);
       setMessage("Basket Total is higher than Investment")
-      setEnableButtons(true);
-    } else {
+      setEnableMap(true);
+    } 
+    else if(Number(totalBasketValue) !==0 && (investment == undefined)) {
+      console.log("this 3");
+      setEnableMap(true);
+    }
+    else {
+      console.log("this 4");
       setMessage("");
       setErrorHighlight(false);
-      setEnableButtons(false);
+      setEnableMap(false);
     }
+
     if (Number(totalBasketValue) === 0) {
-      setEnableButtons(true);
+      setEnableMap(true);
     }
   }, [investment, totalBasketValue]);
 
@@ -229,17 +239,30 @@ const BasketMapping = () => {
           />
         </div>
 
+        {/* Basket Alias Name */}
+        {/* <div className="flex flex-col items-left mb-6">
+          <p className="text-black text-sm dark:text-white mr-2">
+            Basket Total &#8377;
+          </p>
+          <input
+            type="text"
+            value={alias}
+            onChange={(e) => setAlias(e?.target.value)}
+            className="border border-gray-200  text-right rounded-lg w-44 text-sm"
+          />
+        </div> */}
+
         <div className="flex justify-between mt-4 space-x-4">
-          <Button disabled={enableButtons} onClick={handleMapClick}>
+          <Button disabled={enableMap} onClick={handleMapClick}>
             Map
           </Button>
-          <Button disabled={enableButtons}>Send Weblink</Button>
+          <Button disabled={enableWeblink}>Send Weblink</Button>
         </div>
       </div>
 
       {/* Customer Details table */}
       <div className="flex flex-col mt-2">
-        <div className={"overflow-y-scroll border"} style={{ height: "300px" }}>
+        <div className={"overflow-y-scroll border h-[calc(100vh-320px)]"}>
           <table className="table-fixed w-full overflow-y-scroll overflow-x-scroll">
             <thead className="border-b sticky top-0 bg-gray-50">
               <tr>
@@ -310,15 +333,32 @@ const BasketMapping = () => {
           </table>
         </div>
       </div>
-      <div className="mt-2 w-96">
-        <Alert
-          color="warning"
-          rounded
-          className="h-12"
-          icon={HiInformationCircle}
-        >
-          <span className="w-4 h-4">{message}</span>
-        </Alert>
+      <div className="mt-2 flex justify-between">
+        <div className="w-96">
+          <Alert
+            color="warning"
+            rounded
+            className="h-12"
+            icon={HiInformationCircle}
+          >
+            <span className="w-4 h-4">{message}</span>
+          </Alert>
+        </div>
+
+        {/* Disabled basket value */}
+        {/* <div className="flex items-center mb-6">
+          <p className="text-black text-sm dark:text-white mr-2">
+            Basket Total &#8377;
+          </p>
+          <input
+            disabled
+            type="text"
+            value={segreagatorWoComma(totalBasketValue)}
+            className={`border rounded-lg w-44 text-right bg-gray-50 text-sm ${
+              errorHighlight ? "border-red-500 " : "border-gray-200"
+            }`}
+          />
+        </div> */}
       </div>
     </div>
   );

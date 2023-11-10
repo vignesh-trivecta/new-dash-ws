@@ -91,6 +91,7 @@ const CustomerMapping = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await getBasketList();
+      console.log(response);
       setRecords(response);
 
       const customersData = await getCustomers();
@@ -195,7 +196,7 @@ const CustomerMapping = () => {
 
       {/* Customer Details table */}
       <div className="flex flex-col mt-2">
-        <div className={"overflow-y-scroll border"} style={{ height: "300px" }}>
+        <div className={"overflow-y-scroll border h-[calc(100vh-320px)]"}>
           <table className="table-fixed w-full overflow-y-scroll overflow-x-scroll">
             <thead className="border-b sticky top-0 bg-gray-50">
               <tr>

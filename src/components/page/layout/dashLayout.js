@@ -41,10 +41,7 @@ const DashLayout = ({ children }) => {
 
 const MainContent = function ({ children }) {
   return (
-    <main
-      className="relative w-full pl-4"
-      style={{ height: "90vh" }}
-    >
+    <main className=" h-[calc(100vh-100px)]">
       {children}
     </main>
   );

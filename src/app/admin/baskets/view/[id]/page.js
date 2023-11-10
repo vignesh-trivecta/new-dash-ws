@@ -231,7 +231,7 @@ const ViewTable = ({ params }) => {
 
       {/* Specific Basket Details table */}
       <div className="flex mt-6">
-        <div className={"overflow-y-scroll border"}>
+        <div className={"overflow-y-scroll border h-[calc(100vh-250px)]"}>
           <table className="table-fixed w-full ">
             <thead className="sticky top-0  bg-gray-50">
               <tr>

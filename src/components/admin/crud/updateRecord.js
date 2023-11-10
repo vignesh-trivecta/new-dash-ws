@@ -376,7 +376,7 @@ const UpdateRecord = ({
               <div className="rounded-md col-start-2 row-start-3 h-10">
                 <input
                   type="number"
-                  value={localWeightage || lweightage}
+                  value={localWeightage}
                   onChange={(e) => {
                     handleWeightage(e);
                   }}

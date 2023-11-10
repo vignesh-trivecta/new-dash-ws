@@ -188,7 +188,7 @@ const ExampleSidebar = function () {
       </Transition.Root>
       </>
       
-      <Sidebar aria-label="Sidebar with multi-level dropdown example" className="border-r-2 h-screen  overflow-y-auto" >
+      <Sidebar aria-label="Sidebar with multi-level dropdown example" className="border-r-2 h-[calc(100vh-100px)] overflow-y-auto" >
         <div className="flex flex-col justify-between">
           <div>
             <Sidebar.Items>

@@ -10,6 +10,7 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
     
     // local state
     const [basketCategoryList, setBasketCategoryList] = useState([]);
+    const [selected, setSelected] = useState("");
 
     // // handling customer selection for basket category
     // const handleCustomerSelection = (e) => {
@@ -22,6 +23,7 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
     const resetFilters = () => {
         setBasketCategory("");
         setBasketType("");
+        setSelected("");
         fetchBaskets();
     }
 
@@ -90,8 +92,8 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
                             <ViewFilterBasketCategory
                                 basketCategory={basketCategory} 
                                 setBasketCategory={setBasketCategory} 
-                                // handleFetch={handleFetch} 
-                                // setHandleFetch={setHandleFetch}
+                                selected={selected}
+                                setSelected={setSelected}
                             />
                         </div>
                     </div>

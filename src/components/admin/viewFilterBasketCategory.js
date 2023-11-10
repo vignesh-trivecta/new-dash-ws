@@ -5,13 +5,12 @@ import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 import { getBasketCategories } from "@/app/api/basket/route";
 
-export default function ViewFilterBasketCategory({basketCategory, setBasketCategory, handleFetch, setHandleFetch}) {
+export default function ViewFilterBasketCategory({basketCategory, setBasketCategory, selected, setSelected}) {
   
   const people = [
     { id: 1, name: '-Select-' }]
   
   const [basketCategoryList, setBasketCategoryList] = useState([]);
-  const [selected, setSelected] = useState("");
   const [query, setQuery] = useState("");
 
   const filteredPeople =

@@ -6,7 +6,7 @@ export const metadata = {
 
 const Customers = () => {
     return (
-        <div>
+        <div className="h-[calc(100vh-200px)]">
             <CustomerDetails />
         </div>
     )

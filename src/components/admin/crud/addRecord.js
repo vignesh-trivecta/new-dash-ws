@@ -55,11 +55,13 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
     // Event handler //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
+        console.log(e?.target.value);
         // setWeightage(e?.target.value || weightage );
         setWeightage(e?.target?.value);
         // const quantity = await sendWeightage(e?.target?.value || weightage, investmentVal, price);
         const quantity = await sendWeightage(e?.target?.value, investmentVal, price);
         setQuantity(quantity);
+        console.log(quantity);
         if (e?.target?.value > 100 || e?.target?.value < 1 ) {
             setMessage("Weightage must be between 0-100")
         }
