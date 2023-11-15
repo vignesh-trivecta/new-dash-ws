@@ -11,8 +11,10 @@ import {
 } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketMappingTable from "@/components/admin/table/basketMappingTable";
-import { sendMultipleBaskets } from "@/app/api/map/baskets/route";
+import { fetchByGroupAndSend, fetchDetailsByCustomer, fetchDetailsByGroupName, getBasketGroups, sendMultipleBaskets } from "@/app/api/map/baskets/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
+import StaticBasketMappingTable from "@/components/admin/table/staticBasketMappingTable";
+import { FcRefresh } from "react-icons/fc";
 
 const BasketMapping = () => {
   // broker inputs
@@ -27,25 +29,25 @@ const BasketMapping = () => {
   const [basketName, setBasketName] = useState("");
   const [customerId, setCustomerId] = useState("");
   const [customers, setCustomers] = useState([]);
-  const [weblink, setWeblink] = useState(false);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState([]);
   const [records, setRecords] = useState([]);
   const [investment, setInvestment] = useState(undefined);
   const [totalBasketValue, setTotalBasketValue] = useState(0);
   const [total, setTotal] = useState({});
-  const [scripts, setScripts] = useState(0);
   const [basketVal, setBasketVal] = useState("");
-  const [transType, setTransType] = useState("");
-  const [broker, setBroker] = useState(brokers[0].name);
-  const [enableInputs, setEnableInputs] = useState(customerId == "");
-  const [enableButtons, setEnableButtons] = useState(true);
+  const [broker, setBroker] = useState("");
   const [enableMap, setEnableMap] = useState(true);
   const [enableWeblink, setEnableWeblink] = useState(true);
   const [checkedBaskets, setCheckedBaskets] = useState([]);
   const [errorHighlight, setErrorHighlight] = useState(false);
   const [basketData, setBasketData] = useState({});
-  const [alias, setAlias] = useState("");
+  const [aliasName, setAliasName] = useState("");
+  const [basketGroups, setBasketGroups] = useState([]);
+  const [basketDetails, setBasketDetails] = useState([]);
+  const [selectedBasketGroup, setSelectedBasketGroup] = useState("");
+  const [showGNStaticData, setShowGNStaticData] = useState(false);
+  const [customerBasketsData, setCustomerBasketsData] = useState([]);
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -53,81 +55,29 @@ const BasketMapping = () => {
 
   // nextjs router
   const router = useRouter();
+  
+  // fetch the list of baskets 
+  const fetchBaskets = async () => {
+    const response = await getBasketList();
+    setRecords(response);
 
-  // useEffect to fetch the view table baskets
-  useEffect(() => {
-    const fetchBaskets = async () => {
-      const response = await getBasketList();
-      setRecords(response);
-    };
-    const fetchData = async () => {
-      const customersData = await getCustomers();
-      setCustomers(customersData);
-    };
-
-    fetchBaskets();
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (Number(totalBasketValue) == Number(investment)) {
-      console.log("this 1");
-      setEnableMap(false);
-      setMessage("");
-    } else if (Number(totalBasketValue) > Number(investment)) {
-      console.log("this 2");
-      setErrorHighlight(true);
-      setMessage("Basket Total is higher than Investment")
-      setEnableMap(true);
-    } 
-    else if(Number(totalBasketValue) !==0 && (investment == undefined)) {
-      console.log("this 3");
-      setEnableMap(true);
-    }
-    else {
-      console.log("this 4");
-      setMessage("");
-      setErrorHighlight(false);
-      setEnableMap(false);
-    }
-
-    if (Number(totalBasketValue) === 0) {
-      setEnableMap(true);
-    }
-  }, [investment, totalBasketValue]);
-
-  // if (weblink) {
-  //   dispatch(setBasketAmount(""));
-  //   setBasketName("");
-  //   setTimeout(() => {
-  //     setWeblink(false);
-  //     // router.push("/admin/baskets/create");
-  //   }, 3000);
-  // }
-
-  // if (message) {
-  //   dispatch(setBasketAmount(""));
-  //   setBasketName("");
-  //   setTimeout(() => {
-  //     setMessage(false);
-  //     // router.push("/admin/baskets/create");
-  //   }, 3000);
-  // }
+  };
+  
+  // fetch the customer data list
+  const fetchData = async () => {
+    const customersData = await getCustomers();
+    setCustomers(customersData);
+  };
+  
+  // get the basket groups name list
+  const fetchBasketGroups = async () => {    
+    const res = await getBasketGroups();
+    setBasketGroups(res);
+  }
 
   // handle selection
   const handleSelection = async (value) => {
     setCustomerId(value);
-    setEnableInputs(false);
-    // const response = await getBasketValue(value, adminId);
-    // // setInvestmentVal(response[0]?.basketInvestAmt);
-    // setTransType(response[0]?.transactionType);
-    // setBasketVal(response[0]?.basketActualValue);
-    // setEnableInputs(false);
-
-    // const status = await getCustomerStatus(value);
-    // if (status) {
-    //   setStatus(status);
-    // }
   };
 
   // handle map click
@@ -136,10 +86,83 @@ const BasketMapping = () => {
       basketData,
       adminId,
       customerId,
-      broker
+      broker,
+      aliasName
     );
     setMessage(response);
+
+    fetchBasketGroups();
+
   };
+
+  // handle Weblink click 
+  const handleWebLinkClick = async () => {
+    const response = await fetchByGroupAndSend(selectedBasketGroup, customerId);
+  }
+  
+  // fetch the bakset-group data details
+  const getBasketDetails = async () => {
+    const response = await fetchDetailsByGroupName(selectedBasketGroup);
+    setBasketDetails(response);
+    const total = response?.basketDetailsList?.reduce((acc, curr) => curr.basketActualValue  + acc, 0)
+    if (response !== null && response?.customerId !== null) {
+      setCustomerId(response.customerId);
+      setAliasName(selectedBasketGroup);
+      setTotalBasketValue(total);
+      setBroker(response.customerBroker);
+    }
+  }
+
+  // fetch the basket data for each customer
+  const getCustomerBasketsData = async () => {
+    const response = await fetchDetailsByCustomer(selectedBasketGroup, customerId);
+
+    if (response !== null && response?.customerId !== null) {
+      setCustomerBasketsData(response?.basketDetailsList);
+    }
+    else {
+      setCustomerBasketsData([]);
+    }
+  }
+
+  // useEffect to fetch the view table baskets
+  useEffect(() => {
+    fetchBaskets();
+    fetchData();
+    fetchBasketGroups();
+  }, []);
+
+  // useEffect to fetch data based on basket group name selection
+  useEffect(() => {
+    if (selectedBasketGroup !== "") { 
+      getBasketDetails();
+    }
+  }, [selectedBasketGroup])
+
+  // useEffect to fetch data based on basket group name selection
+  useEffect(() => {
+    getCustomerBasketsData();
+  }, [customerId])
+
+  useEffect(() => {
+
+    if (Number(totalBasketValue) === 0 || Number(investment) === NaN || aliasName === '') {
+      setEnableMap(true);
+      return;
+    }
+
+    if (Number(totalBasketValue) > Number(investment)) {
+      setEnableMap(true);
+      return;
+    }
+    
+    if (showGNStaticData) {
+      setEnableMap(true);
+      return;
+    }
+
+    setEnableMap(false);
+  }, [investment, totalBasketValue, aliasName]);
 
   useEffect(() => {
     const result = Object.values(total).reduce((acc, curr) => {
@@ -151,112 +174,174 @@ const BasketMapping = () => {
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
       <h5 className="font-bold mb-2">Map Baskets</h5>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center space-x-4">
         {/* Basket Names listbox */}
-        <div className="">
-          <p className="text-black text-sm dark:text-white mr-2">
-            Select Customer
-          </p>
-          <select
-            name="customer"
-            id="customer"
-            className="border border-gray-200 rounded-md w-44 text-sm"
-            defaultValue={""}
-            onChange={(e) => {
-              handleSelection(e.target.value);
-            }}
-          >
-            <option disabled value="">
-              - Select -
-            </option>
-            {customers?.map((record) => (
-              <option key={customers.customerId} value={customers.customerId}>
-                {record.customerId + " - " + record.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        {
+          showGNStaticData 
+          ?
+          (
+            <div className="flex flex-col items-left ">
+              <label className="text-black text-sm dark:text-white">
+                Select Customer
+              </label>
+              <select
+                name="customer"
+                id="customer"
+                className="border border-gray-200 rounded-md w-36 text-sm"
+                disabled
+              >
+                <option disabled>
+                  {customerId}
+                </option>
+              </select>
+            </div>
+          )
+          :
+          (
+            <div className="flex flex-col items-left ">
+              <label className="text-black text-sm dark:text-white">
+                Select Customer
+              </label>
+              <select
+                name="customer"
+                id="customer"
+                className="border border-gray-200 rounded-md w-36 text-sm"
+                defaultValue={""}
+                value={customerId}
+                onChange={(e) => {
+                  handleSelection(e.target.value);
+                }}
+              >
+                <option disabled value="">
+                  - Select -
+                </option>
+                {customers?.map((record) => (
+                  <option key={customers.customerId} value={customers.customerId}>
+                    {record.customerId + " - " + record.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )
+        }
 
         {/* Broker Type */}
-        <div className="flex flex-col items-left mb-6">
+        <div className="flex flex-col items-left ">
           <label className="text-black text-sm dark:text-white">Broker</label>
           <select
-            className="text-xs border-gray-200 rounded-md w-44 h-10"
+            className="text-sm border-gray-200 rounded-md w-36 h-10"
+            defaultValue={""}
             value={broker}
+            disabled={showGNStaticData}
             onChange={(e) => setBroker(e.target.value)}
           >
-            <option className="text-sm" value={"AXIS"}>
-              AXIS
+            <option disabled className="text-sm" value={""}>
+              - Select -
             </option>
-            <option className="text-sm" value={"IIFL"}>
-              IIFL
-            </option>
+            { showGNStaticData 
+              ?
+              (
+                <option className="text-sm">
+                  {broker}
+                </option>
+              )
+              :
+              (brokers.map((data,index) => {
+                return <option key={index} value={data.name}>
+                        {data.name}
+                      </option> 
+              }))
+            }
           </select>
         </div>
 
         {/* investment value */}
-        <div className="flex flex-col items-left mb-6">
+        <div className="flex flex-col items-left ">
           <label className="text-black text-sm dark:text-white">
             Investment &#8377;
           </label>
           <input
             type="text"
+            disabled={showGNStaticData}
             value={segregate(investment)}
             onChange={(e) => {
               // Remove commas from the input value before updating state
               const newValue = e.target.value.replace(/,/g, "");
               setInvestment(newValue);
             }}
-            className="border border-gray-200  text-right rounded-lg w-44 text-sm"
-          />
-        </div>
-
-        {/* Basket Type listbox */}
-        {/* <div className="">
-          <p className="text-black text-sm dark:text-white mr-2">
-            Transaction Type
-          </p>
-          <input
-            disabled
-            type="text"
-            value={transType}
-            className="border border-gray-200 rounded-lg w-44 bg-gray-50 text-sm"
-          />
-        </div> */}
-
-        {/* Disabled basket value */}
-        <div className="flex flex-col items-left mb-6">
-          <p className="text-black text-sm dark:text-white mr-2">
-            Basket Total &#8377;
-          </p>
-          <input
-            disabled
-            type="text"
-            value={segreagatorWoComma(totalBasketValue)}
-            className={`border rounded-lg w-44 text-right bg-gray-50 text-sm ${
-              errorHighlight ? "border-red-500 " : "border-gray-200"
-            }`}
+            className="border border-gray-200  text-right rounded-lg w-36 text-sm"
           />
         </div>
 
         {/* Basket Alias Name */}
-        {/* <div className="flex flex-col items-left mb-6">
+        <div className="flex flex-col items-left ">
           <p className="text-black text-sm dark:text-white mr-2">
-            Basket Total &#8377;
+            Basket Group Name
           </p>
           <input
             type="text"
-            value={alias}
-            onChange={(e) => setAlias(e?.target.value)}
-            className="border border-gray-200  text-right rounded-lg w-44 text-sm"
+            value={aliasName}
+            disabled={showGNStaticData}
+            onChange={(e) => setAliasName(e?.target.value)}
+            className="border border-gray-200  text-right rounded-lg w-36 text-sm"
           />
-        </div> */}
+        </div>
 
-        <div className="flex justify-between mt-4 space-x-4">
-          <Button disabled={enableMap} onClick={handleMapClick}>
+        {/* Buttons group */}
+        <div className="mt-4">
+          <Button size={'sm'} disabled={enableMap} onClick={handleMapClick}>
             Map
           </Button>
-          <Button disabled={enableWeblink}>Send Weblink</Button>
+        </div>
+
+        {/* Group basket selector */}
+        <div className="flex flex-col items-left ">
+          <label className="text-black text-sm dark:text-white">Select Basket Group</label>
+          <select
+            name="basketGroups"
+            id="basketGroups"
+            className="border border-gray-200 rounded-md w-36 text-sm"
+            defaultValue=""
+            value={selectedBasketGroup}
+            onChange={(e) => {
+              setSelectedBasketGroup(e?.target.value);
+              setEnableWeblink(false);
+              setShowGNStaticData(true);
+            }}
+          >
+            <option disabled value="">
+              - Select -
+            </option>
+            {basketGroups?.map((record, index) => (
+              <option key={index} value={record.groupName}>
+                {record.groupName}
+              </option>
+            ))}
+          </select>
+        </div>
+          
+        <div className="mt-4">
+          <Button size={'sm'} onClick={handleWebLinkClick} disabled={enableWeblink}>
+            Send Weblink
+          </Button>
+        </div>
+
+        <div 
+          className="mt-4 border border-cyan-800 rounded-md p-2 hover:cursor-pointer"
+          onClick={() => {
+            setShowGNStaticData(false);
+            setAliasName("");
+            setTotalBasketValue(0);
+            setInvestment(0);
+            setSelectedBasketGroup("");
+            setEnableWeblink(true);
+            setCustomerId("");
+            setBroker("");
+          }} 
+        >
+          <FcRefresh 
+            color="white"
+          />
         </div>
       </div>
 
@@ -285,50 +370,48 @@ const BasketMapping = () => {
                 <th className="font-medium mr-4 text-sm break-words">
                   Basket value &#8377;
                 </th>
-                <th className="font-medium text-sm break-words">Quantity</th>
-                {/* <th className="font-medium mr-4 text-sm break-words">
-                  Broker
-                </th>
-                <th className="font-medium mr-4 text-sm break-words">
-                  Investment &#8377;
-                </th>
-                <th className="font-medium mr-4 text-sm break-words">
-                  # Baskets
-                </th>
-                <th className="font-medium mr-4 text-sm break-words">
-                  Total Basket value &#8377;
-                </th>
-                <th className="font-medium text-left text-sm break-words">
-                  Map Status
-                </th>
-                <th className="font-medium text-left text-sm break-words">
-                  WebLink Status
-                </th> */}
+                <th className="font-medium text-sm break-words"># Units</th>
               </tr>
             </thead>
             <tbody className="" style={{ width: "100%" }}>
-              {records?.map((data, index) => {
-                return (
-                  <BasketMappingTable
-                    data={data}
-                    index={index}
-                    status={status}
-                    setStatus={setStatus}
-                    enableInputs={enableInputs}
-                    basketName={basketName}
-                    basketVal={basketVal}
-                    checkedBaskets={checkedBaskets}
-                    setCheckedBaskets={setCheckedBaskets}
-                    totalBasketValue={totalBasketValue}
-                    setTotalBasketValue={setTotalBasketValue}
-                    investment={investment}
-                    basketData={basketData}
-                    setBasketData={setBasketData}
-                    total={total}
-                    setTotal={setTotal}
-                  />
-                );
-              })}
+              {
+                !showGNStaticData
+                ?
+                  (records?.map((data, index) => {
+                    return (
+                      <BasketMappingTable
+                        data={data}
+                        index={index}
+                        status={status}
+                        setStatus={setStatus}
+                        basketName={basketName}
+                        basketVal={basketVal}
+                        checkedBaskets={checkedBaskets}
+                        setCheckedBaskets={setCheckedBaskets}
+                        totalBasketValue={totalBasketValue}
+                        setTotalBasketValue={setTotalBasketValue}
+                        investment={investment}
+                        basketData={basketData}
+                        setBasketData={setBasketData}
+                        total={total}
+                        setTotal={setTotal}
+                        basketDetails={basketDetails.basketDetailsList}
+                        customerBasketsData={customerBasketsData}
+                      />
+                    );
+                  }))
+                :
+                  (
+                      basketDetails?.basketDetailsList?.map((data, index) => {
+                        return (
+                          <StaticBasketMappingTable 
+                            data={data} 
+                            index={index}
+                          />
+                        )
+                      })
+                  )
+              }
             </tbody>
           </table>
         </div>
@@ -346,7 +429,7 @@ const BasketMapping = () => {
         </div>
 
         {/* Disabled basket value */}
-        {/* <div className="flex items-center mb-6">
+        <div className="flex items-center ">
           <p className="text-black text-sm dark:text-white mr-2">
             Basket Total &#8377;
           </p>
@@ -358,7 +441,7 @@ const BasketMapping = () => {
               errorHighlight ? "border-red-500 " : "border-gray-200"
             }`}
           />
-        </div> */}
+        </div>
       </div>
     </div>
   );

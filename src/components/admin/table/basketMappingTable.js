@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Tooltip } from "flowbite-react";
-import { mapBasket } from "@/app/api/basket/route";
-import { getCustomerStatus } from "@/app/api/basket/route";
+import { mapBasket } from "@/app/api/map/baskets/route";
+import { getCustomerStatus } from "@/app/api/map/baskets/route";
 import { useSelector } from "react-redux";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
@@ -11,7 +11,6 @@ const BasketMappingTable = ({
   index,
   status,
   setStatus,
-  enableInputs,
   basketName,
   basketVal,
   checkedBaskets,
@@ -21,8 +20,10 @@ const BasketMappingTable = ({
   basketData,
   setBasketData,
   total,
-  setTotal
+  setTotal,
+  customerBasketsData
 }) => {
+  
   // broker inputs
   const brokers = [{ name: "AXIS" }, { name: "IIFL" }];
 
@@ -34,6 +35,21 @@ const BasketMappingTable = ({
   const [quantity, setQuantity] = useState(0);
   const [highlight, setHighlight] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [enableRow, setEnableRow] = useState(false);
+
+useEffect(() => {
+  const doBasketNamesIntersect = customerBasketsData?.some((item) => item.basketName === data?.basketName);
+  if (doBasketNamesIntersect && customerBasketsData) {
+    setEnableRow(true)
+  }
+  else if(!doBasketNamesIntersect && customerBasketsData) {
+    setEnableRow(false)
+  }
+  else {
+    setEnableRow(false)
+  }
+}, [customerBasketsData])
+
 
   const handleQuantityChange = (e) => {
     // Remove commas from the input value before updating state
@@ -78,20 +94,19 @@ const BasketMappingTable = ({
       <td className="text-sm text-black text-center font-semibold">
         <input 
           type="checkbox" 
-          checked={checked}
+          disabled={enableRow}
+          checked={checked || enableRow}
           value={data.basketName} 
           id={data.basketName}
           onChange={(e) => {
             if (checked == false) {
               const newValue = e.target.value;
-              console.log(newValue)
               setCheckedBaskets([...checkedBaskets, newValue]);
               setChecked(true);
             }
             else {
               const newValue = e.target.value;
               const newList = checkedBaskets.filter(arr => arr != newValue);
-              console.log(newValue, newList)
               setCheckedBaskets(newList);
               handleQuantityChange(0);
               setChecked(false);
@@ -109,20 +124,20 @@ const BasketMappingTable = ({
         {data.totalNoOrders}
       </td>
       <td className="text-sm text-center text-black break-words">
-        {"BUY"}
+        {data.transactionType}
       </td>
       <td className="text-sm text-right text-black">
         {segreagatorWoComma(data?.basketActualValue)}
       </td>
       <td className=" text-sm text-black">
         <input 
-          id='quantity'
+          type='text' 
           value={segregate(quantity)}
-          disabled={!enableInputs && !checked}
+          id='quantity'
+          disabled={!checked}
           onChange={(e) => {
             handleQuantityChange(e);
           }}
-          type='text' 
           className={`ml-10 w-20 h-8 text-right rounded-md ${checked ? ( quantity ? "border-gray-200" :"border-red-500") : "border-gray-200"}`}
         />
       </td>

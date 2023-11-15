@@ -7,12 +7,18 @@ const CustomerDetails = () => {
 
     // local state
     const [customers, setCustomers] = useState([]);
+    const [message, setMessage] = useState("");
 
     // useEffect to fetch the customers data
     useEffect(() => {
         const fetchData = async () => {
             const customersData = await getCustomers();
+            if (!customersData) {
+                setMessage("No data available to show");
+                return;
+            }
             setCustomers(customersData);
+            setMessage("");
         };
         fetchData();
     }, []);
@@ -48,7 +54,7 @@ const CustomerDetails = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {customers?.map((data, index) => {
+                            {customers && customers?.map((data, index) => {
                                 return (
                                     <tr
                                         key={index}
@@ -89,6 +95,9 @@ const CustomerDetails = () => {
                     </table>
                 </div>
             </div>
+                {
+                    message && <div className="mt-4">No data available</div>
+                }
         </div>
     );
 };

@@ -318,8 +318,8 @@ const ExampleSidebar = function () {
                   }
                 >
                   {isLinkDisabled 
-                    ? ( <button onClick={() => {setOpen(true); setTab(9);}}>BOD/ EOD</button> ) 
-                    : ( <Link href="/admin/bod-eod">BOD/ EOD</Link> )
+                    ? ( <button onClick={() => {setOpen(true); setTab(9);}}>BOD/ EOD Ops</button> ) 
+                    : ( <Link href="/admin/bod-eod">BOD/ EOD Ops</Link> )
                   }
                 </Sidebar.Item>
                 {/* <Sidebar.Item

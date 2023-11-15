@@ -1,19 +1,22 @@
 'use client';
 
 import { getCustomers } from '@/app/api/basket/route';
+import { sendCommunication } from '@/app/api/communication/route';
 import { Alert, Button } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 import { HiInformationCircle } from 'react-icons/hi';
 
 const Communication = () => {
 
-  const channels = ["SMS", "WHATSAPP"];
+  const channels = ["EMAIL","SMS", "WHATSAPP"];
 
   const [customers, setCustomers] = useState([]);
   const [customerId, setCustomerId] = useState("");
-  const [msgChannel, setMsgChannel] = useState("");
+  const [msgChannel, setMsgChannel] = useState("EMAIL");
   const [message, setMessage] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
 
@@ -22,18 +25,24 @@ const Communication = () => {
     } else if (e.target.id === "msgChannel") {
       setMsgChannel(e.target.value);
     } else if (e.target.id === "message") {
-      if (e.target.value.length > 9) {
+      if (e.target.value.length > 300) {
         setError("Message limit exceeds!");
       }
       else {
         setMessage(e.target.value);
         setError("");
+        setAlertMessage("");
       }
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    const res = await sendCommunication(customerId, message);
+    setAlertMessage(res);
+    setLoading(false);
+    setMessage("");
   }
 
   useEffect(() => {
@@ -55,7 +64,7 @@ const Communication = () => {
               id="customer"
               className="border border-gray-200 rounded-md w-44 text-sm"
               required
-              defaultValue={""}
+              defaultValue={"EMAIL"}
               onChange={(e) => handleChange(e)}
             >
             <option disabled value="">
@@ -75,7 +84,7 @@ const Communication = () => {
             id="msgChannel"
             required 
             className='border border-gray-200 rounded-md w-44 text-sm'
-            defaultValue={""}
+            defaultValue={msgChannel}
             onChange={(e) => handleChange(e)}
           >
               <option disabled value={""}>- Select -</option>
@@ -90,16 +99,17 @@ const Communication = () => {
           required 
           id="message" 
           name='message'
+          value={message}
           className={`mt-4 resize-none rounded-md border-gray-300 ${error ? "outline-red-500 outline outline-1" : ""}`}
           rows={10} 
           cols={50}
-          maxLength={10}
+          maxLength={300}
           placeholder='Enter your message here...'
           onChange={(e) => handleChange(e)}
         >
         </textarea>
-        <Button type="submit" className="self-end" disabled={error}>
-          Send
+        <Button type="submit" className="self-end" disabled={error} isProcessing={loading}>
+          {loading ? "Sending..": "Send"}
         </Button>
       </div>
       <div className='absolute bottom-16 w-2/6'>
@@ -109,7 +119,7 @@ const Communication = () => {
           className="h-12"
           icon={HiInformationCircle}
         >
-          <span className="w-4 h-4">{error}</span>
+          <span className="w-4 h-4">{error || alertMessage}</span>
         </Alert>
       </div>
     </form>

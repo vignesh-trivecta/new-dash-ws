@@ -46,7 +46,6 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         setPrice(data);
     }
 
-
     useEffect(() => {
         if (selectedStock !== "") {
             handleExchange(exchange);

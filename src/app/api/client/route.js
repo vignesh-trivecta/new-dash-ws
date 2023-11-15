@@ -7,7 +7,8 @@ export const generateOtp = async(basketLink) => {
                 'Content-Type': 'application/json'
             }
         }
-        const response = await fetch("http://localhost:8083/basket/" + basketLink, requestOptions);
+        const response = await fetch("http://localhost:8086/basket/" + basketLink, requestOptions);
+        console.log(response)
         if (response.status === 200) {
             return true;
         }

@@ -8,9 +8,9 @@ import { Alert } from "flowbite-react";
 import {
   getBasketList,
   getBasketValue,
-  getCustomerStatus,
   getCustomers,
 } from "@/app/api/basket/route";
+import {getCustomerStatus} from "@/app/api/map/baskets/route";
 import CustomerMappingTable from "@/components/admin/table/customerMappingTable";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
@@ -91,7 +91,6 @@ const CustomerMapping = () => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await getBasketList();
-      console.log(response);
       setRecords(response);
 
       const customersData = await getCustomers();
@@ -141,7 +140,7 @@ const CustomerMapping = () => {
         </div>
 
         {/* Disabled Basket Category */}
-        <div className="flex flex-col items-left mb-6">
+        <div className="flex flex-col items-left ">
           <label className="text-black text-sm dark:text-white">
             Basket Category
           </label>
@@ -154,7 +153,7 @@ const CustomerMapping = () => {
         </div>
 
         {/* Disabled Scripts number */}
-        <div className="flex flex-col items-left mb-6">
+        <div className="flex flex-col items-left ">
           <label className="text-black text-sm dark:text-white">
             # Scripts
           </label>
@@ -181,7 +180,7 @@ const CustomerMapping = () => {
         </div>
 
         {/* Disabled basket value */}
-        <div className="flex flex-col items-left mb-6">
+        <div className="flex flex-col items-left ">
           <p className="text-black text-sm dark:text-white mr-2">
             Basket value &#8377;
           </p>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Tooltip } from "flowbite-react";
-import { mapBasket } from "@/app/api/basket/route";
+import { mapBasket, sendWeblink } from "@/app/api/map/baskets/route";
 import { useSelector } from "react-redux";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
@@ -58,6 +58,8 @@ const CustomerMappingTable = ({
       }
     }).includes(true);
 
+    console.log(map, web)
+
     setMapCondition(map);
     setWebCondition(web);
   },[status, broker])
@@ -85,7 +87,11 @@ const CustomerMappingTable = ({
   }
 
   // handle weblink
-  const handleWeblink = async () => {};
+  const handleWeblink = async () => {
+    const response = await sendWeblink(basketName, adminId, data.customerId, broker, quantity);
+    console.log(response);
+    setMessage(response)
+  };
 
   useEffect(() => {
     if (Number(investment) !== 0 && Number(quantity) !== 0) {
@@ -294,7 +300,13 @@ const CustomerMappingTable = ({
         </Tooltip>
         {/* Send Weblink */}
         <Tooltip content="Send Weblink">
-          <button disabled={enableWeblink} className="">
+          <button 
+            disabled={enableWeblink} 
+            className=""
+            onClick={() => {
+              handleWeblink();
+            }}
+          >
             <svg
               className="w-4 h-4 text-gray-800 dark:text-white"
               aria-hidden="true"

@@ -16,6 +16,7 @@ export const getRecords = async(adminName, basketName) => {
             )
         };
         const response = await fetch("http://localhost:8083/basket/temp/list", requestOptions);
+        console.log(response)
 
         if (response.ok) {
             const responseText = await response.text();
@@ -42,7 +43,7 @@ export const addRecord = async(adminName, basketName, selectedStock, exchange, o
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: encrypt(JSON.stringify(
+            body: (JSON.stringify(
                 {
                     "adminId": adminName,
                     "basketName": String(basketName),

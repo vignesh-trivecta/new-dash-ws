@@ -21,7 +21,7 @@ const Customers = () => {
   const username = useSelector((state) => state.user.username);
 
   // sorting the records fetched from backend
-  records?.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
+  // records?.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
 
   // useEffect to update table after deletion or filtering
   useEffect(() => {

@@ -42,6 +42,7 @@ const BasketPage = () => {
   // OAuth login redirect after click on submit button
   const handleConfirm = async (e) => {
     console.log("enter confirm clicked");
+    console.log(broker)
 
     // setShow(true);
     // const res = await clientLogin(customerId);
@@ -98,11 +99,15 @@ const BasketPage = () => {
 
     // axis redirect logic
     else if (broker === "AXIS") {
+      console.log("enter")
       if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "Y") {
         // axisDirectOrderPlacement();
+        console.log("enter")
+
         router.push("/client/placeOrder");
       }
       else if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "N") {
+        console.log("enter")
         router.push(url);
       }
       // setData(response);
@@ -224,14 +229,22 @@ const BasketPage = () => {
           ?
           (<div className="p-2">
             <div className="flex sm:justify-center space-x-2 text-left">
-              <p className=" font-semibold mb-4 text-sm md:text-base">
+              <p className=" font-semibold text-sm md:text-base">
                 Basket name:{" "}
               </p>
-              <p className=" font-semibold mb-4 text-sm md:text-base">
+              <p className="text-sm md:text-base">
                 {basketData?.basketName}
               </p>
             </div>
-            <div className="flex justify-center space-x-10 text-xs md:text-sm">
+            <div className="flex sm:justify-center space-x-2 text-left">
+              <p className=" font-semibold text-sm md:text-base">
+                Basket Category:{" "}
+              </p>
+              <p className="text-sm md:text-base">
+                {basketData?.basketCategory}
+              </p>
+            </div>
+            <div className="flex justify-center space-x-10 text-xs md:text-sm mt-4">
               <div className="">
                 <p>No.of Scripts</p>
                 <input

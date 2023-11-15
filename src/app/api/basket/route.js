@@ -60,9 +60,9 @@ export const getBasketList = async(filteredBasket) => {
                 response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
                 break;
         }
+        
         if(response.ok){
             const jsonData = await response.json();
-            console.log(jsonData)
             return jsonData;
         }
         else {
@@ -192,13 +192,10 @@ export const getEquityPrice = async (instrumentName, exchange) => {
 export const getInstrumentDetails = async () => {
     try{
         const response = await fetch("http://localhost:8083/instruments")
-
-        console.log(response)
         
         if(response.status === 200){
             const jsonData = await response.json();
-            console.log(decrypt(jsonData.payload))
-            return decrypt(jsonData.payload);
+            return (jsonData);
         }
         else {
             const errorText = await response.text();
@@ -252,17 +249,16 @@ export const getCustomers = async() => {
         }
         const response = await fetch("http://localhost:8083/customer/details", requestOptions);
 
-        if(response.ok){
+        if(response.status === 200){
             const jsonData = await response.json();
             return jsonData;
         }
         else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return false;
         }
     }
     catch(error){
-        return console.log(error);
+        return false;
     }
 }
 
@@ -281,10 +277,8 @@ export const getBasketValue = async(basketName, adminId) => {
         }
         const response = await fetch("http://localhost:8083/basket/details", requestOptions);
 
-        console.log(response);
         if(response.status === 200) {
             const data = await response.json();
-            console.log(data);
             return data;
         } else {
             const errorText = await response.text();
@@ -296,74 +290,6 @@ export const getBasketValue = async(basketName, adminId) => {
     }
 }
 
-// API to map a basket to a customer
-export const mapBasket = async(basketName, adminId, customerId, broker, quantity) => {
-    console.log(basketName, adminId, customerId, broker, quantity)
-    try{
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "basketName": basketName,
-                "adminId": adminId,
-                "customerId": customerId,
-                "brokerName": broker,
-                "basketUnits": quantity
-            })
-        }
-        const response = await fetch("http://localhost:8083/customer/map", requestOptions);
-        if(response.status === 200) {
-            const data = await response.text();
-            console.log(data)
-            console.log(response)
-            return data;
-        } else {
-            const data = await response.text();
-            console.log(data)
-            return data;
-        }
-    }
-    catch(error){
-        console.log(error);
-        return false;
-    }
-}
-
-// API call to send weblink to a customer
-export const sendWeblink = async() => {
-    
-}
-
-// API call to get the mapping, weblink status of customers based on baksetName
-export const getCustomerStatus = async (basketName) => {
-    try{
-        const requestOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                "basketName": basketName,
-            })
-        }
-        const response = await fetch("http://localhost:8083/mappedstatus", requestOptions);
-        console.log(response);
-
-        if(response.status === 200){
-            const responseText = await response.json();
-            console.log(responseText);
-            return responseText;
-        }
-        else{
-            return [];
-        }
-    }
-    catch(error){
-        return [];
-    }
-}
 
 // API call to get the basket category list
 export const getBasketCategories = async () => {
@@ -401,9 +327,8 @@ export const addBasketCategory = async (query) => {
             })
         }
 
-        console.log(query)
         const response = await fetch("http://localhost:8083/add/basket-category", requestOptions);
-        console.log(response);
+
         if (response.status === 200) {
             return true;
         }
