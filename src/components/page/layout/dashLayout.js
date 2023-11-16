@@ -41,7 +41,7 @@ const DashLayout = ({ children }) => {
 
 const MainContent = function ({ children }) {
   return (
-    <main className=" h-[calc(100vh-100px)]">
+    <main className=" h-[calc(100vh-100px)] w-screen">
       {children}
     </main>
   );

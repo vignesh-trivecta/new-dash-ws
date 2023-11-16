@@ -52,7 +52,7 @@ const DashNavbar = function () {
         <div className="flex items-center justify-between">
           {/* WealthSpring logo */}
           <div className="flex items-center">
-            <Navbar.Brand href="#">
+            <Navbar.Brand>
               <Image
                 alt="wealth-spring"
                 src={logo}
@@ -62,6 +62,14 @@ const DashNavbar = function () {
           </div>
 
           <div className="flex items-center gap-3">
+            <div>
+              <div>
+                Date: {new Date().toUTCString().slice(0, 16)}
+              </div>
+              <div>
+                Time: {formatTime()}
+              </div>
+            </div>
             <div className=" md:hidden hover:cursor-pointer">
               {/* Hamburger menu and user profile */}
               <div
@@ -78,35 +86,13 @@ const DashNavbar = function () {
                 </div>
               )}
             </div>
-            <div>
-              <div>Date: {new Date().toUTCString().slice(0, 16)}</div>
-              <div>
-                Time: {formatTime()}
-                {/* {time === 12
-                  ? ` ${
-                      new Date().getHours() > 12
-                        ? (new Date().getHours() - 12 < 10 ? "0" : "") +
-                          (new Date().getHours() - 12)
-                        : new Date().getHours()
-                    } : ${
-                      new Date().getMinutes() < 10
-                        ? `0${new Date().getMinutes()}`
-                        : new Date().getMinutes()
-                    } ${new Date().getHours() >= 12 ? "PM" : "AM"}`
-                  : ` ${new Date().getHours()} : ${
-                      new Date().getMinutes() < 10
-                        ? `0${new Date().getMinutes()}`
-                        : new Date().getMinutes()
-                    }`} */}
-              </div>
-            </div>
             {/* User profile dropdown */}
             <Dropdown
               inline
               arrowIcon={false}
               label={
                 <svg
-                  className="w-6 h-6 text-gray-800 dark:text-white hidden md:block"
+                  className="w-6 h-6 text-gray-800 dark:text-white"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

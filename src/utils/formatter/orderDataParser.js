@@ -1,7 +1,5 @@
 const orderDataParser = (response) => {
 
-  console.log(response)
-
   let tooltipDatas = [];
   let mainDatas = [];
   if ((response?.length !== 0 && response  !== undefined) && response !== 404 && response) {

@@ -32,7 +32,6 @@ export const partnerLogin = async () => {
         }
 
         const response = await fetch("http://localhost:8085/partner/login", requestOptions);
-        console.log(response)
         
     } catch (error) {
         console.log(error);

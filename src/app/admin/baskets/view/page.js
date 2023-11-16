@@ -31,8 +31,9 @@ const Customers = () => {
 
   const filteredBaskets = async () => {
     const response = await getBasketList(basketType);
-    const result = response?.filter((obj) => obj?.basketCategory === basketCategory);
-    setRecords(result || []);
+    console.log(response)
+    // const result = response?.filter((obj) => obj?.basketCategory === basketCategory);
+    setRecords(response || []);
   }
 
   const fetchBaskets = async () => {

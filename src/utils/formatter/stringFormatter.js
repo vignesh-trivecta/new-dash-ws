@@ -1,7 +1,6 @@
 import formatDate from "./format-date";
 
 const stringFormatter = (str, time, param) => {
-  console.log(str)
   if (
     typeof str === "string" &&
     str?.includes("-") &&

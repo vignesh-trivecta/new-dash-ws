@@ -6,7 +6,7 @@ import React from 'react';
 const ReportsList = () => {
   return (
     <div>
-        <ul className='space-y-4 list-disc ml-4 mt-8'>
+        <ul className='space-y-4 list-disc ml-4 mt-4'>
             <li><Link href={'/admin/reports/holding'} className='underline text-blue-700'>Holding</Link></li>
             <li><Link href={'/admin/reports/orderbook'} className='underline text-blue-700'>Order Book</Link></li>
             <li><Link href={'/admin/reports/tradebook'} className='underline text-blue-700'>Trade Book</Link></li>

@@ -208,7 +208,7 @@ const LoginAuth = () => {
                       setErrorMsg("");
                     }}
                     onBlur={handleBlur}
-                    value={values.username}
+                    defaultValue={values.username}
                     placeholder="Username"
                     aria-label="username"
                   />
@@ -234,7 +234,7 @@ const LoginAuth = () => {
                           setErrorMsg("");
                         }}
                         onBlur={handleBlur}
-                        value={values.password}
+                        defaultValue={values.password}
                         placeholder="Password"
                         aria-label="password"
                       />
@@ -276,7 +276,7 @@ const LoginAuth = () => {
                           setErrorMsg("");
                         }}
                         onBlur={handleBlur}
-                        value={values.password}
+                        defaultValue={values.password}
                         placeholder="Password"
                         aria-label="password"
                       />
@@ -320,7 +320,7 @@ const LoginAuth = () => {
                     <input
                       className="select-none pointer-events-none draggable block w-full text-gray-700 bg-gray-100 border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600"
                       type="text"
-                      value={captchaValue}
+                      defaultValue={captchaValue}
                       aria-label="Captcha"
                     />
                     {/* button to regenerate captcha */}
@@ -353,7 +353,7 @@ const LoginAuth = () => {
                     type="text"
                     placeholder="Enter the above text"
                     name="captcha"
-                    value={values.captcha}
+                    defaultValue={values.captcha}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     onClickCapture={() => {

@@ -24,14 +24,14 @@ const CustomerDetails = () => {
     }, []);
 
     return (
-        <div className="container mx-auto mt-4" style={{ width: "95%" }}>
+        <div className="container mx-auto" style={{ width: "95%" }}>
             <h5 className="font-bold">Customer Details</h5>
 
             {/* Customer Details table */}
-            <div className="flex mt-10">
-                <div className={"overflow-y-scroll"}>
-                    <table className="table-fixed w-full border">
-                        <thead className="sticky top-0 border bg-gray-50">
+            <div className="h-[calc(100vh-250px)] flex mt-11">
+                <div className={"overflow-y-scroll border"}>
+                    <table className="table-fixed w-full">
+                        <thead className="sticky border-b top-0 bg-gray-50">
                             <tr>
                                 <th className="text-left font-medium text-sm p-2 w-10 md:w-12 lg:w-16 break-words">
                                     S.No
@@ -58,7 +58,7 @@ const CustomerDetails = () => {
                                 return (
                                     <tr
                                         key={index}
-                                        className="bg-white border dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                                     >
                                         <th className="text-left text-sm text-black ">
                                             <div className="ml-4 lg:ml-4">
@@ -84,7 +84,7 @@ const CustomerDetails = () => {
                                             </div>
                                         </td>
                                         <td className="p-2 text-sm text-black">
-                                            <div className="sm:-ml-4 md:-ml-4 lg:-ml-10 break-words">
+                                            <div className="sm:-ml-4 md:-ml-4 lg:-ml-20 break-words">
                                                 {data.email}
                                             </div>
                                         </td>

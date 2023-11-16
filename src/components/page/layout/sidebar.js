@@ -94,6 +94,14 @@ const ExampleSidebar = function () {
         dispatch(setBasketName(''));
         break;
       case 8:
+        router.push('/admin/communication');
+        dispatch(setBasketState(false));
+        setIsLinkDisabled(false);
+        dispatch(setBasketAmount(''));
+        dispatch(setBasketName(''));
+        break;
+      case 9:
+        router.push('/admin/bod-eod');
         dispatch(setBasketState(false));
         setIsLinkDisabled(false);
         dispatch(setBasketAmount(''));

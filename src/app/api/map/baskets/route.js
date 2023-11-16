@@ -114,7 +114,6 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
         console.log(basketData, adminId, customerId, groupName);
 
         const response = await fetch("http://localhost:8083/customer/map/multiple", requestOptions);
-        console.log(response);
         
         if(response.status == 200){
             const jsonData = await response.text();
@@ -127,7 +126,7 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
     }
     
     catch (error) {
-        console.log(error.message);
+        return false;
     }
 }
 
@@ -149,17 +148,17 @@ export const fetchByGroupAndSend = async (groupName, customerId) => {
         const response = await fetch("http://localhost:8083/fetch/groupName", requestOptions);
         
         if(response.status == 200){
-            const jsonData = await response.json();
+            const jsonData = await response.text();
             return jsonData;
         }
         else {
-            const jsonData = await response.json();
+            const jsonData = await response.text();
             return jsonData;
         }
     }
     
     catch (error) {
-        console.log(error.message);
+        return false;
     }
 }
 

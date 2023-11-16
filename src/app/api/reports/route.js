@@ -41,11 +41,11 @@ export const isMarketOpen = async () => {
   
     if (response.status === 200) {
       const responseText = await response.json();
-      console.log(responseText.marketStatus)
       return responseText.marketStatus;
     }
   } catch (error) {
     console.log(error)
+    return;  
   }
 }
 
@@ -75,7 +75,6 @@ export const handleDbReportsFetch = async (
       `http://localhost:8083/iifl/db/${requestName}`,
       requestOptions
       );
-      console.log(response);
 
 
     if (response.status === 200) {
@@ -118,10 +117,9 @@ export const handleLiveReportsFetch = async (
       `http://localhost:8085/partner/live/${requestName}`,
       requestOptions
     );
-    console.log(response)
+
     if (response.status === 200) {
       const responseText = await response.json();
-      console.log(responseText)
       return responseText;
     } 
     else if (response.status === 404) {

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { HiInformationCircle } from "react-icons/hi";
-import { Alert, Button } from "flowbite-react";
+import { Alert, Button, Tooltip } from "flowbite-react";
 import {
   getBasketList,
   getCustomers,
@@ -48,13 +48,62 @@ const BasketMapping = () => {
   const [selectedBasketGroup, setSelectedBasketGroup] = useState("");
   const [showGNStaticData, setShowGNStaticData] = useState(false);
   const [customerBasketsData, setCustomerBasketsData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [sendingMap, setSendingMap] = useState(false);
+  const [sendingWeblink, setSendingWeblink] = useState(false);
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
-
+  
   // nextjs router
   const router = useRouter();
+
+  // handle selection
+  const handleSelection = async (value) => {
+    setCustomerId(value);
+    setBroker("");
+    setInvestment(0);
+    setAliasName("");
+    setTotalBasketValue(0);
+    setCustomerBasketsData([]);
+    setCheckedBaskets([]);
+  };
+
+  // handle map click
+  const handleMapClick = async () => {
+    setSendingMap(true);
+    const response = await sendMultipleBaskets(
+      basketData,
+      adminId,
+      customerId,
+      broker,
+      aliasName
+    );
+    if (response) {
+      setSendingMap(false);
+      setMessage(response);
+      fetchBasketGroups();
+    }
+    else {
+      setSendingMap(false);
+      setMessage("Server Error!")
+    }
+  };
+
+  // handle Weblink click 
+  const handleWebLinkClick = async () => {
+    setSendingWeblink(true);
+    const response = await fetchByGroupAndSend(selectedBasketGroup, customerId);
+    if (response) {
+      setSendingWeblink(false);
+      setMessage(response);
+    }
+    else {
+      setSendingWeblink(false);
+      setMessage("Server Error!")
+    }
+  }
   
   // fetch the list of baskets 
   const fetchBaskets = async () => {
@@ -73,31 +122,6 @@ const BasketMapping = () => {
   const fetchBasketGroups = async () => {    
     const res = await getBasketGroups();
     setBasketGroups(res);
-  }
-
-  // handle selection
-  const handleSelection = async (value) => {
-    setCustomerId(value);
-  };
-
-  // handle map click
-  const handleMapClick = async () => {
-    const response = await sendMultipleBaskets(
-      basketData,
-      adminId,
-      customerId,
-      broker,
-      aliasName
-    );
-    setMessage(response);
-
-    fetchBasketGroups();
-
-  };
-
-  // handle Weblink click 
-  const handleWebLinkClick = async () => {
-    const response = await fetchByGroupAndSend(selectedBasketGroup, customerId);
   }
   
   // fetch the bakset-group data details
@@ -289,7 +313,7 @@ const BasketMapping = () => {
 
         {/* Buttons group */}
         <div className="mt-4">
-          <Button size={'sm'} disabled={enableMap} onClick={handleMapClick}>
+          <Button isProcessing={sendingMap} size={'sm'} disabled={enableMap} onClick={handleMapClick}>
             Map
           </Button>
         </div>
@@ -321,28 +345,31 @@ const BasketMapping = () => {
         </div>
           
         <div className="mt-4">
-          <Button size={'sm'} onClick={handleWebLinkClick} disabled={enableWeblink}>
-            Send Weblink
+          <Button isProcessing={sendingWeblink} size={'sm'} onClick={handleWebLinkClick} disabled={enableWeblink}>
+            {sendingWeblink ? "Sending" : "Send Weblink"}
           </Button>
         </div>
-
-        <div 
-          className="mt-4 border border-cyan-800 rounded-md p-2 hover:cursor-pointer"
-          onClick={() => {
-            setShowGNStaticData(false);
-            setAliasName("");
-            setTotalBasketValue(0);
-            setInvestment(0);
-            setSelectedBasketGroup("");
-            setEnableWeblink(true);
-            setCustomerId("");
-            setBroker("");
-          }} 
-        >
-          <FcRefresh 
-            color="white"
-          />
-        </div>
+        
+        <Tooltip content="Reset">
+          <div 
+            className="mt-4 border border-cyan-800 rounded-md p-2 hover:cursor-pointer"
+            onClick={() => {
+              setShowGNStaticData(false);
+              setAliasName("");
+              setTotalBasketValue(0);
+              setInvestment(0);
+              setSelectedBasketGroup("");
+              setEnableWeblink(true);
+              setCustomerId("");
+              setBroker("");
+              setMessage("");
+            }} 
+          >
+            <FcRefresh 
+              color="white"
+            />
+          </div>
+        </Tooltip>
       </div>
 
       {/* Customer Details table */}

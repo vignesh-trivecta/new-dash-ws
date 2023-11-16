@@ -54,7 +54,8 @@ const Communication = () => {
   }, [])
 
   return (
-    <form onSubmit={handleSubmit} className="container mx-auto mt-4" style={{ width: "95%" }}>
+    <div className="container mx-auto mt-4" style={{ width: "95%" }}>
+    <form onSubmit={handleSubmit}>
       <h5 className="font-bold mb-2">Communication</h5>
       <div className='flex items-stretch gap-4'>
         <div>
@@ -123,6 +124,7 @@ const Communication = () => {
         </Alert>
       </div>
     </form>
+    </div>
   )
 }
 

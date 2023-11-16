@@ -22,7 +22,7 @@ const Reports = () => {
     }
 
     return (
-    <div className='container mx-auto mt-4' style={{width: '95%'}}>
+    <div className='mx-7 mt-4'>
         <div className='flex justify-between'>
             <h1 className="font-bold">Reports</h1>
             <FilterComponent />

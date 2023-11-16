@@ -7,8 +7,6 @@ import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const LedgerTable = ({ datas }) => {
 
-    console.log(datas)
-
   const time = useSelector((state) => state.user.timeFormat);
   const [isLoading, setIsLoading] = useState(true);
 

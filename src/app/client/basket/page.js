@@ -14,7 +14,6 @@ const BasketPage = () => {
   // redux
   const basketData = useSelector((state) => state.client.basketData);
   const customerId = basketData.customerId;
-  console.log(basketData);
 
   // local state
   const [show, setShow] = useState(false); // show the basket page or completed page
@@ -26,56 +25,46 @@ const BasketPage = () => {
   const [message, setMessage] = useState("");
   const [disableButton, setDisableButton] = useState(false);
   const [showDeclinePage, setShowDeclinePage] = useState(false);
+  const [loadingCButton, setLoadingCButton] = useState(false);
 
   // nextjs router
   const router = useRouter();
 
-  // // calculating the value of the basket
-  // let basketValue = 0;
-  // const dataValue = basketData?.rows?.map((record, index) => {
-  //   let i =
-  //     (record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) *
-  //     record?.quantityValue;
-  //   basketValue = basketValue + i;
-  // });
+  // calculating the value of the basket
+  let basketValue = 0;
+  const dataValue = basketData?.rows?.map((record, index) => {
+    let i =
+      (record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) *
+      record?.quantityValue;
+    basketValue = basketValue + i;
+  });
 
   // OAuth login redirect after click on submit button
   const handleConfirm = async (e) => {
-    console.log("enter confirm clicked");
-    console.log(broker)
-
-    // setShow(true);
-    // const res = await clientLogin(customerId);
-    // if (true) {
-    //     const response = await clientConfirmsBasket(basketData);
-    //     if(response){
-    //         setData(response);
-    //         setShow(true);
-    //         setStatus(true);
-    //     }
-    // }
-
-    // setShow(true);
+    setLoadingCButton(true);
 
     // // IIFL redirect logic
     if (broker === "IIFL") {
+      console.log("enter")
 
       if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "Y") {
+        console.log("enter")
         // axisDirectOrderPlacement();
         router.push("/client/placeOrder");
       }
       else if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "N") {
+        console.log("enter")
         const res = await clientLogin(customerId);
         if (res) {
+          console.log("enter")
           const response = await clientConfirmsBasket(basketData);
           if(response){
+            console.log("enter")
             setData(response);
             router.push("/client/placeOrder");
           }
         }
       }
-
-      console.log("hi");
 
       // var f = document.createElement("form");
       // f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
@@ -101,21 +90,14 @@ const BasketPage = () => {
     else if (broker === "AXIS") {
       console.log("enter")
       if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "Y") {
-        // axisDirectOrderPlacement();
         console.log("enter")
-
+        // axisDirectOrderPlacement();
         router.push("/client/placeOrder");
       }
       else if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "N") {
         console.log("enter")
         router.push(url);
       }
-      // setData(response);
-      // setShow(true);
-      // setStatus(true);
-      // router.push("/client/placeOrder");
-      // setShow(true);
-      // setStatus(false);
     }
   };
 
@@ -145,81 +127,6 @@ const BasketPage = () => {
 
   return (
     <div className="w-full p-4">
-      {/* {show  // show the basket page or completed page
-            ? // - completed page
-            (status  // show the spinner or order placed page
-                ? // - order placed page
-                (<div className='absolute top-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center space-y-4 w-full'>
-                    <div className='flex items-center justify-center space-x-2'>
-                        <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
-                            <HiCheck className="h-5 w-5" />
-                        </div>
-                        <p className='text-sm'>Your order has been placed</p> 
-                    </div>
-                    <div className='flex justify-between space-x-8'>
-                        <div className='flex flex-col space-y-2'>
-                            <div className='text-xs'>Basket</div>
-                            <div className='text-sm'>{data?.basketName}</div>
-                        </div>
-                        <div className='flex flex-col space-y-2'>
-                            <div className='text-xs'>Status</div>
-                            <div className='text-sm'>{data?.basketStatus}</div>
-                        </div>
-                        <div className='flex flex-col space-y-2'>
-                            <div className='text-xs'>{data?.scriptStatus}</div>
-                            <div className='text-sm border border-green-200 h-1/2 rounded-md bg-green-200'></div>
-                        </div>
-                    </div>
-                    <div>
-                        <p className='text-sm'><button onClick={() => { setShowBasket(true)}} className='underline'>Click</button> here to view executed basket</p>
-                    </div>
-                    {  // inside of the order placed page
-                    showBasket // show or not show the basket in orders placed page by using a button click
-                        ? // showing the placed order basket
-                        <div className='flex justify-center items-center mt-4 text-xs'>
-                            <table className='table-fixed border'>
-                                <thead className='border-b'>
-                                    <tr>
-                                        <th className='p-2'>S.No</th>
-                                        <th>Scripts</th>
-                                        <th>Price&nbsp;&#8377;</th>
-                                        <th className='p-2'>Quantity</th>
-                                        <th className='p-2'>Total&nbsp;&#8377;</th>
-                                        <th className='p-2'>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        data?.details.map((record, index) => {
-                                            return <tr className='border-b' key={index}>
-                                                    <td className='text-center'>{index+1}</td>
-                                                    <td className='truncate p-2'>{record?.tradingSymbol}</td>
-                                                    <td className='text-right'>{record?.price}</td>
-                                                    <td className='text-right pr-4'>{segregate(record?.quantity)}</td>
-                                                    <td className='text-right pr-2'>{segregate((record?.price) * (record?.quantity))}</td>
-                                                    <td className='text-right pr-2'>{record?.orderStatus}</td>
-                                            </tr>
-                                        })
-                                    }
-                                
-                                </tbody>
-                            </table> 
-                        </div> 
-                        :  // showing empty page 
-                        <></>
-                    }
-                </div>)
-                : // - spinner loading page
-                    (<div className='flex flex-col justify-center items-center h-screen'>
-                        <Spinner
-                            aria-label="Extra large spinner example"
-                            size="xl"
-                        />
-                        <p>Your request is being processed.</p>
-                        <p> Don't leave or close this page.</p>
-                    </div>)
-            )
-            : // - basket page asking whether to confirm/decline basket */}
       <div className="flex flex-col space-y-20">
         <div className="flex justify-center items-center">
           <Image src={Logo} alt="wealth spring logo" />
@@ -268,7 +175,7 @@ const BasketPage = () => {
                 <input
                   disabled
                   type="text"
-                  value={segreagatorWoComma(basketData?.rows[0]?.basketActualValue)}
+                  value={segreagatorWoComma(basketValue)}
                   className="w-20 sm:w-28 border-gray-200 bg-gray-50 rounded-md text-right text-xs md:text-sm"
                 />
               </div>
@@ -317,16 +224,16 @@ const BasketPage = () => {
 
             {/* Button groups */}
             <div className="flex justify-center space-x-4 mt-4">
-              <button
-                className="bg-cyan-800 hover:bg-cyan-700 border p-2 rounded-md text-white w-20"
+              <Button
+                isProcessing={loadingCButton}
                 disabled={disableButton}
                 onClick={(e) => {
                   handleConfirm();
 
                 }}
               >
-                Confirm
-              </button>
+                {loadingCButton ? "Placing..." : "Confirm"}
+              </Button>
               <Button 
                 color="gray" 
                 disabled={disableButton}

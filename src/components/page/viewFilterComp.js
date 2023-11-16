@@ -86,7 +86,7 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
                             }
                         </select>
                     </div> */}
-                    <div>
+                    {/* <div>
                         <label className="font-medium text-sm">Basket Category</label>
                         <div className="border rounded-md">
                             <ViewFilterBasketCategory
@@ -96,7 +96,7 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
                                 setSelected={setSelected}
                             />
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Basket Type */}
                     <div className="flex flex-col">
