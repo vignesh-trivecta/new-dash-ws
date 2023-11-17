@@ -397,7 +397,7 @@ const BasketMapping = () => {
                 <th className="font-medium mr-4 text-sm break-words">
                   Basket value &#8377;
                 </th>
-                <th className="font-medium text-sm break-words"># Units</th>
+                <th className="font-medium text-sm break-words"># Basket Units</th>
               </tr>
             </thead>
             <tbody className="" style={{ width: "100%" }}>
