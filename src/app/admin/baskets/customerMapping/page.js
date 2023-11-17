@@ -77,6 +77,7 @@ const CustomerMapping = () => {
     setBasketName(value);
 
     const response = await getBasketValue(value, adminId);
+    console.log(response)
     
     setTransType(response[0]?.transactionType);
     setBasketVal(response[0]?.basketActualValue);
@@ -197,7 +198,7 @@ const CustomerMapping = () => {
       <div className="flex flex-col mt-2">
         <div className={"overflow-y-scroll border h-[calc(100vh-320px)]"}>
           <table className="table-fixed w-full overflow-y-scroll overflow-x-scroll">
-            <thead className="border-b sticky top-0 bg-gray-50">
+            <thead className="border-b sticky top-0 bg-gray-50 z-10">
               <tr>
                 <th className="font-medium text-sm text-left p-2 break-words w-16">
                   S.No
@@ -208,9 +209,6 @@ const CustomerMapping = () => {
                 <th className="font-medium text-sm text-left break-words">
                   Name
                 </th>
-                {/* <th className="font-medium text-left text-sm w-44 break-words">
-                  Email
-                </th> */}
                 <th className="font-medium text-center text-sm break-words">
                   Broker
                 </th>

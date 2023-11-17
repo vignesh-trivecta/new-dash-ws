@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Tooltip } from "flowbite-react";
+import { Spinner, Tooltip } from "flowbite-react";
 import { mapBasket, sendWeblink } from "@/app/api/map/baskets/route";
 import { useSelector } from "react-redux";
 import { segregate } from "@/utils/formatter/priceSegregator";
@@ -31,6 +31,8 @@ const CustomerMappingTable = ({
   const [mapCondition, setMapCondition] = useState(false);
   const [webCondition, setWebCondition] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(false);
+  const [weblinkLoading, setWeblinkLoading] = useState(false);
+
 
   // useEffect(() => {
   //   setBroker("");
@@ -57,8 +59,6 @@ const CustomerMappingTable = ({
         return true;
       }
     }).includes(true);
-
-    console.log(map, web)
 
     setMapCondition(map);
     setWebCondition(web);
@@ -88,9 +88,10 @@ const CustomerMappingTable = ({
 
   // handle weblink
   const handleWeblink = async () => {
+    setWeblinkLoading(true);
     const response = await sendWeblink(basketName, adminId, data.customerId, broker, quantity);
-    console.log(response);
     setMessage(response)
+    setWeblinkLoading(false);
   };
 
   useEffect(() => {
@@ -122,6 +123,7 @@ const CustomerMappingTable = ({
       setHighlight(false);
       setMessage("")
     }
+    console.log(Number(total), Number(investment))
   }, [investment, quantity]);
 
   return (
@@ -252,7 +254,15 @@ const CustomerMappingTable = ({
               />
             </svg>
           ) : (
-            <svg
+            
+              weblinkLoading 
+              ?
+                (
+                  <Spinner />
+                ) 
+              :
+                (
+                  <svg
               className="w-4 h-4 text-red-500 dark:text-white"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
@@ -267,6 +277,8 @@ const CustomerMappingTable = ({
                 d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
               />
             </svg>
+                )
+          
           )}
           </div>
       </td>

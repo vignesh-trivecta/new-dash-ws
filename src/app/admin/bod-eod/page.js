@@ -29,7 +29,7 @@ const BodEod = () => {
   }, [handleFetch])
 
   return (
-    <div className="mx-7 mt-4 w-full" style={{ width: "95%" }}>
+    <div className="container mx-auto mt-4" style={{ width: "95%" }}>
       <div className='flex justify-between items-center'>
         <h5 className="font-bold mb-2">Beginning/ End of Day</h5>
         <div className=''>

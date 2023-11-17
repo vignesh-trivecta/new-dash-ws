@@ -7,8 +7,6 @@ import { useSelector } from "react-redux";
 
 const OrderBookTable = ({ datas, tooltipData }) => {
 
-  console.log(datas)
-
   const time = useSelector((state) => state.user.timeFormat);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,7 +36,7 @@ const OrderBookTable = ({ datas, tooltipData }) => {
       ) : datas && datas?.length !== 0 ? (
         <div className="overflow-y-scroll border" style={{ height: "380px" }}>
           <Table className="">
-            <Thead className="">
+            <Thead className="bg-gray-50">
               <Tr 
               className=""
               >

@@ -27,7 +27,7 @@ const LedgerTable = ({ datas }) => {
       ) : datas && datas?.length !== 0 ? (
         <div className="overflow-y-scroll border" style={{ height: "380px" }}>
           <Table className="">
-            <Thead className="">
+            <Thead className="bg-gray-50">
               <Tr className="">
                 <Th className="p-2 font-medium text-sm">
                     S. No

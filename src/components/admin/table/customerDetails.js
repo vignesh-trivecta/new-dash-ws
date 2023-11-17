@@ -24,7 +24,7 @@ const CustomerDetails = () => {
     }, []);
 
     return (
-        <div className="container mx-auto" style={{ width: "95%" }}>
+        <div className="">
             <h5 className="font-bold">Customer Details</h5>
 
             {/* Customer Details table */}

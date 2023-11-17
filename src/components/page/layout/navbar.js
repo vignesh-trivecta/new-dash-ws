@@ -90,6 +90,7 @@ const DashNavbar = function () {
             <Dropdown
               inline
               arrowIcon={false}
+              className="z-20"
               label={
                 <svg
                   className="w-6 h-6 text-gray-800 dark:text-white"

@@ -276,17 +276,19 @@ export const getBasketValue = async(basketName, adminId) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/details", requestOptions);
+        console.log(response)
 
         if(response.status === 200) {
             const data = await response.json();
+            console.log(data)
             return data;
         } else {
-            const errorText = await response.text();
-            console.log(errorText);
+            return [];
         }
     }
     catch(error){
         console.log(error);
+        return [];
     }
 }
 

@@ -36,7 +36,7 @@ const TradeBookTable = ({ datas, tooltipData }) => {
       ) : datas && datas?.length !== 0 ? (
         <div className="overflow-y-scroll border" style={{ height: "380px" }}>
           <Table className="">
-            <Thead className="">
+            <Thead className="bg-gray-50 sticky">
               <Tr 
               className=""
               >

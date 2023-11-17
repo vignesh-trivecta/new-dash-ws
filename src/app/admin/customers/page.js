@@ -6,7 +6,7 @@ export const metadata = {
 
 const Customers = () => {
     return (
-        <div className="container mx-auto mt-4 overflow-hidden">
+        <div className="container mx-auto mt-4 overflow-hidden" style={{ width: "95%" }}>
             <CustomerDetails />
         </div>
     )
