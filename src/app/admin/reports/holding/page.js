@@ -30,7 +30,8 @@ const Holding = () => {
   const ids = [{ Reports: "/admin/reports" }, { Holding: "" }];
 
   // column/header data for excel and pdf
-  const columns = [ 'Script', 'Script Type', 'Quantity', 'Current Value ₹', 'Date' ];
+  const excelColumns = [ 'Script', 'Script Type', 'Quantity', 'Current Value ₹', 'Date' ];
+  const pdfColumns = [ 'Script', 'Script Type', 'Quantity', 'Current Value', 'Date' ];
 
   // useEffect to fetch table data from backend
   useEffect(() => {
@@ -75,8 +76,8 @@ const Holding = () => {
           <div>
             <ExportRow
               data={tableData}
-              columns={columns}
-              pdfColumns={columns}
+              columns={excelColumns}
+              pdfColumns={pdfColumns}
               fileName={'holding'}
             />
           </div>
@@ -94,7 +95,7 @@ const Holding = () => {
         <div className="overflow-auto">
           <div >
             <HoldingTable
-              columns={columns} 
+              columns={excelColumns} 
               datas={tableData} 
             />
           </div>
