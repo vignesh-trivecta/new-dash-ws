@@ -15,6 +15,7 @@ import { fetchByGroupAndSend, fetchDetailsByCustomer, fetchDetailsByGroupName, g
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 import StaticBasketMappingTable from "@/components/admin/table/staticBasketMappingTable";
 import { FcRefresh } from "react-icons/fc";
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
 
 const BasketMapping = () => {
   // broker inputs
@@ -58,6 +59,11 @@ const BasketMapping = () => {
   
   // nextjs router
   const router = useRouter();
+
+  // messages
+  const msg1 = "Basket mapped to customer successfully.";
+  const msg2 = "Email sent successfully.";
+  const msg3 = "Basket Total is greater than Investment";
 
   // handle selection
   const handleSelection = async (value) => {
@@ -130,10 +136,12 @@ const BasketMapping = () => {
     setBasketDetails(response);
     const total = response?.basketDetailsList?.reduce((acc, curr) => curr.basketActualValue  + acc, 0)
     if (response !== null && response?.customerId !== null) {
+      console.log(response)
       setCustomerId(response.customerId);
       setAliasName(selectedBasketGroup);
       setTotalBasketValue(total);
       setBroker(response.customerBroker);
+      setShowGNStaticData(true);
     }
   }
 
@@ -171,16 +179,21 @@ const BasketMapping = () => {
   useEffect(() => {
 
     if (Number(totalBasketValue) === 0 || Number(investment) === NaN || aliasName === '') {
+
       setEnableMap(true);
       return;
     }
 
     if (Number(totalBasketValue) > Number(investment)) {
+
+      setMessage(msg3);
       setEnableMap(true);
       return;
     }
     
     if (showGNStaticData) {
+      console.log("enter")
+
       setEnableMap(true);
       return;
     }
@@ -208,16 +221,18 @@ const BasketMapping = () => {
               <label className="text-black text-sm dark:text-white">
                 Select Customer
               </label>
+              <Tooltip content={customerId}>
               <select
                 name="customer"
                 id="customer"
                 className="border border-gray-200 rounded-md w-36 text-sm"
                 disabled
-              >
-                <option disabled>
+                >
+                <option selected>
                   {customerId}
                 </option>
               </select>
+             </Tooltip>
             </div>
           )
           :
@@ -234,6 +249,7 @@ const BasketMapping = () => {
                 value={customerId}
                 onChange={(e) => {
                   handleSelection(e.target.value);
+                  setMessage("");
                 }}
               >
                 <option disabled value="">
@@ -257,7 +273,10 @@ const BasketMapping = () => {
             defaultValue={""}
             value={broker}
             disabled={showGNStaticData}
-            onChange={(e) => setBroker(e.target.value)}
+            onChange={(e) => {
+              setBroker(e.target.value); 
+              setMessage("");
+            }}
           >
             <option disabled className="text-sm" value={""}>
               - Select -
@@ -289,6 +308,7 @@ const BasketMapping = () => {
             disabled={showGNStaticData}
             value={segregate(investment)}
             onChange={(e) => {
+              setMessage("");
               // Remove commas from the input value before updating state
               const newValue = e.target.value.replace(/,/g, "");
               setInvestment(newValue);
@@ -306,7 +326,10 @@ const BasketMapping = () => {
             type="text"
             value={aliasName}
             disabled={showGNStaticData}
-            onChange={(e) => setAliasName(e?.target.value)}
+            onChange={(e) =>{ 
+              setMessage("");
+              setAliasName(e?.target.value);
+            }}
             className="border border-gray-200  text-right rounded-lg w-36 text-sm"
           />
         </div>
@@ -330,7 +353,8 @@ const BasketMapping = () => {
             onChange={(e) => {
               setSelectedBasketGroup(e?.target.value);
               setEnableWeblink(false);
-              setShowGNStaticData(true);
+              // setShowGNStaticData(true);
+              setMessage("");
             }}
           >
             <option disabled value="">
@@ -445,14 +469,31 @@ const BasketMapping = () => {
       </div>
       <div className="mt-2 flex justify-between">
         <div className="w-96">
-          <Alert
-            color="warning"
-            rounded
-            className="h-12"
-            icon={HiInformationCircle}
-          >
-            <span className="w-4 h-4">{message}</span>
-          </Alert>
+        {message === msg1 || message === msg2
+          ?
+            <Alert
+              color="success"
+              rounded
+              className="h-12"
+              icon={IoCheckmarkDoneCircle}
+            >
+              <span className="w-4 h-4">{message}</span>
+            </Alert>
+          :
+            (
+              message 
+              ? 
+              <Alert
+              color="warning"
+              rounded
+              className="h-12"
+              icon={HiInformationCircle}
+            >
+              <span className="w-4 h-4">{message}</span>
+              </Alert>
+              : ""
+            )
+          }
         </div>
 
         {/* Disabled basket value */}
