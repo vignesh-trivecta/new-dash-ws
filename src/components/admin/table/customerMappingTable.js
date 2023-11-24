@@ -14,7 +14,7 @@ const CustomerMappingTable = ({
   scripts,
   enableBroker,
   setMessage,
-  status
+  status,
 }) => {
 
   // redux
@@ -32,37 +32,6 @@ const CustomerMappingTable = ({
   const [webCondition, setWebCondition] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(false);
   const [weblinkLoading, setWeblinkLoading] = useState(false);
-
-
-  // useEffect(() => {
-  //   setBroker("");
-  //   setInvestment("");
-  //   setQuantity("");
-  //   setTotal("");
-  // }, [status])
-
-  useEffect(() => {
-    const map = status.map((obj) => {
-      const customer = obj.customerId;
-      const brk = obj.brokerName;
-      const map = obj.mapStatus;
-      // const web = obj.webLinkStatus;
-      if ((customer == data.customerId) && (brk == broker) && (map)) {
-        return true;
-      }
-    }).includes(true);
-    const web = status.map((obj) => {
-      const customer = obj.customerId;
-      const brk = obj.brokerName;
-      const web = obj.webLinkStatus;
-      if ((customer == data.customerId) && (brk == broker) && (web)) {
-        return true;
-      }
-    }).includes(true);
-
-    setMapCondition(map);
-    setWebCondition(web);
-  },[status, broker])
 
   // handle customer mapping
   const handleMapping = async (customerId) => {
@@ -82,6 +51,7 @@ const CustomerMappingTable = ({
 
   // handle broker selection
   const handleBrokerSelection = async (e) => {
+    setMessage("");
     const broker = e.target.value;
     setBroker(broker);
   }
@@ -89,6 +59,7 @@ const CustomerMappingTable = ({
   // handle weblink
   const handleWeblink = async () => {
     setWeblinkLoading(true);
+    setMessage("")
     const response = await sendWeblink(basketName, adminId, data.customerId, broker, quantity);
     setMessage(response)
     setWeblinkLoading(false);
@@ -123,8 +94,31 @@ const CustomerMappingTable = ({
       setHighlight(false);
       setMessage("")
     }
-    console.log(Number(total), Number(investment))
   }, [investment, quantity]);
+
+  
+  useEffect(() => {
+    const map = status.map((obj) => {
+      const customer = obj.customerId;
+      const brk = obj.brokerName;
+      const map = obj.mapStatus;
+      // const web = obj.webLinkStatus;
+      if ((customer == data.customerId) && (brk == broker) && (map)) {
+        return true;
+      }
+    }).includes(true);
+    const web = status.map((obj) => {
+      const customer = obj.customerId;
+      const brk = obj.brokerName;
+      const web = obj.webLinkStatus;
+      if ((customer == data.customerId) && (brk == broker) && (web)) {
+        return true;
+      }
+    }).includes(true);
+
+    setMapCondition(map);
+    setWebCondition(web);
+  },[status, broker])
 
   return (
     <tr key={index} className="border-b p-2 hover:bg-gray-100">
@@ -161,6 +155,7 @@ const CustomerMappingTable = ({
           value={segregate(investment)}
           disabled={enableInputs}
           onChange={(e) => {
+            setMessage("");
             // Remove commas from the input value before updating state
             const newValue = e.target.value.replace(/,/g, "");
             setInvestment(newValue);
@@ -176,6 +171,7 @@ const CustomerMappingTable = ({
           value={segregate(quantity)}
           disabled={enableInputs}
           onChange={(e) => {
+            setMessage("");
             // Remove commas from the input value before updating state
             const newValue = e.target.value.replace(/,/g, "");
             setQuantity(newValue);
