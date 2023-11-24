@@ -5,18 +5,24 @@ import { sendCommunication } from '@/app/api/communication/route';
 import { Alert, Button } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 import { HiInformationCircle } from 'react-icons/hi';
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
 
 const Communication = () => {
 
+  // message channels
   const channels = ["EMAIL","SMS", "WHATSAPP"];
 
+  // local state
   const [customers, setCustomers] = useState([]);
   const [customerId, setCustomerId] = useState("");
-  const [msgChannel, setMsgChannel] = useState("EMAIL");
+  const [msgChannel, setMsgChannel] = useState("");
   const [message, setMessage] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // messages
+  const msg1 = "Email sent successfully.";
 
   const handleChange = (e) => {
 
@@ -25,8 +31,8 @@ const Communication = () => {
     } else if (e.target.id === "msgChannel") {
       setMsgChannel(e.target.value);
     } else if (e.target.id === "message") {
-      if (e.target.value.length > 300) {
-        setError("Message limit exceeds!");
+      if (e.target.value.length > 1000) {
+        setAlertMessage("Message limit exceeds!");
       }
       else {
         setMessage(e.target.value);
@@ -39,10 +45,14 @@ const Communication = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     const res = await sendCommunication(customerId, message);
     setAlertMessage(res);
+    
     setLoading(false);
     setMessage("");
+    setMsgChannel("");
+    setCustomerId("");
   }
 
   useEffect(() => {
@@ -104,7 +114,7 @@ const Communication = () => {
           className={`mt-4 resize-none rounded-md border-gray-300 ${error ? "outline-red-500 outline outline-1" : ""}`}
           rows={10} 
           cols={50}
-          maxLength={300}
+          maxLength={1001}
           placeholder='Enter your message here...'
           onChange={(e) => handleChange(e)}
         >
@@ -114,14 +124,32 @@ const Communication = () => {
         </Button>
       </div>
       <div className='absolute bottom-16 w-2/6'>
-        <Alert
-          color="warning"
-          rounded
-          className="h-12"
-          icon={HiInformationCircle}
-        >
-          <span className="w-4 h-4">{error || alertMessage}</span>
-        </Alert>
+        {
+          alertMessage
+          ? 
+            (
+              alertMessage === msg1 
+              ?
+                <Alert
+                  color="success"
+                  rounded
+                  className="h-12"
+                  icon={IoCheckmarkDoneCircle}
+                >
+                  <span className="w-4 h-4">{alertMessage}</span>
+                </Alert>
+              :
+                <Alert
+                  color="warning"
+                  rounded
+                  className="h-12"
+                  icon={HiInformationCircle}
+                >
+                  <span className="w-4 h-4">{alertMessage}</span>
+                </Alert>
+            )
+          : ""
+        }
       </div>
     </form>
     </div>
