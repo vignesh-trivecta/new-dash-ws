@@ -13,6 +13,7 @@ import {
 import {getCustomerStatus} from "@/app/api/map/baskets/route";
 import CustomerMappingTable from "@/components/admin/table/customerMappingTable";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
 
 const CustomerMapping = () => {
 
@@ -23,8 +24,8 @@ const CustomerMapping = () => {
   // local state
   const [basketName, setBasketName] = useState("");
   const [customers, setCustomers] = useState([]);
-  const [weblink, setWeblink] = useState(false);
-  const [message, setMessage] = useState(false);
+  const [weblinkSIP, setWeblinkSIP] = useState(false);
+  const [message, setMessage] = useState("");
   const [records, setRecords] = useState([]);
   const [basketCategory, setBasketCategory] = useState("");
   const [scripts, setScripts] = useState(0);
@@ -34,7 +35,6 @@ const CustomerMapping = () => {
   const [enableInputs, setEnableInputs] = useState(basketName == "");
   const [status, setStatus] = useState([]);
 
-
   // modal state variables
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
@@ -42,11 +42,11 @@ const CustomerMapping = () => {
   // nextjs router
   const router = useRouter();
 
-  const msg1 = "Select a basket";
-  const msg2 = "Choose broker";
-  const msg3 = "Enter investment amount";
-  const msg4 = "Enter basket units";
-  const msg5 = "Map Customer/ Send Weblink";
+  // messages
+  const msg1 = "Basket mapped to customer successfully.";
+  const msg2 = "Email sent successfully.";
+
+  console.log(message)
  
   // if (weblink) {
   //   dispatch(setBasketAmount(""));
@@ -77,7 +77,6 @@ const CustomerMapping = () => {
     setBasketName(value);
 
     const response = await getBasketValue(value, adminId);
-    console.log(response)
     
     setTransType(response[0]?.transactionType);
     setBasketVal(response[0]?.basketActualValue);
@@ -127,6 +126,7 @@ const CustomerMapping = () => {
             defaultValue={""}
             onChange={(e) => {
               handleBasketSelection(e.target.value);
+              setMessage("");
             }}
           >
             <option disabled value="">
@@ -252,15 +252,32 @@ const CustomerMapping = () => {
           </table>
         </div>
         <div className="mt-2 w-96">
-        <Alert
-          color="warning"
-          rounded
-          className="h-12"
-          icon={HiInformationCircle}
-        >
-          <span className="w-4 h-4">{message}</span>
-        </Alert>
-      </div>
+          {message === msg1 || message === msg2
+            ?
+              <Alert
+                color="success"
+                rounded
+                className="h-12"
+                icon={IoCheckmarkDoneCircle}
+              >
+                <span className="w-4 h-4">{message}</span>
+              </Alert>
+            :
+              (
+                message 
+                ? 
+                <Alert
+                color="warning"
+                rounded
+                className="h-12"
+                icon={HiInformationCircle}
+              >
+                <span className="w-4 h-4">{message}</span>
+                </Alert>
+                : ""
+              )
+            }
+        </div>
       </div>
     </div>
   );
