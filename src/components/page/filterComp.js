@@ -1,322 +1,340 @@
-"use client";
+import React, { useEffect, useState } from "react";
+import { Spinner, Tooltip } from "flowbite-react";
+import { mapBasket, sendWeblink } from "@/app/api/map/baskets/route";
+import { useSelector } from "react-redux";
+import { segregate } from "@/utils/formatter/priceSegregator";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
-import { useState, useEffect } from "react";
-import { Button, Dropdown, Label } from "flowbite-react";
-import { useDispatch, useSelector } from "react-redux";
-import { setBroker, setCustomerId, setDateType, setEndDate, setReportType, setStartDate, setToggle } from "@/store/reportSlice";
-import { getCustomers } from "@/app/api/basket/route";
-import { usePathname } from "next/navigation";
-import { BiFilterAlt } from "react-icons/bi";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { getBroker, handleDbReportsFetch, handleLiveReportsFetch, isMarketOpen } from "@/app/api/reports/route";
+const CustomerMappingTable = ({
+  data,
+  index,
+  enableInputs,
+  basketName,
+  basketVal,
+  scripts,
+  enableBroker,
+  setMessage,
+  status,
+}) => {
 
-const FilterComponent = ({props}) => {
-    
-    // redux state
-    const dispatch = useDispatch();
-    const customerId = useSelector((state) => state.report.customerId);
-    const broker = useSelector((state) => state.report.broker);
-    const dateType = useSelector((state) => state.report.dateType);
-    const reportType = useSelector((state) => state.report.reportType);
-    const startDate = useSelector((state) => state.report.startDate);
-    const endDate = useSelector((state) => state.report.endDate);
-    const toggle = useSelector((state) => state.report.toggle);
-    const path = useSelector((state) => state.report.path);
-    
-    // local state
-    const [now, setNow] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const [localCustomerId, setLocalCustomerId] = useState(customerId);
-    const [localBroker, setLocalBroker] = useState(broker);
-    const [localReportType, setLocalReportType] = useState(reportType);
-    const [localDateType, setLocalDateType] = useState(dateType);
-    const [localStartDate, setLocalStartDate] = useState(startDate);
-    const [localEndDate, setLocalEndDate] = useState(endDate);
-    const [list, setList] = useState([]);
-    const [isTodayDisabled, setIsTodayDisabled] = useState(false);
+  // redux
+  const adminId = useSelector((state) => state.user.username);  
 
-    const today = new Date();
+  // local state
+  const [broker, setBroker] = useState("");
+  const [investment, setInvestment] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [total, setTotal] = useState("");
+  const [highlight, setHighlight] = useState(false);
+  const [enableMap, setEnableMap] = useState(false);
+  const [enableWeblink, setEnableWeblink] = useState(false);
+  const [mapCondition, setMapCondition] = useState(false);
+  const [webCondition, setWebCondition] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState(false);
+  const [weblinkLoading, setWeblinkLoading] = useState(false);
 
+  // handle customer mapping
+  const handleMapping = async (customerId) => {
+    const response = await mapBasket(
+      basketName,
+      adminId,
+      customerId,
+      broker,
+      quantity
+    );
+    setMessage(response)
+    // setBroker("");
+    // setInvestment("");
+    // setQuantity("");
+    // setTotal("");
+  };
 
-        // // finding current time and allowing Date radio button to be displayed
-        // // only when current IST time is greater than 3pm or 15:00 hrs
-        // const currentTime = new Date();
-        // const currentOffset = currentTime.getTimezoneOffset();
-        // const ISTOffset = 330;   // IST offset UTC +5:30 
-        // const ISTTime = new Date(currentTime.getTime() + (ISTOffset + currentOffset)*60000);
+  // handle broker selection
+  const handleBrokerSelection = async (e) => {
+    setMessage("");
+    const broker = e.target.value;
+    setBroker(broker);
+  }
 
-        // // // IST Time now represents the time in IST coordinates
-        // const hoursIST = ISTTime.getHours()
-        // const minutesIST = ISTTime.getMinutes()
-        // console.log(hoursIST, minutesIST)
-        // if((hoursIST > 9) && (hoursIST <16)){
-        //     setNow(true);
-        // }
-        // else {
-        //     setNow(false);
-        // }
+  // handle weblink
+  const handleWeblink = async () => {
+    setWeblinkLoading(true);
+    setMessage("")
+    const response = await sendWeblink(basketName, adminId, data.customerId, broker, quantity);
+    setMessage(response)
+    setWeblinkLoading(false);
+  };
 
-
-    // function to reset filter menu options
-    const resetFilters = () => {
-        setIsOpen(!isOpen);
-        setLocalCustomerId("");
-        dispatch(setCustomerId(""));
-        setLocalBroker("");
-        dispatch(setBroker(""));
-        setLocalReportType('');
-        dispatch(setReportType(''));
-        setLocalStartDate(new Date(new Date().setDate(new Date().getDate() - 1)));
-        setLocalEndDate(new Date(new Date().setDate(new Date().getDate() - 1)));
-        dispatch(setStartDate(new Date(new Date().setDate(new Date().getDate() - 1))));
-        dispatch(setEndDate(new Date(new Date().setDate(new Date().getDate() - 1))));
-        dispatch(setToggle(!toggle));
+  useEffect(() => {
+    if (Number(investment) !== 0 && Number(quantity) !== 0) {
+      // setEnableButtons(false);
+      if (mapCondition) {
+        setEnableMap(true)
+      } else {
+        setEnableMap(false);
+      }
+      if (webCondition) {
+        setEnableWeblink(true);
+      } else {
+        setEnableWeblink(false);
+      }
+    } else {
+      // setEnableButtons(true);
+      setEnableMap(true);
+      setEnableWeblink(true);
     }
 
-    // function handling when filter button is clicked
-    const handleFilter = async (e) => {
-        e.preventDefault();
-        dispatch(setCustomerId(localCustomerId));
-        dispatch(setBroker(localBroker));
-        dispatch(setReportType(localReportType));
-        dispatch(setDateType(localDateType));
-
-        if (localDateType === "custom") {
-            dispatch(setStartDate(localStartDate));
-            dispatch(setEndDate(localEndDate));
-        }
-        else {
-            dispatch(setStartDate(today));
-            dispatch(setEndDate(today));
-        }
-
-        // if (pathName !== '/admin/reports') {
-        //     if (localReportType === 'Market') {
-        //         const response = await handleLiveReportsFetch(props ?? '', localCustomerId, localStartDate, localEndDate);
-        //     }
-        //     else if (localReportType === 'Post') {
-        //         const response = handleDbReportsFetch(props ?? '', localCustomerId, localStartDate, localEndDate);
-        //     }
-        // }
-        // else {
-        //     console.log("you are on reports page");
-        //     return;
-        // }
-        dispatch(setToggle(!toggle));
+    if (Number(total) > Number(investment)) {
+      setHighlight(true);
+      setMessage("Basket Total is greater than Investment")
+      // setEnableButtons(true);
+      setEnableMap(true);
+      setEnableWeblink(true);
+    } else {
+      setHighlight(false);
+      setMessage("")
     }
+  }, [investment, quantity]);
 
-    // endpoint which sets broker based on customer selection
-    const handleCustomerSelection = async (e) => {
-        setLocalCustomerId(e.target.value);
-        const response = await getBroker((e.target.value).split(' ')[0]);
-        if (response) {
-            setLocalBroker(response);
-        }
-        else {
-            setLocalBroker("");
-        }
-    }
+  
+  useEffect(() => {
+    const map = status.map((obj) => {
+      const customer = obj.customerId;
+      const brk = obj.brokerName;
+      const map = obj.mapStatus;
+      // const web = obj.webLinkStatus;
+      if ((customer == data.customerId) && (brk == broker) && (map)) {
+        return true;
+      }
+    }).includes(true);
+    const web = status.map((obj) => {
+      const customer = obj.customerId;
+      const brk = obj.brokerName;
+      const web = obj.webLinkStatus;
+      if ((customer == data.customerId) && (brk == broker) && (web)) {
+        return true;
+      }
+    }).includes(true);
 
-    // useEffect to fetch data to show in table
-    useEffect(() => {
-        const fetchData = async () => {
-            const customersData = await getCustomers();
-            let arr = [];
-            for(let i=0; i<customersData?.length; i++) {
-                arr.push(customersData[i]?.customerId + " - " + customersData[i]?.name)
-            }
-            setList(arr);
-        };
-        fetchData();
-    }, []);
+    setMapCondition(map);
+    setWebCondition(web);
+  },[status, broker])
 
-    useEffect(() => {
-        // finding current time and allowing Date radio button to be displayed
-        // only when current IST time is greater than 3pm or 15:00 hrs
-        const currentTime = new Date();
-        const currentOffset = currentTime?.getTimezoneOffset();
-        const ISTOffset = 330;   // IST offset UTC +5:30 
-        const ISTTime = new Date(currentTime?.getTime() + (ISTOffset + currentOffset)*60000);
+  return (
+    <tr key={index} className="border-b p-2 hover:bg-gray-100">
+      <td className="text-sm text-black text-center font-semibold">
+        {index + 1}
+      </td>
+      <td className="text-sm text-left text-black p-2 break-words">
+        {data.customerId}
+      </td>
+      <td className="text-sm text-left text-black break-words">
+        {data.name}
+      </td>
+      <td className="text-sm text-center text-black">
+        <select
+          className="text-xs border-gray-200 rounded-md"
+          value={broker}
+          onChange={handleBrokerSelection}
+          disabled={enableBroker}
+        >
+          <option disabled className="text-sm" value={""}>
+            - Select -
+          </option>
+          <option className="text-sm" value={"AXIS"}>
+            AXIS
+          </option>
+          <option className="text-sm" value={"IIFL"}>
+            IIFL
+          </option>
+        </select>
+      </td>
+      <td className=" text-sm text-black">
+        <input
+          id="investment"
+          value={segregate(investment)}
+          disabled={enableInputs}
+          onChange={(e) => {
+            setMessage("");
+            // Remove commas from the input value before updating state
+            const newValue = e.target.value.replace(/,/g, "");
+            setInvestment(newValue);
+            setTotal(basketVal * quantity);
+          }}
+          type="text"
+          className={`w-28 h-8 text-right border-gray-300 rounded-md text-sm`}
+        />
+      </td>
+      <td className=" text-sm text-black">
+        <input
+          id="quantity"
+          value={segregate(quantity)}
+          disabled={enableInputs}
+          onChange={(e) => {
+            setMessage("");
+            // Remove commas from the input value before updating state
+            const newValue = e.target.value.replace(/,/g, "");
+            setQuantity(newValue);
+            setTotal(basketVal * newValue);
+          }}
+          type="text"
+          className={`ml-2 w-24 h-8 text-right border-gray-300 rounded-md text-sm`}
+        />
+      </td>
+      <td className=" text-sm text-black">
+        <input
+          disabled
+          id="total"
+          value={segreagatorWoComma(total)}
+          type="text"
+          className={`w-28 h-8 text-right border-gray-300 bg-gray-100 rounded-md text-sm ${
+            highlight ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+      </td>
+      {/* Map status */}
+      <td>
+        <div className="ml-8">
+          { mapCondition ? (
+            <svg
+              className="w-4 h-4 text-green-500 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 16 12"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1"
+                d="M1 5.917 5.724 10.5 15 1.5"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="w-4 h-4 text-red-500 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 16 12"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+          )}
+          </div>
+      </td>
+      {/* Weblink status */}
+      <td>
+        <div className="ml-8">
+          { webCondition ? (
+            <svg
+              className="w-4 h-4 text-green-500 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 16 12"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1"
+                d="M1 5.917 5.724 10.5 15 1.5"
+              />
+            </svg>
+          ) : (
+            
+              weblinkLoading 
+              ?
+                (
+                  <Spinner />
+                ) 
+              :
+                (
+                  <svg
+              className="w-4 h-4 text-red-500 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 16 12"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+              />
+            </svg>
+                )
+          
+          )}
+          </div>
+      </td>
+      {/* Actions button group */}
+      <td className=" flex text-sm text-black mt-2 ml-6 space-x-2">
+        {/* Map customer */}
+        <Tooltip content="Map Customer">
+          <button
+            disabled={enableMap}
+            className=""
+            onClick={() => {
+              handleMapping(data.customerId);
+            }}
+          >
+            <svg
+              className="w-4 h-4 text-gray-800 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 18"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1"
+                d="m1 14 3-3m-3 3 3 3m-3-3h16v-3m2-7-3 3m3-3-3-3m3 3H3v3"
+              />
+            </svg>
+          </button>
+        </Tooltip>
+        {/* Send Weblink */}
+        <Tooltip content="Send Weblink">
+          <button 
+            disabled={enableWeblink} 
+            className=""
+            onClick={() => {
+              handleWeblink();
+            }}
+          >
+            <svg
+              className="w-4 h-4 text-gray-800 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 18"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1"
+                d="M5.5 6.5h.01m4.49 0h.01m4.49 0h.01M18 1H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z"
+              />
+            </svg>
+          </button>
+        </Tooltip>
+      </td>
+    </tr>
+  );
+};
 
-        // // IST Time now represents the time in IST coordinates
-        const hoursIST = ISTTime?.getHours()
-        const minutesIST = ISTTime?.getMinutes()
-        if((hoursIST > 9) && (hoursIST <16)){
-            setNow(true);
-        }
-        else {
-            setNow(false);
-        }
-    })
-
-    // checking whether today market is open or closed and setting date radio button based on that
-    const isButtonDisabled = async () => {
-        const response = await isMarketOpen();
-        if (response === "Open") {
-            setIsTodayDisabled(false);
-        }
-        else {
-            setIsTodayDisabled(true);
-        }
-    }
-    isButtonDisabled();
-
-    return (
-        <div>
-            <form onSubmit={handleFilter}>
-            {/* Start of Filter dropdown */}
-            <Dropdown
-                placement="bottom"
-                renderTrigger={() => (
-                    <div className="hover:cursor-pointer rounded-lg bg-gray-100 p-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-200">
-                        <BiFilterAlt className="h-5 w-5 text-gray-500" />
-                    </div>
-                    )}
-                className="px-4 py-2 w-max"
-            >   
-                <div className="flex justify-between">
-                    <h1 className="mb-2 font-semibold">Filter</h1>
-                    <h2 className=""><span className="underline">Market:</span><span className="font-semibold"> {isTodayDisabled ? "Closed" : "Open"}</span></h2>
-                </div>
-                <div className="space-y-2">
-
-                    {/* Customer Id */}
-                    <div className="flex flex-col">
-                        <label className="font-medium text-sm">Customer Id</label>
-                        <select 
-                            className="rounded-md border-gray-200 text-sm"
-                            value={localCustomerId}
-                            onChange={(e) => {handleCustomerSelection(e)}}
-                            required
-                        >
-                            <option disabled value="">-Select -</option>
-                            {
-                                list?.map((id, index) => (
-                                    <option 
-                                        key={index} 
-                                        value={id} 
-                                    >
-                                        {id}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    {/* Broker */}
-                    <div className="flex flex-col">
-                        <label className="font-medium text-sm">Broker</label>
-                        <select value={localBroker} required onChange={(e) => {setLocalBroker(e.target.value)}} className="border border-gray-200 rounded-md w-full text-sm" name="broker" id="broker" >
-                            <option disabled value="">-Select -</option>
-                            <option value="AXIS">AXIS</option>
-                            <option value="IIFL">IIFL</option>
-                        </select> 
-                    </div>
-
-                    {/* Report Type */}
-                    <div className="flex flex-col">
-                        <label className="font-medium text-sm">Report Type</label>
-                        <select value={localReportType} required onChange={(e) => {setLocalReportType(e.target.value)}} className="border border-gray-200 rounded-md w-full text-sm" name="broker" id="broker" >
-                            <option disabled value="">-Select -</option>
-                            <option value="Market">Market Hours</option>
-                            <option value="Post">Post Market</option>
-                        </select> 
-                    </div>
-                    
-                    {/* Dates radio button */}
-                    <div>
-                        {
-                        // (now && pathName === "/admin/reports/ledger" ) 
-                        // && 
-                        <>
-                            <Label value="Date" className="col-start-1 row-start-2 text-sm" />
-                            <div className=" col-start-2 row-start-2">
-                                <input 
-                                    required
-                                    disabled={isTodayDisabled}
-                                    id="today" 
-                                    name="date" 
-                                    type="radio" 
-                                    value="today"
-                                    defaultChecked={localDateType === "today"}
-                                    onClick={() => {
-                                        setLocalDateType("today");
-                                }} />
-                                <label htmlFor="today" className="ml-1 text-sm">Today</label>
-                                <input 
-                                    required
-                                    id="custom" 
-                                    name="date" 
-                                    type="radio" 
-                                    value="custom" 
-                                    className="ml-1" 
-                                    defaultChecked={localDateType === "custom"}
-                                    onClick={() => {
-                                        setLocalDateType("custom");
-                                }} />
-                                <label htmlFor="custom" className="ml-1 text-sm">Custom</label>
-                            </div>
-                        </>
-                        }
-                    </div>
-                    
-                    {/* show this date pickers if datetype is custom */}
-                    {localDateType === "custom" && 
-                    <div>
-
-                        <div className="flex flex-col">
-                            <label className="font-medium text-sm">From</label>
-                            <DatePicker
-                                dateFormat="dd-MMM-yyyy"
-                                selected={localStartDate}
-                                onChange={(date) => setLocalStartDate(date)}
-                                selectsStart
-                                startDate={localStartDate}
-                                endDate={localEndDate}
-                                minDate={new Date("1995-12-17T03:24:00")}
-                                maxDate={localEndDate}
-                                className="text-sm border-gray-200 rounded-md z-2"
-                            /> 
-                        </div>                       
-                        <div className="flex flex-col">
-                            <label className="font-medium text-sm">To</label>
-                            <DatePicker
-                                dateFormat="dd-MMM-yyyy"
-                                selected={localEndDate}
-                                onChange={(date) => setLocalEndDate(date)}
-                                selectsEnd
-                                startDate={localStartDate}
-                                endDate={localEndDate}
-                                minDate={localStartDate}
-                                maxDate={new Date(new Date().setDate(new Date().getDate() - 1))}
-                                className="text-sm border-gray-200 rounded-md"
-                            />                        
-                        </div>
-                    </div>
-                    }
-                </div>
-
-                {/* Buttons group */}
-                <div className="mt-4 flex space-x-2 justify-center"> 
-                    <button
-                        type="submit"
-                        className="text-sm bg-cyan-800 hover:bg-cyan-700 border p-1 rounded-md text-white w-16"
-                    >
-                        Filter
-                    </button>
-                    <Button
-                        size={"sm"}
-                        color={"gray"}
-                        onClick={() => {resetFilters()}}
-                    >
-                        Reset
-                    </Button>
-                </div>
-            </Dropdown> 
-            </form>
-        </div>
-    )
-}
-
-export default FilterComponent;
+export default CustomerMappingTable;
