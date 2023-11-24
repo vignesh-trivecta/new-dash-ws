@@ -66,6 +66,8 @@ const BasketPage = () => {
         }
       }
 
+      // const res = await clientLogin(customerId);
+
       // var f = document.createElement("form");
       // f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
       // f.method = "POST";
