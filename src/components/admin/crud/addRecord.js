@@ -54,13 +54,11 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
     // Event handler //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
-        console.log(e?.target.value);
         // setWeightage(e?.target.value || weightage );
         setWeightage(e?.target?.value);
         // const quantity = await sendWeightage(e?.target?.value || weightage, investmentVal, price);
         const quantity = await sendWeightage(e?.target?.value, investmentVal, price);
         setQuantity(quantity);
-        console.log(quantity);
         if (e?.target?.value > 100 || e?.target?.value < 1 ) {
             setMessage("Weightage must be between 0-100")
         }
@@ -228,14 +226,18 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                     {/* Buttons group */}
                     <div className="flex justify-between mt-4">
                         <div>
-                            <Alert
-                                color="warning"
-                                rounded
-                                className="h-12 w-56 p-1 flex justify-center max-w-sm"
-                                icon={HiInformationCircle}
-                                >
-                                <span>{message}</span>
-                            </Alert>
+                            {
+                                message 
+                                ? <Alert
+                                        color="warning"
+                                        rounded
+                                        className="h-10 w-56 p-1 flex justify-center max-w-sm text-sm"
+                                        icon={HiInformationCircle}
+                                        >
+                                        <span>{message}</span>
+                                    </Alert>
+                                : ""
+                            }
                         </div>
                         <div className='flex '>
                             <Button 
