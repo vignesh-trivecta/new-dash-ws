@@ -326,6 +326,7 @@ const CreateBasket = () => {
                       index={index}
                       handleFetch={handleFetch}
                       setHandleFetch={setHandleFetch}
+                      basketName={basketName}
                       investmentVal={basketAmount}
                       basketVal={total}
                     />
@@ -376,6 +377,8 @@ const CreateBasket = () => {
                 setHandleFetch={setHandleFetch}
                 transType={transType}
                 investmentVal={basketAmount}
+                basketName={basketName}
+                basketCategory={basketCategory}
                 records={records}
               />
             </div>
