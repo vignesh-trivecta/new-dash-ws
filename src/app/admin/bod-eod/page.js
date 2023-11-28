@@ -2,15 +2,19 @@
 
 import { callToUploadDoc } from '@/app/api/reports/route';
 import DayFilterComponent from '@/components/page/dayFilterComponent'
-import { Alert } from 'flowbite-react';
+import { Alert, Button } from 'flowbite-react';
 import React, { useEffect, useState } from 'react'
 import { HiInformationCircle } from 'react-icons/hi';
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
 
 const BodEod = () => {
 
-  const [ documentType, setDocumentType] = useState("");
+  const [documentType, setDocumentType] = useState("");
   const [message, setMessage] = useState("");
   const [handleFetch, setHandleFetch] = useState(false);
+
+  const msg1 = "Reports updated Successfully!";
+  const msg2 = "Failed to update, try later!";
 
   const uploadDoc = async () => {
     const response = await callToUploadDoc();
@@ -19,6 +23,13 @@ const BodEod = () => {
     }
     else {
       setMessage("Error Occured! Try after some time.")
+    }
+  }
+
+  const handleClick = async () => {
+    console.log("called");
+    if (true) {
+      setMessage(msg2)
     }
   }
 
@@ -41,15 +52,25 @@ const BodEod = () => {
           />
         </div>
       </div>
+      <div className='mt-4'>
+        <Button onClick={handleClick}>
+          Update IIFL Reports
+        </Button>
+      </div>
       <div className="absolute bottom-16 w-96">
-        <Alert
-          color="warning"
-          rounded
-          className="h-12"
-          icon={HiInformationCircle}
-        >
-          <span className="w-4 h-4">{message}</span>
-        </Alert>
+        {
+          message 
+          ? 
+          <Alert
+            color={message === msg1 ? "success" : "warning"}
+            rounded
+            className="h-12"
+            icon={message === msg1 ? IoCheckmarkDoneCircle : HiInformationCircle}
+          >
+            <span className="w-4 h-4">{message}</span>
+          </Alert>
+          : ""
+        }
       </div>
     </div>
   )
