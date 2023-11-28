@@ -283,7 +283,7 @@ const LoginAuth = () => {
                       <button
                         className="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-gray-300 rounded-r-lg hover:bg-gray-400 focus:bg-gray-500"
                         type="button"
-                        id="password-visible"
+                        id="password-hidden"
                         onClick={() => setShowPassword(true)}
                       >
                         <svg
@@ -327,7 +327,7 @@ const LoginAuth = () => {
                     <button
                       className="absolute inset-y-0 right-0 flex items-center px-4 font-bold text-white bg-gray-300 rounded-r-lg hover:bg-gray-400 focus:bg-gray-300"
                       type="button"
-                      id="password-visible"
+                      id="recaptcha"
                       onClick={generateCaptcha}
                     >
                       <svg
