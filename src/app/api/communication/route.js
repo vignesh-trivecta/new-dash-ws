@@ -14,7 +14,6 @@ export const sendCommunication = async (customerId, message) => {
         }
         
         const response = await fetch("http://localhost:8083/communication", requestOptions);
-        console.log(response)
 
         if (response.status === 200) {
             const res = await response.text();
