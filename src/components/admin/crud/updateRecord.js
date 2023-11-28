@@ -26,7 +26,7 @@ const UpdateRecord = ({
   quantity,
   handleFetch,
   setHandleFetch,
-  mainBasketName,
+  basketName,
   investmentVal,
   basketVal,
 }) => {
@@ -39,7 +39,6 @@ const UpdateRecord = ({
 
   // redux store variables
   const dispatch = useDispatch();
-  const basketName = useSelector((state) => state.basket.basketName);
   const basketAmount = useSelector((state) => state.basket.basketAmount);
   const adminId = useSelector((state) => state.user.username);
   const selectedStock = useSelector((state) => state.add.selectedStock);
@@ -55,8 +54,6 @@ const UpdateRecord = ({
   const [toggle, setToggle] = useState(transType);
   const [limitPrice, setLimitPrice] = useState(Number(lp));
   const [fetch, setFetch] = useState(false);
-
-  console.log((localWeightage > 100 || localWeightage < 1) || (localOrderType === "LIMIT" && !limitPrice) || (localOrderType === "LIMIT" && limitPrice < 1))
 
   //search dropdown - local state variables
   const [stocksList, setStocksList] = useState([]);
@@ -107,12 +104,15 @@ const UpdateRecord = ({
           setHandleFetch(!handleFetch);
           props.setOpenModal(undefined);
         }
+        else {
+          setMessage("Record Update failed!")
+        }
       } else {
         let val1 = String(investmentVal).split(",").join("");
         let val2 = String(basketVal).split(",").join("");
         const data = await updateRecordMainAPI(
           recId,
-          mainBasketName,
+          basketName,
           adminId,
           localStock,
           localExchange,
@@ -128,6 +128,9 @@ const UpdateRecord = ({
         if (data === true) {
           setHandleFetch(!handleFetch);
           props.setOpenModal(undefined);
+        }
+        else {
+          setMessage("Record Update failed!")
         }
       }
     };
@@ -163,7 +166,7 @@ const UpdateRecord = ({
     );
     setLocalQuantity(quantity);
     if (e?.target.value > 100 || e?.target.value < 1) {
-      setMessage("Weightage must be between 0-100")
+      setMessage("Weightage must be between 1-100")
     }
     else {
       setMessage("");
@@ -376,7 +379,7 @@ const UpdateRecord = ({
               <div className="rounded-md col-start-2 row-start-3 h-10">
                 <input
                   type="number"
-                  value={localWeightage}
+                  value={localWeightage ?? weightage}
                   onChange={(e) => {
                     handleWeightage(e);
                   }}
