@@ -92,7 +92,7 @@ const PlaceOrder = () => {
   }, []);
 
   return (
-    <div>
+    <div className="w-auto flex justify-center h-screen overflow-y-scroll ">
       {/* {showSpinner
                 ? // showing spinner when orders are being placed in the backend
                     (<div className='flex flex-col justify-center items-center h-screen'>
@@ -116,7 +116,7 @@ const PlaceOrder = () => {
             } */}
       {status ? ( // show the spinner or order placed page
         // - order placed page
-        <div className="flex flex-col items-center justify-center space-y-4 w-full absolute left-1/2 transform -translate-x-1/2 md:w-1/2 p-4 mt-12">
+        <div className="flex flex-col items-center space-y-4 w-full md:w-1/2 p-4 my-12">
           <div className="flex items-center justify-center space-x-2">
             <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-500 dark:bg-green-800 dark:text-green-200">
               <HiCheck className="h-5 w-5" />
@@ -137,45 +137,43 @@ const PlaceOrder = () => {
               <div className="text-sm border border-green-200 h-1/2 rounded-md bg-green-200"></div>
             </div>
           </div>
-          <div>
-            <div className="flex justify-center items-center mt-4">
-              <table className="table-fixed border p-2 w-full ">
-                <thead className="border-b text-xs md:text-sm bg-gray-50">
-                  <tr>
-                    <th className="p-2">S.No</th>
-                    <th className="p-2">Scripts</th>
-                    <th className="p-2">Price&nbsp;&#8377;</th>
-                    <th className="p-2">Quantity</th>
-                    <th className="p-2">Total&nbsp;&#8377;</th>
-                    <th className="p-2">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="text-xs md:text-sm">
-                  {data?.details?.map((record, index) => {
-                    return (
-                      <tr className="border-b hover:bg-gray-100" key={index}>
-                        <td className="text-center">{index + 1}</td>
-                        <td className="p-2 break-words">
-                          {record?.tradingSymbol}
-                        </td>
-                        <td className="text-right sm:pr-4">
-                          {segreagatorWoComma(record?.price)}
-                        </td>
-                        <td className="text-right pr-4 sm:pr-8">
-                          {record?.quantity}
-                        </td>
-                        <td className="text-right pr-2 sm:pr-4">
-                          {segreagatorWoComma(record?.price * record?.quantity)}
-                        </td>
-                        <td className="text-left pl-2">
-                          {record?.orderStatus}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+          <div className="flex justify-center items-center mt-4">
+            <table className="table-fixed border p-2 w-full ">
+              <thead className="border-b text-xs md:text-sm bg-gray-50">
+                <tr>
+                  <th className="p-2">S.No</th>
+                  <th className="p-2">Scripts</th>
+                  <th className="p-2">Price&nbsp;&#8377;</th>
+                  <th className="p-2">Quantity</th>
+                  <th className="p-2">Total&nbsp;&#8377;</th>
+                  <th className="p-2">Status</th>
+                </tr>
+              </thead>
+              <tbody className="text-xs md:text-sm">
+                {data?.details?.map((record, index) => {
+                  return (
+                    <tr className="border-b hover:bg-gray-100" key={index}>
+                      <td className="text-center">{index + 1}</td>
+                      <td className="p-2 break-words">
+                        {record?.tradingSymbol}
+                      </td>
+                      <td className="text-right sm:pr-4">
+                        {segreagatorWoComma(record?.price)}
+                      </td>
+                      <td className="text-right pr-4 sm:pr-8">
+                        {record?.quantity}
+                      </td>
+                      <td className="text-right pr-2 sm:pr-4">
+                        {segreagatorWoComma(record?.price * record?.quantity)}
+                      </td>
+                      <td className="text-left pl-2">
+                        {record?.orderStatus}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
           {/* <div>
                         <button onClick={() => {
