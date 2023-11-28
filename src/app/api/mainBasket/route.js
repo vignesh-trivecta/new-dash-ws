@@ -1,4 +1,3 @@
-
 // API call to delete a basket completely from main table
 export const deleteBasket = async(basketName, adminId) => {
     try{
@@ -31,7 +30,7 @@ export const deleteBasket = async(basketName, adminId) => {
 }
 
 // API call to add a record in Main table
-export const AddRecordMainAPI = async( adminId, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, basketVal ) => {
+export const AddRecordMainAPI = async( adminId, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, basketVal, basketCategory ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -50,7 +49,8 @@ export const AddRecordMainAPI = async( adminId, basketName, selectedStock, excha
                 "priceValue": price,
                 "limitPrice": limitPrice , 
                 "basketInvestAmt": Number(investmentVal),       
-                "basketActualValue" : Number(basketVal),
+                "basketActualValue" : basketVal,
+                "basketCategory": basketCategory,
             })
         };
 
@@ -96,12 +96,11 @@ export const updateRecordMainAPI = async(recId, basketName, adminId, selectedSto
         if (response.ok) {
             return true;
         } else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return false;
         }
     }
     catch(error){
-        console.log(error);
+        return false;
     }
 }
 
