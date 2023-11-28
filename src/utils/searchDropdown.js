@@ -68,7 +68,7 @@ export default function SearchDropdown({ id, fetch, setFetch, records, setMessag
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon
                 className="h-5 w-5 text-gray-400"
-                ariaHidden="true"
+                aria-hidden="true"
               />
             </Combobox.Button>
           </div>
@@ -110,7 +110,7 @@ export default function SearchDropdown({ id, fetch, setFetch, records, setMessag
                               active ? "text-white" : "text-teal-600"
                             }`}
                           >
-                            <CheckIcon className="h-5 w-5" ariaHidden="true" />
+                            <CheckIcon className="h-5 w-5" aria-hidden="true" />
                           </span>
                         ) : null}
                       </>
