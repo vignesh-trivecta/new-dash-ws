@@ -22,7 +22,6 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
         }
         const response = await fetch('http://localhost:8083/basket/create', requestOptions);
         if (response.status == 200) {
-            console.log(response.status)
             return true;
         }
         else return false;
@@ -223,18 +222,18 @@ export const sendWeightage = async(weightage, totalAmount, priceofAsset) => {
             })
         }
         const response = await fetch("http://localhost:8083/quantity-calc", requestOptions);
+        console.log(response)
 
         if(response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
             return data.quantity;
         } else {
-            const errorText = await response.text();
-            console.log(errorText);
+            return false;
         }
     }
     catch(error){
-        console.log(error);
+        return false;
     }
 }
 
