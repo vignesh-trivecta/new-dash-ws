@@ -11,10 +11,12 @@ import { setSelectedStock} from '@/store/addRecordSlice';
 import { usePathname } from 'next/navigation';
 import { segreagatorWoComma } from '@/utils/formatter/segregatorWoComma';
 import { HiInformationCircle } from 'react-icons/hi';
+import { amountSplitter } from '@/utils/amountSplitter';
 
-const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, mainBasketName, records }) => {
+const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, basketName, basketCategory,  mainBasketName, records }) => {
 
     const pathname = usePathname();
+    const baskCat = basketCategory ?? records[0]?.basketCategory;
 
     // modal variables
     const [openModal, setOpenModal] = useState(false);
@@ -23,12 +25,10 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     // redux state variables
     const dispatch = useDispatch();
     const selectedStock = useSelector((state) => state.add.selectedStock);
-    const basketName = useSelector((state) => state.basket.basketName);
-    // const basketAmount = useSelector((state) => state.basket.basketAmount);
     const adminName = useSelector((state) => state.user.username);
     
     // local state variables
-    const [limitPrice, setLimitPrice] = useState('');
+    const [limitPrice, setLimitPrice] = useState(undefined);
     const [weightage, setWeightage] = useState(undefined);
     const [price, setPrice] = useState('');
     const [exchange, setExchange] = useState('NSE');
@@ -52,15 +52,15 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         }
     }, [fetch])
 
-    // Event handler //function to get the quantity of stocks based on weightage
+    //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
         // setWeightage(e?.target.value || weightage );
         setWeightage(e?.target?.value);
         // const quantity = await sendWeightage(e?.target?.value || weightage, investmentVal, price);
-        const quantity = await sendWeightage(e?.target?.value, investmentVal, price);
-        setQuantity(quantity);
+        const response = await sendWeightage(e?.target?.value, investmentVal, price);
+        response ? setQuantity(response) : setQuantity(0);
         if (e?.target?.value > 100 || e?.target?.value < 1 ) {
-            setMessage("Weightage must be between 0-100")
+            setMessage("Weightage must be between 1-100")
         }
         else {
             setMessage("");
@@ -80,14 +80,15 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         const postData = async() => {
             let data;
             if(pathname == '/admin/baskets/create'){
-                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice);
+                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice, baskCat);
                 if(data === true){
                     setHandleFetch(!handleFetch);
                     props.setOpenModal(undefined);
                 }
             }
             else {
-                data = await AddRecordMainAPI(adminName, mainBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, basketVal);
+                const newVal = amountSplitter(basketVal)
+                data = await AddRecordMainAPI(adminName, mainBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, newVal, baskCat);
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
             }
@@ -95,7 +96,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
         postData();
         setWeightage('');
-        setLimitPrice('');
+        setLimitPrice(undefined);
     }
     
     return (
@@ -209,7 +210,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                                     id="limitInput" 
                                     name="limitInput" 
                                     value={limitPrice} 
-                                    onChange={(e) => setLimitPrice(e.target.value)} 
+                                    onChange={(e) => setLimitPrice(e.target.value ?? undefined)} 
                                     type="number" 
                                     className=' text-right absolute w-32 rounded-md border border-gray-200' />                                             
                             </span>                             
@@ -251,8 +252,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                                     props.setOpenModal(undefined);
                                     dispatch(setSelectedStock(''));
                                     setWeightage('');
-                                    setPrice('');
-                                    setLimitPrice('');
+                                    setPrice(0);
+                                    setLimitPrice(undefined);
                                     setQuantity('');
                                     setExchange('');
                                     setOrderType('');
