@@ -5,13 +5,12 @@ import { Button, Dropdown, Label } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBroker, setCustomerId, setDateType, setEndDate, setReportType, setStartDate, setToggle } from "@/store/reportSlice";
 import { getCustomers } from "@/app/api/basket/route";
-import { usePathname } from "next/navigation";
 import { BiFilterAlt } from "react-icons/bi";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getBroker, handleDbReportsFetch, handleLiveReportsFetch, isMarketOpen } from "@/app/api/reports/route";
+import { getBroker, isMarketOpen } from "@/app/api/reports/route";
 
-const FilterComponent = ({props}) => {
+const FilterComponent = () => {
     
     // redux state
     const dispatch = useDispatch();
