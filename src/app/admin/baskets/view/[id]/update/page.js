@@ -16,6 +16,7 @@ import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 const UpdateBasket = ({ params }) => {
   const adminId = useSelector((state) => state.user.username);
   let basketName = params.id.split("%20").join(" ");
+  let mainBasketName = params.id;
 
   const ids = [
     { "View Baskets": "/admin/baskets/view" },
@@ -238,6 +239,7 @@ const UpdateBasket = ({ params }) => {
                       handleFetch={handleFetch}
                       setHandleFetch={setHandleFetch}
                       basketName={basketName}
+                      mainBasketName={mainBasketName}
                       investmentVal={investmentVal}
                       basketVal={basketVal}
                     />
@@ -288,7 +290,8 @@ const UpdateBasket = ({ params }) => {
                 transType={transType}
                 investmentVal={investmentVal}
                 basketVal={basketVal}
-                mainBasketName={basketName}
+                basketName={basketName}
+                mainBasketName={mainBasketName}
                 records={records}
               />
             </div>
