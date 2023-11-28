@@ -5,20 +5,19 @@ import { deleteRecord } from '@/app/api/tempBasket/route';
 import { useSelector } from 'react-redux';
 import { usePathname } from 'next/navigation';
 
-const DeleteRecord = ({ recId, mainBasketName, handleFetch, setHandleFetch }) => {
+const DeleteRecord = ({ recId, mainBasketName, basketName, handleFetch, setHandleFetch }) => {
 
     let pathname = usePathname();
 
-    const basketName = useSelector((state) => state.basket.basketName);
     const adminId = useSelector((state) => state.user.username);
 
     const handleDelete = async() => {
         if((pathname == `/admin/baskets/view/${mainBasketName}/update`) && (mainBasketName.includes("%20"))){
-            const response = await deleteRecordMainAPI(recId, mainBasketName, adminId );
+            const response = await deleteRecordMainAPI(recId, basketName, adminId );
             setHandleFetch(!handleFetch);           
         }
         else if(pathname == `/admin/baskets/view/${mainBasketName}/update`){
-            const response = await deleteRecordMainAPI(recId, mainBasketName, adminId );
+            const response = await deleteRecordMainAPI(recId, basketName, adminId );
             setHandleFetch(!handleFetch);           
         }
         else{
