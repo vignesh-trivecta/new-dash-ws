@@ -16,16 +16,13 @@ export const getRecords = async(adminName, basketName) => {
             )
         };
         const response = await fetch("http://localhost:8083/basket/temp/list", requestOptions);
-        console.log(response)
 
-        if (response.ok) {
+        if (response.status === 200) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
-            console.log(data)
             return data;
         } else {
             const errorText = await response.text();
-            console.log(errorText);
             throw new Error(`Failed to fetch data: ${errorText}`);
         }
     }
@@ -36,7 +33,7 @@ export const getRecords = async(adminName, basketName) => {
 
 
 // API call to add a new record in temporary table
-export const addRecord = async(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice ) => {
+export const addRecord = async(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice, basketCategory ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -55,26 +52,22 @@ export const addRecord = async(adminName, basketName, selectedStock, exchange, o
                     "weightage": Number(weightage),
                     "price": price, 
                     "basketInvAmount": Number(investmentVal),
-                    "limitPrice" : Number(limitPrice)      
+                    "limitPrice" : Number(limitPrice),
+                    "basketCategory": basketCategory,       
                 }
             ))
         };
 
-        console.log(requestOptions)
-
-
         const response = await fetch("http://localhost:8083/basket/temp", requestOptions);
-        console.log(response)
 
-        if (response.ok) {
+        if (response.status === 200) {
             return true;
         } else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return false;
         }
     }
     catch(error){
-        console.log(error);
+        return false;
     }
 }
 
@@ -105,15 +98,14 @@ export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, 
         };
         const response = await fetch("http://localhost:8083/basket/temp/up", requestOptions);
 
-        if (response.ok) {
+        if (response.status === 200) {
             return true;
         } else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return false;
         }
     }
     catch(error){
-        console.log(error);
+        return false;
     }
 }
 
@@ -134,7 +126,7 @@ export const deleteRecord = async(recId, basketName, adminName) => {
         }
         const response = await fetch("http://localhost:8083/basket/temp/del", requestOptions);
 
-        if (response.ok) {
+        if (response.status === 200) {
             return true;
         }
         else {
@@ -142,6 +134,6 @@ export const deleteRecord = async(recId, basketName, adminName) => {
         }
     }
     catch(error){
-        console.log(error);
+        return false;
     }
 }
