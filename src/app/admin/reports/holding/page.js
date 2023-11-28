@@ -17,6 +17,7 @@ const Holding = () => {
 
   // local state
   const [tableData, setTableData] = useState([]);
+  const [shimmerLoading, setShimmerLoading] = useState(true);
 
   // redux
   const customerId = useSelector((state) => state.report.customerId);
@@ -33,33 +34,48 @@ const Holding = () => {
   const excelColumns = [ 'Script', 'Script Type', 'Quantity', 'Current Value ₹', 'Date' ];
   const pdfColumns = [ 'Script', 'Script Type', 'Quantity', 'Current Value', 'Date' ];
 
+  // function the fetch the data
+  const fetchHolding = async () => {
+
+    setShimmerLoading(true);
+
+    // Introduce a loading timer of 2 seconds (you can adjust the duration as needed)
+    const loadingTimer = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 3000); // 3000 milliseconds = 3 seconds
+    });
+
+    await loadingTimer; // Wait for the loading timer to complete
+
+    if (reportType === "Market") { // Live market data endpoint
+      const response = await handleLiveReportsFetch(
+        "holding",
+        customerId,
+        startDate,
+        endDate
+      );
+      // setData(response);
+      setTableData(response.holding);
+    }
+    else if (reportType === "Post") { // DB data endpoint
+      const response = await handleDbReportsFetch(
+        "holding",
+        customerId,
+        startDate,
+        endDate
+      );
+      setTableData(response);
+    }
+    else {
+      setTableData([])
+    }
+
+    setShimmerLoading(false);
+  };
+
   // useEffect to fetch table data from backend
   useEffect(() => {
-    const fetchHolding = async () => {
-
-      if (reportType === "Market") { // Live market data endpoint
-        const response = await handleLiveReportsFetch(
-          "holding",
-          customerId,
-          startDate,
-          endDate
-        );
-        // setData(response);
-        setTableData(response.holding);
-      }
-      else if (reportType === "Post") { // DB data endpoint
-        const response = await handleDbReportsFetch(
-          "holding",
-          customerId,
-          startDate,
-          endDate
-        );
-        setTableData(response);
-      }
-      else {
-        setTableData([])
-      }
-    };
     fetchHolding();
   }, [toggle]);
 
@@ -82,9 +98,7 @@ const Holding = () => {
             />
           </div>
           <div className="">
-            <FilterComponent 
-              props={'holding'} 
-            />
+            <FilterComponent />
           </div>
         </div>
       </div>
@@ -95,8 +109,8 @@ const Holding = () => {
         <div className="overflow-auto">
           <div >
             <HoldingTable
-              columns={excelColumns} 
               datas={tableData} 
+              shimmerLoading={shimmerLoading}
             />
           </div>
         </div>
