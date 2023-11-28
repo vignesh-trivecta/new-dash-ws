@@ -15,6 +15,7 @@ const TradeBook = () => {
   // local state
   const [tableData, setTableData] = useState([]);
   const [tooltipData, setTooltipData] = useState([]);
+  const [shimmerLoading, setShimmerLoading] = useState(true);
 
   // redux
   const customerId = useSelector((state) => state.report.customerId);
@@ -30,36 +31,52 @@ const TradeBook = () => {
   const excelColumns = ["Remote Order ID", "Exchange", "Buy/ Sell", "Exchange Trade Time", "Scripts", "Quantity", "Rate ₹"]
   const pdfColumns = ["Remote Order ID", "Exchange", "Buy/ Sell", "Exchange Trade Time", "Scripts", "Quantity", "Rate"]
 
+  // function the fetch the data
+  const fetchTradeBook = async () => {
+
+    setShimmerLoading(true);
+    
+    // Introduce a loading timer of 2 seconds (you can adjust the duration as needed)
+    const loadingTimer = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 3000); // 3000 milliseconds = 3 seconds
+    });
+
+    await loadingTimer; // Wait for the loading timer to complete
+
+    if (reportType === "Market") { // Live market data endpoint
+      const response = await handleLiveReportsFetch(
+        "tradebook",
+        customerId,
+        startDate,
+        endDate
+      );
+
+      const { mainDatas, tooltipDatas} = tradeDataParser(response.tradeBook);
+      setTableData(mainDatas);
+      setTooltipData(tooltipDatas);
+    }
+    else if (reportType === "Post") { // DB data endpoint
+      const response = await handleDbReportsFetch(
+        "tradebook",
+        customerId,
+        startDate,
+        endDate
+      )
+      const { mainDatas, tooltipDatas} = tradeDataParser(response);
+      setTableData(mainDatas);
+      setTooltipData(tooltipDatas);
+    }
+    else {
+      setTableData([])
+    }
+
+    setShimmerLoading(false);
+  };
+
   // useEffect to fetch table data from backend
   useEffect(() => {
-    const fetchTradeBook = async () => {
-      if (reportType === "Market") { // Live market data endpoint
-        const response = await handleLiveReportsFetch(
-          "tradebook",
-          customerId,
-          startDate,
-          endDate
-        );
-
-        const { mainDatas, tooltipDatas} = tradeDataParser(response.tradeBook);
-        setTableData(mainDatas);
-        setTooltipData(tooltipDatas);
-      }
-      else if (reportType === "Post") { // DB data endpoint
-        const response = await handleDbReportsFetch(
-          "tradebook",
-          customerId,
-          startDate,
-          endDate
-        )
-        const { mainDatas, tooltipDatas} = tradeDataParser(response);
-        setTableData(mainDatas);
-        setTooltipData(tooltipDatas);
-      }
-      else {
-        setTableData([])
-      }
-    };
     fetchTradeBook();
   }, [toggle]);
 
@@ -78,13 +95,11 @@ const TradeBook = () => {
               data={tableData}
               columns={excelColumns}
               pdfColumns={pdfColumns}
-              fileName={'ledger'}
+              fileName={'tradebook'}
             />
           </div>
           <div className="relative">
-            <FilterComponent 
-              props={'tradebook'} 
-            />
+            <FilterComponent />
           </div>
         </div>
       </div>
@@ -97,6 +112,7 @@ const TradeBook = () => {
             <TradeBookTable 
               datas={tableData} 
               tooltipData={tooltipData} 
+              shimmerLoading={shimmerLoading}
             />
           </div>
         </div>
