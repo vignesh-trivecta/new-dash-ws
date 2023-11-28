@@ -15,7 +15,7 @@ const OrderBook = () => {
   // local state
   const [tableData, setTableData] = useState([]);
   const [tooltipData, setTooltipData] = useState([]);
-  // const [datas, setDatas] = useState([]);
+  const [shimmerLoading, setShimmerLoading] = useState(true);
 
   // redux
   const customerId = useSelector((state) => state.report.customerId);
@@ -30,40 +30,56 @@ const OrderBook = () => {
   // column/header data for excel and pdf
   const excelColumns = ["Remote Order ID", "Exchange", "Buy/ Sell", "Exchange Order Time", "Scripts", "Quantity", "Rate ₹", "Order Status", "Market/ Limit"];
   const pdfColumns = ["Remote Order ID", "Exchange", "Buy/ Sell", "Exchange Order Time", "Scripts", "Quantity", "Rate", "Order Status", "Market/ Limit"];
+  
+  const fetchOrderBook = async () => {
+
+    setShimmerLoading(true);
+    
+    // Introduce a loading timer of 2 seconds (you can adjust the duration as needed)
+    const loadingTimer = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 3000); // 3000 milliseconds = 3 seconds
+    });
+
+    await loadingTimer; // Wait for the loading timer to complete
+
+    if (reportType === "Market") { // Live market data endpoint
+      const response = await handleLiveReportsFetch(
+        "orderbook",
+        customerId,
+        startDate,
+        endDate
+      );
+
+      const { mainDatas, tooltipDatas} = orderDataParser(response.orderbook);
+      setTableData(mainDatas);
+      setTooltipData(tooltipDatas);
+
+    }
+    else if (reportType === "Post") { // DB data endpoint
+      const response = await handleDbReportsFetch(
+        "orderbook",
+        customerId,
+        startDate,
+        endDate
+      );
+      if (response !== 404 || response !== "Failed to fetch") {
+        const { mainDatas, tooltipDatas} = orderDataParser(response);
+        setTableData(mainDatas);
+        setTooltipData(tooltipDatas);
+      }
+    }
+    else {
+      setTableData([])
+    }
+
+    setShimmerLoading(false);
+
+  };
 
   // useEffect to fetch table data from backend
   useEffect(() => {
-    const fetchOrderBook = async () => {
-      if (reportType === "Market") { // Live market data endpoint
-        const response = await handleLiveReportsFetch(
-          "orderbook",
-          customerId,
-          startDate,
-          endDate
-        );
-
-        const { mainDatas, tooltipDatas} = orderDataParser(response.orderbook);
-        setTableData(mainDatas);
-        setTooltipData(tooltipDatas);
-
-      }
-      else if (reportType === "Post") { // DB data endpoint
-        const response = await handleDbReportsFetch(
-          "orderbook",
-          customerId,
-          startDate,
-          endDate
-        );
-        if (response !== 404 || response !== "Failed to fetch") {
-          const { mainDatas, tooltipDatas} = orderDataParser(response);
-          setTableData(mainDatas);
-          setTooltipData(tooltipDatas);
-        }
-      }
-      else {
-        setTableData([])
-      }
-    };
     fetchOrderBook();
   }, [toggle]);
 
@@ -86,9 +102,7 @@ const OrderBook = () => {
             />
           </div>
           <div className="relative">
-            <FilterComponent 
-              props={'orderbook'} 
-            />
+            <FilterComponent />
           </div>
         </div>
       </div>
@@ -104,6 +118,7 @@ const OrderBook = () => {
             <OrderBookTable 
               datas={tableData} 
               tooltipData={tooltipData} 
+              shimmerLoading={shimmerLoading}
             />
           </div>
         </div>
