@@ -128,7 +128,7 @@ const BasketPage = () => {
   }, []);
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 h-[100vh] overflow-y-scroll">
       <div className="flex flex-col space-y-20">
         <div className="flex justify-center items-center">
           <Image src={Logo} alt="wealth spring logo" />
