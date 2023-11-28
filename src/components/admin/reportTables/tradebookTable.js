@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import stringFormatter from "@/utils/formatter/stringFormatter";
-import { useSelector } from "react-redux";
+import TableShimmer from "@/components/page/layout/tableShimmer";
 
-const TradeBookTable = ({ datas, tooltipData }) => {
+const TradeBookTable = ({ datas, tooltipData, shimmerLoading }) => {
 
   const time = useSelector((state) => state.user.timeFormat);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,22 +19,12 @@ const TradeBookTable = ({ datas, tooltipData }) => {
 
   };
 
-  useEffect(() => {
-    // Simulate a loading delay for the shimmer effect
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000); // Simulate a 2-second loading time
-
-    return () => clearTimeout(timer);
-  }, []); // Run this effect only once when the component mounts
-
   return (
-    <div className="mt-4" style={{ height: "380px" }}>
-      {isLoading ? (
-        // <TableShimmer datas={datas} /> // Render your shimmer loading UI here
-        <></>
+    <div className="mt-4">
+      {shimmerLoading ? (
+        <TableShimmer datas={datas} /> // Render your shimmer loading UI here
       ) : datas && datas?.length !== 0 ? (
-        <div className="overflow-y-scroll border" style={{ height: "380px" }}>
+        <div className="overflow-y-scroll border h-[calc(100vh-300px)]">
           <Table className="">
             <Thead className="bg-gray-50 sticky">
               <Tr 
