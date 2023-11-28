@@ -13,6 +13,7 @@ const Margin = () => {
 
   // local state
   const [tableData, setTableData] = useState([]);
+  const [shimmerLoading, setShimmerLoading] = useState(true);
 
   // redux
   const customerId = useSelector((state) => state.report.customerId);
@@ -28,32 +29,48 @@ const Margin = () => {
   const excelColumns = ["Adjusted Ledger Balance ₹", "Gross Holding Value ₹", "Gross Margin ₹", "Available Margin ₹"];
   const pdfColumns = ["Adjusted Ledger Balance", "Gross Holding Value", "Gross Margin", "Available Margin"];
 
+  // function the fetch the data
+  const fetchData = async () => {
+
+    setShimmerLoading(true);
+
+    // Introduce a loading timer of 2 seconds (you can adjust the duration as needed)
+    const loadingTimer = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 3000); // 3000 milliseconds = 3 seconds
+    });
+
+    await loadingTimer; // Wait for the loading timer to complete
+
+    if (reportType === "Market") { // Live market data endpoint
+      const response = await handleLiveReportsFetch(
+        "margin",
+        customerId,
+        startDate,
+        endDate
+      );
+      setTableData(response.margin);
+    }
+    else if (reportType === "Post") { // DB data endpoint
+      const response = await handleDbReportsFetch(
+        "margin",
+        customerId,
+        startDate,
+        endDate
+      );
+      setTableData(response);
+    }
+    else {
+      setTableData([])
+    }
+
+    setShimmerLoading(false);
+  };
+
   // useEffect to fetch table data from backend
   useEffect(() => {
-    const fetchMargin = async () => {
-      if (reportType === "Market") { // Live market data endpoint
-        const response = await handleLiveReportsFetch(
-          "margin",
-          customerId,
-          startDate,
-          endDate
-        );
-        setTableData(response.margin);
-      }
-      else if (reportType === "Post") { // DB data endpoint
-        const response = await handleDbReportsFetch(
-          "margin",
-          customerId,
-          startDate,
-          endDate
-        );
-        setTableData(response);
-      }
-      else {
-        setTableData([])
-      }
-    };
-    fetchMargin();
+    fetchData();
   }, [toggle]);
 
   return (
@@ -75,9 +92,7 @@ const Margin = () => {
             />
           </div>
           <div className="relative">
-            <FilterComponent 
-              props={'margin'} 
-            />
+            <FilterComponent />
           </div>
         </div>
       </div>
@@ -89,6 +104,7 @@ const Margin = () => {
           <div>
             <MarginTable 
               datas={tableData} 
+              shimmerLoading={shimmerLoading}
             />
           </div>
         </div>
