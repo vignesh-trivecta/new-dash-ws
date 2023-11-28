@@ -9,6 +9,7 @@ const BasketRecords = ({
   handleFetch,
   setHandleFetch,
   basketName,
+  mainBasketName,
   investmentVal,
   basketVal,
 }) => {
@@ -51,14 +52,15 @@ const BasketRecords = ({
           quantity={record.quantityValue}
           handleFetch={handleFetch}
           setHandleFetch={setHandleFetch}
-          mainBasketName={basketName}
+          basketName={basketName}
           investmentVal={investmentVal}
           basketVal={basketVal}
         />
 
         <DeleteRecord
           recId={record.recId}
-          mainBasketName={basketName}
+          mainBasketName={mainBasketName}
+          basketName={basketName}
           handleFetch={handleFetch}
           setHandleFetch={setHandleFetch}
         />
