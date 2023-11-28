@@ -13,6 +13,7 @@ const Ledger = () => {
 
   // local state
   const [tableData, setTableData] = useState([]);
+  const [shimmerLoading, setShimmerLoading] = useState(true);
 
   // redux
   const customerId = useSelector((state) => state.report.customerId);
@@ -28,32 +29,48 @@ const Ledger = () => {
   const excelColumns = ["Voucher Date", "Voucher Number", "Narration", "Debit/ Credit", "Amount ₹"]
   const pdfColumns = ["Voucher Date", "Voucher Number", "Narration", "Debit/ Credit", "Amount"]
 
+  // function the fetch the data
+  const fetchData = async () => {
+
+    setShimmerLoading(true);
+
+    // Introduce a loading timer of 2 seconds (you can adjust the duration as needed)
+    const loadingTimer = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 3000); // 3000 milliseconds = 3 seconds
+    });
+
+    await loadingTimer; // Wait for the loading timer to complete
+
+    if (reportType === "Market") { // Live market data endpoint
+      const response = await handleLiveReportsFetch(
+        "ledger",
+        customerId,
+        startDate,
+        endDate
+      );
+      setTableData(response.ledger);
+    }
+    else if (reportType === "Post") { // DB data endpoint
+      const response = await handleDbReportsFetch(
+        "ledger",
+        customerId,
+        startDate,
+        endDate
+      );
+      setTableData(response);
+    }
+    else {
+      setTableData([])
+    }
+
+    setShimmerLoading(false);
+  };
+
   // useEffect to fetch table data from backend
   useEffect(() => {
-    const fetchLedger = async () => {
-      if (reportType === "Market") { // Live market data endpoint
-        const response = await handleLiveReportsFetch(
-          "ledger",
-          customerId,
-          startDate,
-          endDate
-        );
-        setTableData(response.ledger);
-      }
-      else if (reportType === "Post") { // DB data endpoint
-        const response = await handleDbReportsFetch(
-          "ledger",
-          customerId,
-          startDate,
-          endDate
-        );
-        setTableData(response);
-      }
-      else {
-        setTableData([])
-      }
-    };
-    fetchLedger();
+    fetchData();
   }, [toggle]);
 
   return (
@@ -75,9 +92,7 @@ const Ledger = () => {
             />
           </div>
           <div className="relative">
-            <FilterComponent 
-              props={'ledger'} 
-            />
+            <FilterComponent />
           </div>
         </div>
       </div>
@@ -88,8 +103,8 @@ const Ledger = () => {
         <div className="overflow-auto">
           <div>
             <LedgerTable 
-              columns={excelColumns} 
               datas={tableData} 
+              shimmerLoading={shimmerLoading}
             />
           </div>
         </div>
