@@ -6,7 +6,7 @@ const initialState = {
   basketAmount: '',
   basketValue: 0,
   basketValidity: '1 day',
-  basketBroker: 'AXIS',
+  basketBroker: '',
   basketRecords: [],
 };
 
