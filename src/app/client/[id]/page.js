@@ -33,7 +33,6 @@ const Client = ({ params }) => {
       setMessage("Server error! Please try after some time.")
     }
     else if (response) {
-      console.log(response);
       dispatch(setBasketData(response));
       router.push('/client/basket');
     }
@@ -44,12 +43,11 @@ const Client = ({ params }) => {
 
   // function to generate new OTP
   const otpGeneration = async () => {
-    const response = await generateOtp(basketLink);
-    if (response) {
-      setMessage('');
-    }
-    else {
-      setMessage('OTP generation failed! Try again.')
+    const {data, code} = await generateOtp(basketLink);
+    console.log(data, code);
+    if (code !== 200) {
+      setMessage(data);
+      setError(true);
     }
   }
 
@@ -64,13 +62,25 @@ const Client = ({ params }) => {
       <div  className='mb-20'>
         <div className='flex flex-col'>
           <p className='text-center mt-4'>Enter OTP</p>
-          <input required type='password' value={otp} onChange={(e) => { setOtp(e.target.value)}} placeholder='One Time Password' className={error ? 'mt-2 border-red-500 rounded-md placeholder-red-500' : 'mt-2 border-gray-200 rounded-md placeholder-gray-300'} />
-          <p className={error ? 'visible text-red-500 text-xs' : 'invisible'}>Wrong OTP!</p>
+          <input 
+            required 
+            disabled={error}
+            type='password' 
+            value={otp} 
+            onChange={(e) => { 
+              setOtp(e.target.value);
+              setError(false);
+              setMessage("");
+            }} 
+            placeholder='One Time Password' 
+            className={'mt-2 border-gray-200 rounded-md placeholder-gray-300'} 
+          />
+          {/* <p className={error ? 'visible text-red-500 text-xs' : 'invisible'}>Wrong OTP!</p> */}
           <div className='flex justify-center items-center mt-2 space-x-2'>
-            <Button color='gray' type='button' className='' onClick={otpGeneration}>Resend OTP</Button>
-            <Button onClick={handleSubmit} type='submit' className=' '>Submit</Button>
+            <Button disabled={error} color='gray' type='button' className='' onClick={otpGeneration}>Resend OTP</Button>
+            <Button disabled={error} onClick={handleSubmit} type='submit' className=' '>Submit</Button>
           </div>
-          <p className='font-bold text-red-500 mt-4 flex justify-center'>{message}</p>
+          <p className={`font-bold mt-4 flex justify-center ${error ? "text-red-500" : ""}`}>{message}</p>
         </div>
       </div>
     </div>
