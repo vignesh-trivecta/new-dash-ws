@@ -45,59 +45,53 @@ const BasketPage = () => {
 
     // // IIFL redirect logic
     if (broker === "IIFL") {
-      console.log("enter")
 
-      if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "Y") {
-        console.log("enter")
-        // axisDirectOrderPlacement();
-        router.push("/client/placeOrder");
-      }
-      else if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "N") {
-        console.log("enter")
-        const res = await clientLogin(customerId);
-        if (res) {
-          console.log("enter")
-          const response = await clientConfirmsBasket(basketData);
-          if(response){
-            console.log("enter")
-            setData(response);
-            router.push("/client/placeOrder");
-          }
-        }
-      }
+      // if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "Y") {
+      //   console.log("enter")
+      //   // axisDirectOrderPlacement();
+      //   router.push("/client/placeOrder");
+      // }
+      // else if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "N") {
+      //   console.log("enter")
+      //   const res = await clientLogin(customerId);
+      //   if (res) {
+      //     console.log("enter")
+      //     const response = await clientConfirmsBasket(basketData);
+      //     if(response){
+      //       console.log("enter")
+      //       setData(response);
+      //       router.push("/client/placeOrder");
+      //     }
+      //   }
+      // }
 
-      // const res = await clientLogin(customerId);
+      var f = document.createElement("form");
+      f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
+      f.method = "POST";
 
-      // var f = document.createElement("form");
-      // f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
-      // f.method = "POST";
+      var i1 = document.createElement("input");
+      i1.type = "hidden";
+      i1.name = "VP";
+      i1.value = "http://13.200.85.83:8084/oauth/client/login";
+      f.appendChild(i1);
 
-      // var i1 = document.createElement("input");
-      // i1.type = "hidden";
-      // i1.name = "VP";
-      // i1.value = "http://localhost:3000/client/placeOrder";
-      // f.appendChild(i1);
+      var i2 = document.createElement("input");
+      i2.type = "hidden";
+      i2.name = "UserKey";
+      i2.value = "iGGlgBzeHZ35T8yxxC5kmW2ziUw7RraD";
+      f.appendChild(i2);
 
-      // var i2 = document.createElement("input");
-      // i2.type = "hidden";
-      // i2.name = "UserKey";
-      // i2.value = "iGGlgBzeHZ35T8yxxC5kmW2ziUw7RraD";
-      // f.appendChild(i2);
-
-      // document.body.appendChild(f);
-      // f.submit();
+      document.body.appendChild(f);
+      f.submit();
     }
 
     // axis redirect logic
     else if (broker === "AXIS") {
-      console.log("enter")
       if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "Y") {
-        console.log("enter")
         // axisDirectOrderPlacement();
         router.push("/client/placeOrder");
       }
       else if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "N") {
-        console.log("enter")
         router.push(url);
       }
     }
@@ -111,7 +105,6 @@ const BasketPage = () => {
     if (response) {
       setUrl(response);
     } else {
-      console.log(response);
       setDisableButton(true);
       setMessage(
         `${basketData.customerBroker}` +
