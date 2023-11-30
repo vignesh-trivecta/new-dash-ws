@@ -136,11 +136,7 @@ const CreateBasket = () => {
     let price;
 
     records?.forEach((record) => {
-      if (record.orderType === "MARKET") {
-        price = record.priceValue;
-      } else {
-        price = record.limitPrice;
-      }
+      price = record.priceValue;
       total += price * record.quantityValue;
     });
     setTotal(total);
