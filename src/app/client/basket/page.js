@@ -16,15 +16,11 @@ const BasketPage = () => {
   const customerId = basketData.customerId;
 
   // local state
-  const [show, setShow] = useState(false); // show the basket page or completed page
-  const [status, setStatus] = useState(false); // show the spinner or order placed page
-  const [showBasket, setShowBasket] = useState(false); // show or not show the basket in orders placed page
   const [data, setData] = useState([]);
   const [broker, setBroker] = useState(basketData.customerBroker);
   const [url, setUrl] = useState("");
   const [message, setMessage] = useState("");
   const [disableButton, setDisableButton] = useState(false);
-  const [showDeclinePage, setShowDeclinePage] = useState(false);
   const [loadingCButton, setLoadingCButton] = useState(false);
 
   // nextjs router
@@ -45,57 +41,65 @@ const BasketPage = () => {
 
     // // IIFL redirect logic
     if (broker === "IIFL") {
+      console.log("enter")
 
-      // if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "Y") {
-      //   console.log("enter")
-      //   // axisDirectOrderPlacement();
-      //   router.push("/client/placeOrder");
-      // }
-      // else if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "N") {
-      //   console.log("enter")
-      //   const res = await clientLogin(customerId);
-      //   if (res) {
-      //     console.log("enter")
-      //     const response = await clientConfirmsBasket(basketData);
-      //     if(response){
-      //       console.log("enter")
-      //       setData(response);
-      //       router.push("/client/placeOrder");
-      //     }
-      //   }
-      // }
+      if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "Y") {
+        console.log("enter")
+        // axisDirectOrderPlacement();
+        router.push("/client/placeOrder");
+      }
+      else if (basketData.customerBroker === "IIFL" && basketData.loginStatus === "N") {
+        console.log("enter")
+        const res = await clientLogin(customerId);
+        if (res) {
+          console.log("enter")
+          const response = await clientConfirmsBasket(basketData);
+          if(response){
+            console.log("enter")
+            setData(response);
+            router.push("/client/placeOrder");
+          }
+        }
+      }
 
-      var f = document.createElement("form");
-      f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
-      f.method = "POST";
+      // const res = await clientLogin(customerId);
 
-      var i1 = document.createElement("input");
-      i1.type = "hidden";
-      i1.name = "VP";
-      i1.value = "http://13.200.85.83:8084/oauth/client/login";
-      f.appendChild(i1);
+      // var f = document.createElement("form");
+      // f.action = "https://ttweb.indiainfoline.com/trade/Login.aspx";
+      // f.method = "POST";
 
-      var i2 = document.createElement("input");
-      i2.type = "hidden";
-      i2.name = "UserKey";
-      i2.value = "iGGlgBzeHZ35T8yxxC5kmW2ziUw7RraD";
-      f.appendChild(i2);
+      // var i1 = document.createElement("input");
+      // i1.type = "hidden";
+      // i1.name = "VP";
+      // i1.value = "http://localhost:3000/client/placeOrder";
+      // f.appendChild(i1);
 
-      document.body.appendChild(f);
-      f.submit();
+      // var i2 = document.createElement("input");
+      // i2.type = "hidden";
+      // i2.name = "UserKey";
+      // i2.value = "iGGlgBzeHZ35T8yxxC5kmW2ziUw7RraD";
+      // f.appendChild(i2);
+
+      // document.body.appendChild(f);
+      // f.submit();
     }
 
     // axis redirect logic
     else if (broker === "AXIS") {
       if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "Y") {
         // axisDirectOrderPlacement();
-        router.push("/client/placeOrder");
+        // router.push("/client/placeOrder");
+        router.push(url);
       }
       else if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "N") {
         router.push(url);
       }
     }
   };
+
+  const handleDecline = () => {
+    router.push('/client/response')
+  }
 
   const getAndSetUrl = async () => {
     // login the customer to AXIS
@@ -105,6 +109,7 @@ const BasketPage = () => {
     if (response) {
       setUrl(response);
     } else {
+      console.log(response);
       setDisableButton(true);
       setMessage(
         `${basketData.customerBroker}` +
@@ -115,21 +120,19 @@ const BasketPage = () => {
 
 
   useEffect(() => {
-    if (basketData.customerBroker === "AXIS" && basketData.loginStatus === "N") {
+    if (basketData.customerBroker === "AXIS") {
       getAndSetUrl();
     }
   }, []);
 
   return (
     <div className="w-full p-4 h-[100vh] overflow-y-scroll">
-      <div className="flex flex-col space-y-20">
-        <div className="flex justify-center items-center">
+      <div className="flex flex-col justify-center items-center space-y-4">
+        <div className="flex">
           <Image src={Logo} alt="wealth spring logo" />
           <div></div>
         </div>
-        { !showDeclinePage
-          ?
-          (<div className="p-2">
+          <div className="p-2">
             <div className="flex sm:justify-center space-x-2 text-left">
               <p className=" font-semibold text-sm md:text-base">
                 Basket name:{" "}
@@ -224,15 +227,14 @@ const BasketPage = () => {
                 disabled={disableButton}
                 onClick={(e) => {
                   handleConfirm();
-
                 }}
               >
-                {loadingCButton ? "Placing..." : "Confirm"}
+                {loadingCButton ? "Logging In..." : "Login to Broker"}
               </Button>
               <Button 
                 color="gray" 
                 disabled={disableButton}
-                onClick={() => setShowDeclinePage(true)} 
+                onClick={handleDecline} 
               >
                 Decline
               </Button>
@@ -240,16 +242,7 @@ const BasketPage = () => {
             <p className="text-red-500 font-bold flex justify-center mt-4">
               {message}
             </p>
-          </div>)
-          :
-          (
-            <div className="mx-auto">
-              <p className="text-lg text-center text-green-700 mt-10">Thank you!</p>
-              <p className="text-lg text-green-700">Your response has been saved.</p>
-              <p className="text-lg text-center">You can close the page now</p>
-            </div>
-          )
-        }
+          </div>
       </div>
     </div>
   );
