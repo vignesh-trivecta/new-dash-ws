@@ -7,16 +7,15 @@ export const generateOtp = async(basketLink) => {
                 'Content-Type': 'application/json'
             }
         }
-        const response = await fetch("http://13.200.85.83:8086/basket/" + basketLink, requestOptions);
-        console.log(response)
-        
-        const data = await response.text();
-        const code = await response.status;
-        return {data, code};
+        const response = await fetch("http://localhost:8086/basket/" + basketLink, requestOptions);
+        if (response.status === 200) {
+            return true;
+        }
+        return false;
 
     }
     catch(error){
-        return {data: "", code: 500};
+        return false;
     }
 }
 
@@ -33,7 +32,7 @@ export const validateOtp = async(basketLink, otp) => {
                 "otp": otp,
             })
         }
-        const response = await fetch("http://13.200.85.83:8086/basket/" + basketLink, requestOptions);
+        const response = await fetch("http://localhost:8086/basket/" + basketLink, requestOptions);
 
         if (response.status === 200) {
             const data = await response.json();
@@ -63,7 +62,7 @@ export const clientConfirmsBasket = async(basketData) => {
                 "rows": basketData.rows,
             })
         }
-        const response = await fetch("http://13.200.85.83:8084/place/order", requestOptions);
+        const response = await fetch("http://localhost:8084/place/order", requestOptions);
 
         if (response.status === 200) {
             const responseText = await response.text();
@@ -75,6 +74,7 @@ export const clientConfirmsBasket = async(basketData) => {
         }
     }
     catch(error){
+        console.log(error);
         return false;
     }
 }
@@ -91,7 +91,8 @@ export const getAxisUrl = async (customerId) => {
                 "customerId": customerId,
             })
         }
-        const response = await fetch("http://13.200.85.83:8090/axis/client/login", requestOptions);
+        console.log(customerId)
+        const response = await fetch("http://localhost:8090/axis/client/login", requestOptions);
 
         if (response.status === 200) {
             const responseText = await response.json();
@@ -137,6 +138,7 @@ export const postAxisOrders = async (customerId, ssoId, basketName, customerName
 
 // API endpoint to make AXIS direct order placement
 export const directOrderPlacement = async (customerId, basketName, customerName, basketData) => {
+    console.log(customerId, basketName, customerName, basketData)
     try{
         const requestOptions = {
             method: 'POST',
