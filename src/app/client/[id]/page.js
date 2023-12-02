@@ -44,7 +44,6 @@ const Client = ({ params }) => {
   // function to generate new OTP
   const otpGeneration = async () => {
     const {data, code} = await generateOtp(basketLink);
-    console.log(data, code);
     if (code !== 200) {
       setMessage(data);
       setError(true);

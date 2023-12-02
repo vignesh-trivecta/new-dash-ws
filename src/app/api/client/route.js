@@ -8,14 +8,13 @@ export const generateOtp = async(basketLink) => {
             }
         }
         const response = await fetch("http://localhost:8086/basket/" + basketLink, requestOptions);
-        if (response.status === 200) {
-            return true;
-        }
-        return false;
-
+        
+        const data = await response.text();
+        const code = response.status;
+        return {data, code};
     }
     catch(error){
-        return false;
+        return {data: "Otp generation failed", code: 500};
     }
 }
 
