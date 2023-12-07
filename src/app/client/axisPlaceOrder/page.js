@@ -22,6 +22,8 @@ const AxisPlaceOrder = () => {
 
   const router = useRouter();
 
+  console.log("enter page")
+
   // redux
   const basketData = useSelector((state) => state.client.basketData);
 

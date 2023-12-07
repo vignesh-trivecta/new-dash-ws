@@ -1,5 +1,6 @@
 'use client';
 
+import { executeScheduleTasks } from '@/app/api/bod-eod/route';
 import { callToUploadDoc } from '@/app/api/reports/route';
 import DayFilterComponent from '@/components/page/dayFilterComponent'
 import { Alert, Button } from 'flowbite-react';
@@ -12,9 +13,7 @@ const BodEod = () => {
   const [documentType, setDocumentType] = useState("");
   const [message, setMessage] = useState("");
   const [handleFetch, setHandleFetch] = useState(false);
-
-  const msg1 = "Reports updated Successfully!";
-  const msg2 = "Failed to update, try later!";
+  const [status, setStatus] = useState(false);
 
   const uploadDoc = async () => {
     const response = await callToUploadDoc();
@@ -27,12 +26,17 @@ const BodEod = () => {
   }
 
   const handleClick = async () => {
-    console.log("called");
-    if (true) {
-      setMessage(msg2)
-    }
-  }
+    setMessage("");
+    setStatus(false);
+    const {res, status} = await executeScheduleTasks();
 
+    setMessage(res);
+    if (status === 200) {
+      setStatus(true);
+    }
+    else setStatus(false);
+  }
+ 
   useEffect(() => {
     if (documentType !== "") {
       uploadDoc();
@@ -62,10 +66,10 @@ const BodEod = () => {
           message 
           ? 
           <Alert
-            color={message === msg1 ? "success" : "warning"}
+            color={status ? "success" : "warning"}
             rounded
             className="h-12"
-            icon={message === msg1 ? IoCheckmarkDoneCircle : HiInformationCircle}
+            icon={status ? IoCheckmarkDoneCircle : HiInformationCircle}
           >
             <span className="w-4 h-4">{message}</span>
           </Alert>
