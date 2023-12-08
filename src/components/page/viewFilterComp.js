@@ -107,7 +107,6 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
                             value={basketType}
                             onChange={(e) => {
                                 setBasketType(e.target.value);
-                                console.log(e.target.value)
                             }}
                             className="border border-gray-200 rounded-md text-sm"
                         >

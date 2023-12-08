@@ -1,6 +1,5 @@
 // API to map a basket to a customer
 export const mapBasket = async(basketName, adminId, customerId, broker, quantity) => {
-    console.log(basketName, adminId, customerId, broker, quantity)
     try{
         const requestOptions = {
             method: 'POST',
@@ -18,11 +17,9 @@ export const mapBasket = async(basketName, adminId, customerId, broker, quantity
         const response = await fetch("http://localhost:8083/customer/map", requestOptions);
         if(response.status === 200) {
             const data = await response.text();
-            console.log(data)
             return data;
         } else {
             const data = await response.text();
-            console.log(data)
             return data;
         }
     }
@@ -34,7 +31,6 @@ export const mapBasket = async(basketName, adminId, customerId, broker, quantity
 
 // API call to send weblink to a customer
 export const sendWeblink = async(basketName, adminId, customerId, brokerName, basketUnits) => {
-    console.log(basketName, adminId, customerId, brokerName, basketUnits)
     try{
         const requestOptions = {
             method: 'POST',
@@ -50,16 +46,13 @@ export const sendWeblink = async(basketName, adminId, customerId, brokerName, ba
             })
         }
         const response = await fetch("http://localhost:8083/send/weblink", requestOptions);
-        console.log(response);
 
         if(response.status === 200){
             const responseText = await response.text();
-            console.log(responseText)
             return responseText;
         }
         else{
             const data = await response.text();
-            console.log(data);
             return data;
         }
     }
@@ -111,7 +104,6 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
                 "groupName": groupName,
             })
         }
-        console.log(basketData, adminId, customerId, groupName);
 
         const response = await fetch("http://localhost:8083/customer/map/multiple", requestOptions);
         

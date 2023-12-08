@@ -12,14 +12,12 @@ export const deleteBasket = async(basketName, adminId) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/full-basket/delete", requestOptions);
-        console.log(response);
 
         if(response.status === 200){
             return true;
         }
         else {
             const errorText = await response.text();
-            console.log(errorText)
             throw new Error(`Failed to fetch data: ${errorText}`);
         }
     }
@@ -120,7 +118,7 @@ export const deleteRecordMainAPI = async(recId, basketName, adminId ) => {
         };
 
         const response = await fetch("http://localhost:8083/basket/delete", requestOptions);
-        console.log(recId, basketName, adminId,response)
+
         if (response.ok) {
             return true;
         } else {
@@ -128,6 +126,6 @@ export const deleteRecordMainAPI = async(recId, basketName, adminId ) => {
         }
     }
     catch(error){
-        console.log(error);
+        return false;
     }
 }

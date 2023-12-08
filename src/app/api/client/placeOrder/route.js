@@ -6,7 +6,6 @@ export function GET(req, res) {
 
 export function POST(req, res) {
   // Handle POST requests here
-  console.log("enter")
 }
 
 // Export functions for other HTTP methods as needed (e.g., put, delete, etc.)

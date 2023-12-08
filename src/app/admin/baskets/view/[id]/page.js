@@ -58,22 +58,6 @@ const ViewTable = ({ params }) => {
     props.setOpenModal(undefined);
   };
 
-  // const handleDelete = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     console.log('enter');
-  //     await deleteBasket(params.id, adminId);
-  //     setOpen(false);
-  //     // Set the records state to an empty array to clear the table immediately
-  //     setRecords([]);
-  //     // Set a loading state while fetching the updated records
-  //     setRes('loading');
-  //     router.push('/admin/baskets/view');
-  //   } catch (error) {
-  //     console.error('Error deleting basket:', error);
-  //   }
-  // };
-
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
       {/* <>

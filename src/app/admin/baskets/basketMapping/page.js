@@ -136,7 +136,6 @@ const BasketMapping = () => {
     setBasketDetails(response);
     const total = response?.basketDetailsList?.reduce((acc, curr) => curr.basketActualValue  + acc, 0)
     if (response !== null && response?.customerId !== null) {
-      console.log(response)
       setCustomerId(response.customerId);
       setAliasName(selectedBasketGroup);
       setTotalBasketValue(total);
@@ -192,8 +191,6 @@ const BasketMapping = () => {
     }
     
     if (showGNStaticData) {
-      console.log("enter")
-
       setEnableMap(true);
       return;
     }

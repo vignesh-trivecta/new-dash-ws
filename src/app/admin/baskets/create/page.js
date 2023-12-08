@@ -67,18 +67,6 @@ const CreateBasket = () => {
     }
   }, [saved]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const list = await getInstrumentDetails();
-  //     const key = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_AES_SECRET_KEY);
-  //     const iv = CryptoJS.enc.Utf8.parse(process.env.NEXT_PUBLIC_IV);
-  //     const decrypted = CryptoJS.AES.decrypt(list, key, {iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7}).toString(CryptoJS.enc.Utf8);
-  //     console.log(JSON.parse(decrypted))
-  //   };
-  
-  //   fetchData();
-  // }, []);
-
   // useEffect to set the message at center of table
   useEffect(() => {
     if (basketName !== "" && basketAmount !== "" && basketCategory !== "") {

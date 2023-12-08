@@ -46,26 +46,6 @@ const CustomerMapping = () => {
   const msg1 = "Basket mapped to customer successfully.";
   const msg2 = "Email sent successfully.";
 
-  console.log(message)
- 
-  // if (weblink) {
-  //   dispatch(setBasketAmount(""));
-  //   setBasketName("");
-  //   setTimeout(() => {
-  //     setWeblink(false);
-  //     // router.push("/admin/baskets/create");
-  //   }, 3000);
-  // }
-
-  // if (message) {
-  //   dispatch(setBasketAmount(""));
-  //   setBasketName("");
-  //   setTimeout(() => {
-  //     setMessage(false);
-  //     // router.push("/admin/baskets/create");
-  //   }, 3000);
-  // }
-
   const getStatus = async (value) => {
     const statusResponse = await getCustomerStatus(value);
     setStatus(statusResponse);

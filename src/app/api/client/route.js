@@ -73,7 +73,6 @@ export const clientConfirmsBasket = async(basketData) => {
         }
     }
     catch(error){
-        console.log(error);
         return false;
     }
 }
@@ -90,7 +89,6 @@ export const getAxisUrl = async (customerId) => {
                 "customerId": customerId,
             })
         }
-        console.log(customerId)
         const response = await fetch("http://localhost:8090/axis/client/login", requestOptions);
 
         if (response.status === 200) {
@@ -137,7 +135,6 @@ export const postAxisOrders = async (customerId, ssoId, basketName, customerName
 
 // API endpoint to make AXIS direct order placement
 export const directOrderPlacement = async (customerId, basketName, customerName, basketData) => {
-    console.log(customerId, basketName, customerName, basketData)
     try{
         const requestOptions = {
             method: 'POST',

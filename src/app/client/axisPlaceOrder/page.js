@@ -22,8 +22,6 @@ const AxisPlaceOrder = () => {
 
   const router = useRouter();
 
-  console.log("enter page")
-
   // redux
   const basketData = useSelector((state) => state.client.basketData);
 
@@ -46,26 +44,6 @@ const AxisPlaceOrder = () => {
     record?.quantityValue;
     basketValue = basketValue + i;
   });
-
-    // AXIS order placement function using SSO ID
-  const placeAxisOrders = async () => {
-    const response = await postAxisOrders(
-      customerId,
-      ssoId,
-      basketName,
-      customerName,
-      basketData.rows
-    );
-    console.log(response)
-    if (response) {
-      setData(response);
-      setStatus(true);
-    }
-    else {
-      setStatus(false);
-      setSpinner(false);
-    }
-  };
 
   // function to hanlde the order placement
   const handlePlaceOrder = () => {

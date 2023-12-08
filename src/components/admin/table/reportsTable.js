@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import TableShimmer from "../../page/layout/tableShimmer";
 
 const ReportsTable = ({ columns, datas, tooltipData, param }) => {
-  console.log(columns, datas, tooltipData);
   const pathName = usePathname();
   const time = useSelector((state) => state.user.timeFormat);
   const [isLoading, setIsLoading] = useState(true);

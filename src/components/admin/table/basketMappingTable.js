@@ -80,7 +80,6 @@ useEffect(() => {
 
   // handle customer mapping
   const handleMapping = async (customerId) => {
-    console.log("clicked");
     const response = await mapBasket(
       basketName,
       adminId,
@@ -111,7 +110,6 @@ useEffect(() => {
               const newValue = e.target.value;
               setCheckedBaskets([...checkedBaskets, newValue]);
               setChecked(true);
-              console.log('enter 1')
             }
             else {
               const newValue = e.target.value;
@@ -119,7 +117,6 @@ useEffect(() => {
               setCheckedBaskets(newList);
               handleQuantityChange(0);
               setChecked(false);
-              console.log('enter 2')
             }
           }}  
         />

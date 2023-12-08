@@ -1,8 +1,6 @@
 // bod- eod => Schedule tasks call
 export const executeScheduleTasks = async () => {
-    console.log("enter")
     try {
-        console.log("enter")
         const requestOptions = {
             method: "GET",
             headers: {

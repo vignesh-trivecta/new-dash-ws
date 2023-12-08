@@ -13,8 +13,6 @@ const DayFilterComponent = ({documentType, setDocumentType, handleFetch, setHand
     const handleFilter = async (e) => {
         e.preventDefault();
         setHandleFetch(!handleFetch);
-        
-        console.log("filter clicked")
     }
 
     return (

@@ -50,17 +50,14 @@ export const clientLogin = async(customerId) => {
                 "customerId": customerId,
             })
         }
-        console.log(customerId)
         const response = await fetch("http://localhost:8084/client/login", requestOptions);
 
-        console.log(response)
         if(response.status === 200) {
             return true;
         } 
         return false;
     }
     catch(error){
-        console.log(error);
         return false;
     }
 }

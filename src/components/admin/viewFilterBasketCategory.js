@@ -69,9 +69,6 @@ export default function ViewFilterBasketCategory({basketCategory, setBasketCateg
               {filteredPeople.length === 0 && query !== "" ? (
                 <button
                   className="relative cursor-pointer text-left py-2 px-4 text-gray-700 w-full"
-                  onClick={() => {
-                    console.log("click");
-                  }}
                 >
                   {`Add "${query}"`}
                 </button>

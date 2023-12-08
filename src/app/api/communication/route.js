@@ -1,6 +1,5 @@
 // API endpoint to send the communication
 export const sendCommunication = async (customerId, message) => {
-    console.log(customerId.split(" ")[0], message)
     try {
         const requestOptions = {
             method: "POST",
