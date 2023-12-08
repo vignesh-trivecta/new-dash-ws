@@ -70,7 +70,7 @@ const BasketPage = () => {
       var i1 = document.createElement("input");
       i1.type = "hidden";
       i1.name = "VP";
-      i1.value = "http://localhost:3000/client/axisPlaceOrder";
+      i1.value = "http://localhost:3000/client/orderPagge";
       f.appendChild(i1);
 
       var i2 = document.createElement("input");
@@ -228,7 +228,7 @@ const BasketPage = () => {
                   handleConfirm();
                 }}
               >
-                {loadingCButton ? "Logging In..." : "Login to Broker"}
+                {loadingCButton ? "Redirecting..." : "Login to Broker"}
               </Button>
               <Button 
                 color="gray" 
