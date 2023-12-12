@@ -17,7 +17,6 @@ const Reports = () => {
 
     // function to login the admin to the IIFL page
     const handleClick = async () => {
-
         dispatch(setAdminLogin(true));
     }
 
