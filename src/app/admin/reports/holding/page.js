@@ -24,6 +24,7 @@ const Holding = () => {
   const reportType = useSelector((state) => state.report.reportType);
   const startDate = useSelector((state) => state.report.startDate);
   const endDate = useSelector((state) => state.report.endDate);
+  const broker = useSelector((state) => state.report.broker);
   const toggle = useSelector((state) => state.report.toggle);
 
   
@@ -53,7 +54,8 @@ const Holding = () => {
         "holding",
         customerId,
         startDate,
-        endDate
+        endDate,
+        broker
       );
       // setData(response);
       setTableData(response.holding);

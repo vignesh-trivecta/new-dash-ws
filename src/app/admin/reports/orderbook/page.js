@@ -22,6 +22,7 @@ const OrderBook = () => {
   const reportType = useSelector((state) => state.report.reportType);
   const startDate = useSelector((state) => state.report.startDate);
   const endDate = useSelector((state) => state.report.endDate);
+  const broker = useSelector((state) => state.report.broker);
   const toggle = useSelector((state) => state.report.toggle);
 
   // Data for breadcrumb
@@ -49,8 +50,11 @@ const OrderBook = () => {
         "orderbook",
         customerId,
         startDate,
-        endDate
+        endDate,
+        broker
       );
+
+      console.log(response);
 
       const { mainDatas, tooltipDatas} = orderDataParser(response.orderbook);
       setTableData(mainDatas);
@@ -62,13 +66,13 @@ const OrderBook = () => {
         "orderbook",
         customerId,
         startDate,
-        endDate
-      );
-      if (response !== 404 || response !== "Failed to fetch") {
-        const { mainDatas, tooltipDatas} = orderDataParser(response);
-        setTableData(mainDatas);
-        setTooltipData(tooltipDatas);
-      }
+        endDate,
+        broker
+      )
+      
+      const { mainDatas, tooltipDatas} = orderDataParser(response);
+      setTableData(mainDatas);
+      setTooltipData(tooltipDatas);
     }
     else {
       setTableData([])

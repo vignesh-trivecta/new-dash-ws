@@ -22,6 +22,7 @@ const TradeBook = () => {
   const reportType = useSelector((state) => state.report.reportType);
   const startDate = useSelector((state) => state.report.startDate);
   const endDate = useSelector((state) => state.report.endDate);
+  const broker = useSelector((state) => state.report.broker);
   const toggle = useSelector((state) => state.report.toggle);
 
   // Data for breadcrumb
@@ -50,8 +51,11 @@ const TradeBook = () => {
         "tradebook",
         customerId,
         startDate,
-        endDate
+        endDate,
+        broker
       );
+
+      console.log(response);
 
       const { mainDatas, tooltipDatas} = tradeDataParser(response.tradeBook);
       setTableData(mainDatas);
@@ -62,8 +66,12 @@ const TradeBook = () => {
         "tradebook",
         customerId,
         startDate,
-        endDate
+        endDate,
+        broker
       )
+
+      console.log(response);
+
       const { mainDatas, tooltipDatas} = tradeDataParser(response);
       setTableData(mainDatas);
       setTooltipData(tooltipDatas);

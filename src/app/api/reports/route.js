@@ -38,16 +38,17 @@ export const isMarketOpen = async () => {
     }
   
     const response = await fetch("http://localhost:8083/market/check", requestOptions);
-  
+
     if (response.status === 200) {
       const responseText = await response.json();
       return responseText.marketStatus;
     }
+    else return null;
   } catch (error) {
-    console.log(error)
-    return;  
+    return null;  
   }
 }
+
 
 // General function handling POST request for all endpoints
 // post market hours fetch from Database
@@ -55,7 +56,8 @@ export const handleDbReportsFetch = async (
   requestName,
   customerId,
   startDate,
-  endDate
+  endDate,
+  broker
 ) => {
   try {
 
@@ -71,19 +73,18 @@ export const handleDbReportsFetch = async (
       }),
     };
 
-    const response = await fetch(
-      `http://localhost:8083/iifl/db/${requestName}`,
-      requestOptions
-      );
+    let reqUrl;
+    broker === "AXIS" ? reqUrl = "axis/db" : reqUrl = "iifl/db";
 
+    const response = await fetch(
+      `http://localhost:8083/${reqUrl}/${requestName}`,
+      requestOptions
+    );
 
     if (response.status === 200) {
       const responseText = await response.json();
       return responseText;
     } 
-    else if (response.status === 404) {
-      //return response.status;
-    }
     else {
       //return response.status;
     }
@@ -99,8 +100,10 @@ export const handleLiveReportsFetch = async (
   requestName,
   customerId,
   startDate,
-  endDate
+  endDate,
+  broker
 ) => {
+
   try {
     const requestOptions = {
       method: "POST",
@@ -113,8 +116,12 @@ export const handleLiveReportsFetch = async (
         toDate: endDate.toISOString().split('T')[0],
       }),
     };
-    const response = await fetch(
-      `http://localhost:8085/partner/live/${requestName}`,
+    
+    let reqUrl;
+    broker === "AXIS" ? reqUrl = "axis/live/db" : reqUrl = "partner/live";
+
+    let response = await fetch(
+      `http://localhost:8085/${reqUrl}/${requestName}`,
       requestOptions
     );
 
@@ -122,9 +129,6 @@ export const handleLiveReportsFetch = async (
       const responseText = await response.json();
       return responseText;
     } 
-    else if (response.status === 404) {
-      return [];
-    }
     else {
       return [];
     }
