@@ -7,16 +7,12 @@ import TableShimmer from "@/components/page/layout/tableShimmer";
 
 const TradeBookTable = ({ datas, tooltipData, shimmerLoading }) => {
 
-  const time = useSelector((state) => state.user.timeFormat);
-  const [isLoading, setIsLoading] = useState(true);
-
   const renderTooltipContent = (index) => {
-      return `Exchange Order Id: ${
-        tooltipData && tooltipData[index]?.exchangeOrderId
-      } <br /> Exchange Trade Id: ${
-        tooltipData && tooltipData[index]?.exchangeTradeId
-      }`;
-
+    return `Exchange Order Id: ${
+      tooltipData && tooltipData[index]?.exchangeOrderId
+    } <br /> Exchange Trade Id: ${
+      tooltipData && tooltipData[index]?.exchangeTradeId
+    }`;
   };
 
   return (
