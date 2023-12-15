@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   handleDbReportsFetch,
   handleLiveReportsFetch,
@@ -12,6 +12,10 @@ import ExportRow from "@/components/page/exportRow";
 import FilterComponent from "@/components/page/filterComp";
 import Breadcrumbs from "@/components/page/breadcrumb";
 import HoldingTable from "@/components/admin/reportTables/holdingTable";
+import { setMessage, setStatus } from "@/store/reportSlice";
+import { Alert } from "flowbite-react";
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
+import { HiInformationCircle } from "react-icons/hi";
 
 const Holding = () => {
 
@@ -20,13 +24,15 @@ const Holding = () => {
   const [shimmerLoading, setShimmerLoading] = useState(true);
 
   // redux
+  const dispatch = useDispatch();
   const customerId = useSelector((state) => state.report.customerId);
   const reportType = useSelector((state) => state.report.reportType);
   const startDate = useSelector((state) => state.report.startDate);
   const endDate = useSelector((state) => state.report.endDate);
   const broker = useSelector((state) => state.report.broker);
   const toggle = useSelector((state) => state.report.toggle);
-
+  const status = useSelector((state) => state.report.status);
+  const message = useSelector((state) => state.report.message);
   
   // Data for breadcrumb
   const ids = [{ Reports: "/admin/reports" }, { Holding: "" }];
@@ -39,6 +45,7 @@ const Holding = () => {
   const fetchHolding = async () => {
 
     setShimmerLoading(true);
+    dispatch(setMessage(""));
 
     // Introduce a loading timer of 2 seconds (you can adjust the duration as needed)
     const loadingTimer = new Promise((resolve) => {
@@ -50,7 +57,7 @@ const Holding = () => {
     await loadingTimer; // Wait for the loading timer to complete
 
     if (reportType === "Market") { // Live market data endpoint
-      const response = await handleLiveReportsFetch(
+      const {status, responseJson} = await handleLiveReportsFetch(
         "holding",
         customerId,
         startDate,
@@ -58,16 +65,28 @@ const Holding = () => {
         broker
       );
       // setData(response);
-      setTableData(response.holding);
+      dispatch(setStatus(status === 200 ? true : false));
+      setTableData(responseJson.holding);
+      dispatch(setMessage(responseJson.message));
     }
     else if (reportType === "Post") { // DB data endpoint
-      const response = await handleDbReportsFetch(
+      const {status, responseJson} = await handleDbReportsFetch(
         "holding",
         customerId,
         startDate,
-        endDate
+        endDate,
+        broker
       );
-      setTableData(response);
+      setTableData(responseJson ?? []);
+      dispatch(setStatus(status === 200 ? true : false));
+      if (status === 200) {
+        dispatch(setMessage("Success"));
+      } else if (status === 404) {
+        dispatch(setMessage("No data available"));
+      }
+      else if (status === 500) {
+        dispatch(setMessage("Internal Server Error"));
+      }
     }
     else {
       setTableData([])
@@ -116,6 +135,21 @@ const Holding = () => {
             />
           </div>
         </div>
+      </div>
+      <div className="absolute bottom-4 w-96">
+        {
+          message 
+          ? 
+          <Alert
+            color={status ? "success" : "warning"}
+            rounded
+            className="h-12"
+            icon={status ? IoCheckmarkDoneCircle : HiInformationCircle}
+          >
+            <span className="w-4 h-4">{message}</span>
+          </Alert>
+          : ""
+        }
       </div>
     </div>
   );
