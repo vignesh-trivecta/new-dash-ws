@@ -1,7 +1,6 @@
 'use client';
 
-import { executeScheduleTasks } from '@/app/api/bod-eod/route';
-import { callToUploadDoc } from '@/app/api/reports/route';
+import { callToUploadDoc, executeScheduleTasks } from '@/app/api/bod-eod/route';
 import DayFilterComponent from '@/components/page/dayFilterComponent'
 import { Alert, Button } from 'flowbite-react';
 import React, { useEffect, useState } from 'react'
@@ -16,25 +15,30 @@ const BodEod = () => {
   const [status, setStatus] = useState(false);
 
   const uploadDoc = async () => {
-    const response = await callToUploadDoc();
-    if (response) {
-      setMessage(response)
-    }
-    else {
-      setMessage("Error Occured! Try after some time.")
-    }
-  }
-
-  const handleClick = async () => {
-    setMessage("");
-    setStatus(false);
-    const {res, status} = await executeScheduleTasks();
-
+    const {res, status} = await callToUploadDoc();
+        
     setMessage(res);
     if (status === 200) {
       setStatus(true);
     }
-    else setStatus(false);
+    else {
+      setStatus(false);
+    }
+  }
+
+  const handleClick = async (broker) => {
+    setMessage("");
+    setStatus(false);
+
+    const {res, status} = await executeScheduleTasks(broker);
+    
+    setMessage(res);
+    if (status === 200) {
+      setStatus(true);
+    }
+    else {
+      setStatus(false);
+    }
   }
  
   useEffect(() => {
@@ -57,9 +61,14 @@ const BodEod = () => {
         </div>
       </div>
       <div className='mt-4'>
-        <Button onClick={handleClick}>
-          Update IIFL Reports
-        </Button>
+        <div className='space-y-4'>
+          <Button id="iifl" onClick={() => handleClick("IIFL")}>
+            Update IIFL Reports
+          </Button>
+          <Button id="axis" onClick={() => handleClick("AXIS")}>
+            Update AXIS Reports
+          </Button>
+        </div>
       </div>
       <div className="absolute bottom-16 w-96">
         {
