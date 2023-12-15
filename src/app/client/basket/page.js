@@ -70,7 +70,7 @@ const BasketPage = () => {
       var i1 = document.createElement("input");
       i1.type = "hidden";
       i1.name = "VP";
-      i1.value = "http://localhost:3000/client/orderPagge";
+      i1.value = "http://localhost:3000/client/orderPage";
       f.appendChild(i1);
 
       var i2 = document.createElement("input");
