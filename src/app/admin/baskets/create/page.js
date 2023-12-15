@@ -124,7 +124,7 @@ const CreateBasket = () => {
     let price;
 
     records?.forEach((record) => {
-      price = record.priceValue;
+      price =  record.limitPrice || record.priceValue;
       total += price * record.quantityValue;
     });
     setTotal(total);
