@@ -15,7 +15,9 @@ const initialState = {
     adminLogin: false,
     reportType: '',
     data: [],
-    path: ''
+    path: '',
+    status: "",
+    message: "",
 }
 
 // creating new slice
@@ -53,9 +55,15 @@ const reportSlice = createSlice({
         setPath: (state, action) => {
             state.path = action.payload;
         },
+        setStatus: (state, action) => {
+            state.status = action.payload;
+        },
+        setMessage: (state, action) => {
+            state.message = action.payload;
+        },
     }
 });
 
-export const { setCustomerId, setBroker, setDateType, setStartDate, setEndDate, setToggle, setAdminLogin, setReportType, setData, setPath } = reportSlice.actions;
+export const { setCustomerId, setBroker, setDateType, setStartDate, setEndDate, setToggle, setAdminLogin, setReportType, setData, setPath, setStatus, setMessage } = reportSlice.actions;
 
 export default reportSlice.reducer;
