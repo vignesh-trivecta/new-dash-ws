@@ -26,13 +26,13 @@ const BasketPage = () => {
   // nextjs router
   const router = useRouter();
 
-  // calculating the value of the basket
+ // calculating the value of the basket
   let basketValue = 0;
   const dataValue = basketData?.rows?.map((record, index) => {
     let i =
       (record?.limitPrice != 0 ? record?.limitPrice : record?.priceValue) *
       record?.quantityValue;
-    basketValue = basketValue + i;
+    basketValue += i;
   });
 
   // OAuth login redirect after click on submit button
