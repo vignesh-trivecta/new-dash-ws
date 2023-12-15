@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button, Dropdown, Label } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBroker, setCustomerId, setDateType, setEndDate, setReportType, setStartDate, setToggle } from "@/store/reportSlice";
+import { setBroker, setCustomerId, setDateType, setEndDate, setMessage, setReportType, setStartDate, setToggle } from "@/store/reportSlice";
 import { getCustomers } from "@/app/api/basket/route";
 import { BiFilterAlt } from "react-icons/bi";
 import DatePicker from "react-datepicker";
@@ -22,6 +22,7 @@ const FilterComponent = () => {
     const endDate = useSelector((state) => state.report.endDate);
     const toggle = useSelector((state) => state.report.toggle);
     const path = useSelector((state) => state.report.path);
+    const message = useSelector((state) => state.report.message);
     
     // local state
     const [now, setNow] = useState(false);
@@ -71,11 +72,13 @@ const FilterComponent = () => {
         dispatch(setStartDate(new Date(new Date().setDate(new Date().getDate() - 1))));
         dispatch(setEndDate(new Date(new Date().setDate(new Date().getDate() - 1))));
         dispatch(setToggle(!toggle));
+        dispatch(setMessage(""));
     }
 
     // function handling when filter button is clicked
     const handleFilter = async (e) => {
         e.preventDefault();
+        dispatch(setMessage(""));
         dispatch(setCustomerId(localCustomerId));
         dispatch(setBroker(localBroker));
         dispatch(setReportType(localReportType));
