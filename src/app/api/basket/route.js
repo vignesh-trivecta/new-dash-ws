@@ -119,7 +119,8 @@ export const cloneBasket = async (basketName, newBasketName, adminId) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/clone", requestOptions);
-        if(response.ok){
+
+        if(response.status === 200){
             return true;
         }
         else{
@@ -127,7 +128,7 @@ export const cloneBasket = async (basketName, newBasketName, adminId) => {
         }
     }
     catch(error) {
-        console.log(error);
+        return false;
     }
 }
 
@@ -144,7 +145,7 @@ export const basketNameCheck = async (basketName) => {
             })
         }
         const response = await fetch("http://localhost:8083/basket/namecheck", requestOptions);
-        if(response.ok){
+        if(response.status === 200){
             return true;
         }
         else{

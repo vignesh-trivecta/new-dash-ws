@@ -4,18 +4,21 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { Button, Label, Modal, TextInput } from "flowbite-react";
-import { cloneBasket, getSpecificBasket } from "@/app/api/basket/route";
+import { basketNameCheck, cloneBasket, getSpecificBasket } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const ViewTable = ({ params }) => {
   const basketName = params.id.split("%20").join(" ");
-  let input;
 
   // local state variables
   const [records, setRecords] = useState([]);
   const [res, setRes] = useState(false);
+  const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [message, setMessage] = useState("");
 
   // modal elements
   const [openModal, setOpenModal] = useState();
@@ -57,6 +60,37 @@ const ViewTable = ({ params }) => {
   const handleClone = () => {
     props.setOpenModal(undefined);
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(input);
+    let response = await cloneBasket(
+      basketName,
+      input,
+      adminId
+    );
+    if (response) {
+      setOpenModal(undefined);
+      router.push("/admin/baskets/view");
+    }
+    else {
+      setOpenModal(undefined);
+    }
+  };
+
+  const checkBasketAlreadyExists = async (input) => {
+    const response = await basketNameCheck(input);
+    if (response) {
+      setError(false);
+      setMessage("");
+      setIsButtonDisabled(false);
+    }
+    else {
+      setError(true);
+      setMessage("Basket Name already exists!");
+      setIsButtonDisabled(true);
+    }
+  }
 
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
@@ -137,51 +171,62 @@ const ViewTable = ({ params }) => {
           show={props.openModal === "form-elements"}
           size="sm"
           popup
-          onClose={() => props.setOpenModal(undefined)}
+          onClose={() =>{ 
+            props.setOpenModal(undefined)
+            setError(false);
+            setMessage("");
+          }}
         >
           <Modal.Header />
           <Modal.Body>
-            <div className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-2">
               <div>
                 <div className="mb-2 block">
                   <Label htmlFor="email" value="New Basket Name" />
                 </div>
                 <TextInput
+                  required
                   id="email"
-                  className=""
+                  className="border-red-500"
                   autoFocus
+                  // value={""}
                   onChange={(e) => {
-                    input = e.target.value;
+                    let inputValue = e.target.value;
+                    setInput(inputValue);
+                    checkBasketAlreadyExists(inputValue);
                     // setNewBasketName(e.target.value);
                   }}
-                  required
                 />
+                <div className="mt-2 h-4">
+                  { message
+                    ? <p className="text-red-500 text-xs">
+                      {message}
+                    </p>
+                    : <p>{""}</p>
+                  }
+                </div>
               </div>
 
               <div className="w-full flex justify-center items-center space-x-4">
-                <Button
-                  onClick={async () => {
-                    let response = await cloneBasket(
-                      basketName,
-                      input,
-                      adminId
-                    );
-                    setOpenModal(undefined);
-                    router.push("/admin/baskets/view");
-                  }}
+                <button
+                  className="rounded-md bg-cyan-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-cyan-700 shadow-sm"
+                  disabled={isButtonDisabled}
                 >
                   Clone
-                </Button>
+                </button>
                 <Button
                   color="gray"
                   onClick={() => {
                     setOpenModal(undefined);
+                    setError(false);
+                    setMessage("");
+                    setIsButtonDisabled(false);
                   }}
                 >
                   Cancel
                 </Button>
               </div>
-            </div>
+            </form>
           </Modal.Body>
         </Modal>
       </>
