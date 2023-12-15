@@ -119,7 +119,7 @@ export const handleLiveReportsFetch = async (
     
     let reqUrl, endpoint;
     broker === "AXIS" ? reqUrl = "axis/live" : reqUrl = "partner/live";
-    broker === "AXIS" ? endpoint = 8090 : endpoint = 8085;
+    broker === "AXIS" ? endpoint = "8090" : endpoint = "8085";
 
     let response = await fetch(
       `http://localhost:${endpoint}/${reqUrl}/${requestName}`,
