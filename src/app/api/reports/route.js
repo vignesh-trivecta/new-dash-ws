@@ -81,16 +81,16 @@ export const handleDbReportsFetch = async (
       requestOptions
     );
 
-    if (response.status === 200) {
-      const responseText = await response.json();
-      return responseText;
-    } 
-    else {
-      //return response.status;
+    let responseJson = "";
+    const status = response.status;
+    if (status === 200) {
+     responseJson = await response.json();
     }
+    
+    return {status, responseJson};
+    
   } catch (error) {
-    console.log(error)
-    //return error.message;
+    return {status: 500, responseJson: []};
   }
 };
 
@@ -117,39 +117,24 @@ export const handleLiveReportsFetch = async (
       }),
     };
     
-    let reqUrl;
-    broker === "AXIS" ? reqUrl = "axis/live/db" : reqUrl = "partner/live";
+    let reqUrl, endpoint;
+    broker === "AXIS" ? reqUrl = "axis/live" : reqUrl = "partner/live";
+    broker === "AXIS" ? endpoint = 8090 : endpoint = 8085;
 
     let response = await fetch(
-      `http://localhost:8085/${reqUrl}/${requestName}`,
+      `http://localhost:${endpoint}/${reqUrl}/${requestName}`,
       requestOptions
     );
 
-    if (response.status === 200) {
-      const responseText = await response.json();
-      return responseText;
-    } 
-    else {
-      return [];
-    }
+    console.log(response);
+
+    const status = response.status;
+    const responseJson = await response.json();
+    console.log(status, responseJson)
+    return {status, responseJson};
+
   } catch (error) {
-    return [];
+    return {status: 500, responseJson:{ [requestName]: [], message: "Server Error! Try after some time"}};
   }
 };
 
-// API endpoint to upload the Exchange data to DB
-export const callToUploadDoc = async () => {
-  try {
-    const response = await fetch("http://localhost:8087/excel/update");
-
-    if (response.status === 200) {
-      const responseText = await response.text();
-      return responseText;
-    } 
-    else {
-      return false;
-    }
-  } catch (error) {
-    return false;
-  }
-};
