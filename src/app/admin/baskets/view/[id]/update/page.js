@@ -85,7 +85,7 @@ const UpdateBasket = ({ params }) => {
     // setting the basket value
     let total = 0;
     records?.forEach((record) => {
-      let price = record.priceValue;
+      let price = record.limitPrice || record.priceValue;
       total += price * record.quantityValue;
     });
     setTotal(total);
