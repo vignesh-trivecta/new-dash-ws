@@ -88,7 +88,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             }
             else {
                 const newVal = amountSplitter(basketVal)
-                data = await AddRecordMainAPI(adminName, mainBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, newVal, baskCat);
+                const newBasketName = mainBasketName.split("%20").join(" ");
+                data = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, newVal, baskCat);
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
             }

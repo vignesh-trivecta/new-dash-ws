@@ -34,7 +34,7 @@ const BasketRecords = ({
         <div className="text-sm text-black">{segreagatorWoComma(record.priceValue)}</div>
       </td>
       <td className="text-right">
-        <div className="text-sm text-black">{segreagatorWoComma(record.limitPrice)}</div>
+        <div className="text-sm text-black">{segreagatorWoComma(record.limitPrice) || 0}</div>
       </td>
       <td className="text-right">
         <div className="text-sm text-black">{segregate(record.quantityValue)}</div>
