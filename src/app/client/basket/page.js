@@ -11,6 +11,10 @@ import { clientLogin } from "@/app/api/login/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const BasketPage = () => {
+
+  const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+  const PORT = process.env.NEXT_PUBLIC_IIFL_INTEGR_PORT;
+  
   // redux
   const basketData = useSelector((state) => state.client.basketData);
   const customerId = basketData.customerId;
@@ -70,7 +74,7 @@ const BasketPage = () => {
       var i1 = document.createElement("input");
       i1.type = "hidden";
       i1.name = "VP";
-      i1.value = "http://localhost:8084/oauth/client/login";
+      i1.value = `http://${DOMAIN}:${PORT}/oauth/client/login`;
       f.appendChild(i1);
 
       var i2 = document.createElement("input");
