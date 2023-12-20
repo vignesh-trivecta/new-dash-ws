@@ -1,3 +1,9 @@
+
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT1 = process.env.NEXT_PUBLIC_IIFL_INTEGR_PORT;
+const PORT2 = process.env.NEXT_PUBLIC_CLIENT_LOGIN_PORT;
+const PORT3 = process.env.NEXT_PUBLIC_AXIS_CLIENT_LOGIN_PORT;
+
 // API call to generate the otp
 export const generateOtp = async(basketLink) => {
     try{
@@ -7,7 +13,7 @@ export const generateOtp = async(basketLink) => {
                 'Content-Type': 'application/json'
             }
         }
-        const response = await fetch("http://localhost:8086/basket/" + basketLink, requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT2}/basket/` + basketLink, requestOptions);
         
         const data = await response.text();
         const code = response.status;
@@ -31,7 +37,7 @@ export const validateOtp = async(basketLink, otp) => {
                 "otp": otp,
             })
         }
-        const response = await fetch("http://localhost:8086/basket/" + basketLink, requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT2}/basket/` + basketLink, requestOptions);
 
         if (response.status === 200) {
             const data = await response.json();
@@ -61,7 +67,7 @@ export const clientConfirmsBasket = async(basketData) => {
                 "rows": basketData.rows,
             })
         }
-        const response = await fetch("http://localhost:8084/place/order", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT1}/place/order`, requestOptions);
 
         if (response.status === 200) {
             const responseText = await response.text();
@@ -89,7 +95,7 @@ export const getAxisUrl = async (customerId) => {
                 "customerId": customerId,
             })
         }
-        const response = await fetch("http://localhost:8090/axis/client/login", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT3}/axis/client/login`, requestOptions);
 
         if (response.status === 200) {
             const responseText = await response.json();
@@ -119,7 +125,7 @@ export const postAxisOrders = async (customerId, ssoId, basketName, customerName
                 "rows": basketData
             })
         }
-        const response = await fetch("http://localhost:8090/axis/client/tokens", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT3}/axis/client/tokens`, requestOptions);
 
         if (response.status === 200) {
             const responseText = await response.json();
@@ -148,7 +154,7 @@ export const directOrderPlacement = async (customerId, basketName, customerName,
                 "rows": basketData
             })
         }
-        const response = await fetch("http://localhost:8090/axis/client/direct-order-placement", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT3}/axis/client/direct-order-placement`, requestOptions);
 
         if (response.status === 200) {
             const responseText = await response.json();
