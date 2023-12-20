@@ -1,3 +1,8 @@
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
+const PORT_AXIS = process.env.NEXT_PUBLIC_AXIS_CLIENT_LOGIN_PORT;
+const PORT_IIFL = process.env.NEXT_PUBLIC_IIFL_REPORTS_PORT;
+
 // API endpoint to get broker based on customer Id
 export const getBroker = async (customerId) => {
   try {
@@ -11,7 +16,7 @@ export const getBroker = async (customerId) => {
       }),
     };
     const response = await fetch(
-      "http://localhost:8083/client/broker-info",
+      `http://${DOMAIN}:${PORT}/client/broker-info`,
       requestOptions
     );
 
@@ -37,7 +42,7 @@ export const isMarketOpen = async () => {
       },
     }
   
-    const response = await fetch("http://localhost:8083/market/check", requestOptions);
+    const response = await fetch(`http://${DOMAIN}:${PORT}/market/check`, requestOptions);
 
     if (response.status === 200) {
       const responseText = await response.json();
@@ -77,7 +82,7 @@ export const handleDbReportsFetch = async (
     broker === "AXIS" ? reqUrl = "axis/db" : reqUrl = "iifl/db";
 
     const response = await fetch(
-      `http://localhost:8083/${reqUrl}/${requestName}`,
+      `http://${DOMAIN}:${PORT}/${reqUrl}/${requestName}`,
       requestOptions
     );
 
@@ -117,12 +122,12 @@ export const handleLiveReportsFetch = async (
       }),
     };
     
-    let reqUrl, endpoint;
+    let reqUrl, port;
+    broker === "AXIS" ? port = PORT_AXIS : port = PORT_IIFL;
     broker === "AXIS" ? reqUrl = "axis/live" : reqUrl = "partner/live";
-    broker === "AXIS" ? endpoint = "8090" : endpoint = "8085";
 
     let response = await fetch(
-      `http://localhost:${endpoint}/${reqUrl}/${requestName}`,
+      `http://${DOMAIN}:${port}/${reqUrl}/${requestName}`,
       requestOptions
     );
 
