@@ -1,5 +1,8 @@
 import { encrypt } from "@/utils/aesEncryptor";
 
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
+
 // API call to fetch all records of a basket in temporary table
 export const getRecords = async(adminName, basketName) => {
     try{
@@ -15,15 +18,14 @@ export const getRecords = async(adminName, basketName) => {
                 }
             )
         };
-        const response = await fetch("http://localhost:8083/basket/temp/list", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp/list`, requestOptions);
 
         if (response.status === 200) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
             return data;
         } else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return [];
         }
     }
     catch(error){
@@ -58,7 +60,7 @@ export const addRecord = async(adminName, basketName, selectedStock, exchange, o
             ))
         };
 
-        const response = await fetch("http://localhost:8083/basket/temp", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp`, requestOptions);
 
         if (response.status === 200) {
             return true;
@@ -96,7 +98,7 @@ export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, 
                 "limitPrice": limitPrice    
             })
         };
-        const response = await fetch("http://localhost:8083/basket/temp/up", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp/up`, requestOptions);
 
         if (response.status === 200) {
             return true;
@@ -124,7 +126,7 @@ export const deleteRecord = async(recId, basketName, adminName) => {
                   "adminName": adminName
                 })
         }
-        const response = await fetch("http://localhost:8083/basket/temp/del", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp/del`, requestOptions);
 
         if (response.status === 200) {
             return true;
