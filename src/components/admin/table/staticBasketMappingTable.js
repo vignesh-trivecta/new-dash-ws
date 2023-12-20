@@ -20,7 +20,7 @@ const StaticBasketMappingTable = ({data, index}) => {
             {data.basketCategory}
           </td>
           <td className="text-sm text-center text-black break-words">
-            {data.totalNoOrders}
+            {data.noOfScripts}
           </td>
           <td className="text-sm text-center text-black break-words">
             {data.transactionType}
