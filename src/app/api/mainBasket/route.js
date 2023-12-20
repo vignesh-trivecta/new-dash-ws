@@ -1,3 +1,6 @@
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
+
 // API call to delete a basket completely from main table
 export const deleteBasket = async(basketName, adminId) => {
     try{
@@ -11,14 +14,13 @@ export const deleteBasket = async(basketName, adminId) => {
                 "adminId" : adminId,
             })
         }
-        const response = await fetch("http://localhost:8083/basket/full-basket/delete", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/full-basket/delete`, requestOptions);
 
         if(response.status === 200){
             return true;
         }
         else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return false;
         }
     }
     catch(error)
@@ -52,12 +54,11 @@ export const AddRecordMainAPI = async( adminId, basketName, selectedStock, excha
             })
         };
 
-        const response = await fetch("http://localhost:8083/basket/add-a-row", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/add-a-row`, requestOptions);
         if (response.ok) {
             return true;
         } else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return false;
         }
     }
     catch(error){
@@ -89,7 +90,7 @@ export const updateRecordMainAPI = async(recId, basketName, adminId, selectedSto
                 "limitPrice": Number(limitPrice)          
             })
         };
-        const response = await fetch("http://localhost:8083/basket/update", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/update`, requestOptions);
 
         if (response.ok) {
             return true;
@@ -117,7 +118,7 @@ export const deleteRecordMainAPI = async(recId, basketName, adminId ) => {
             })
         };
 
-        const response = await fetch("http://localhost:8083/basket/delete", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/delete`, requestOptions);
 
         if (response.ok) {
             return true;
