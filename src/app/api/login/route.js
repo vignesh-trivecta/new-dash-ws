@@ -1,3 +1,9 @@
+
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT1 = process.env.NEXT_PUBLIC_ADMIN_LOGIN_PORT;
+const PORT2 = process.env.NEXT_PUBLIC_IIFL_INTEGR_PORT;
+const PORT3 = process.env.NEXT_PUBLIC_IIFL_REPORTS_PORT;
+
 // API to login the admin into wealth spring
 export const loginAPI = async (token) => {
 
@@ -11,7 +17,7 @@ export const loginAPI = async (token) => {
         };
 
         
-        const response = await fetch("http://localhost:8082/admin/login", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT1}/admin/login`, requestOptions);
         const responseText = await response.json();
 
         return responseText;
@@ -31,7 +37,7 @@ export const partnerLogin = async () => {
             }
         }
 
-        const response = await fetch("http://localhost:8085/partner/login", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT3}/partner/login`, requestOptions);
         
     } catch (error) {
         console.log(error);
@@ -50,7 +56,7 @@ export const clientLogin = async(customerId) => {
                 "customerId": customerId,
             })
         }
-        const response = await fetch("http://localhost:8084/client/login", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT2}/client/login`, requestOptions);
 
         if(response.status === 200) {
             return true;
