@@ -1,3 +1,7 @@
+
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT = process.env.NEXT_PUBLIC_CLIENT_LOGIN_PORT;
+
 // API call to check page validity
 export const checkPageValidity = async(basketData) => {
     try{
@@ -11,16 +15,14 @@ export const checkPageValidity = async(basketData) => {
                 "basketName": basketData.basketName,
             })
         }
-        const response = await fetch("http://localhost:8086/page/validity", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/page/validity`, requestOptions);
         const status = response.status;
-        console.log(response);
 
         if (response.status === 200) {
             const data = await response.text();
             return {data, status};
         } else {
             const errorText = await response.text();
-            console.log(errorText)
             return {data: errorText, status};
         }
     }
