@@ -1,3 +1,6 @@
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
+
 // API to map a basket to a customer
 export const mapBasket = async(basketName, adminId, customerId, broker, quantity) => {
     try{
@@ -14,7 +17,7 @@ export const mapBasket = async(basketName, adminId, customerId, broker, quantity
                 "basketUnits": quantity
             })
         }
-        const response = await fetch("http://localhost:8083/customer/map", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/customer/map`, requestOptions);
         if(response.status === 200) {
             const data = await response.text();
             return data;
@@ -45,7 +48,7 @@ export const sendWeblink = async(basketName, adminId, customerId, brokerName, ba
                 "basketUnits": basketUnits,
             })
         }
-        const response = await fetch("http://localhost:8083/send/weblink", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/send/weblink`, requestOptions);
 
         if(response.status === 200){
             const responseText = await response.text();
@@ -73,7 +76,7 @@ export const getCustomerStatus = async (basketName) => {
                 "basketName": basketName,
             })
         }
-        const response = await fetch("http://localhost:8083/mappedstatus", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/mappedstatus`, requestOptions);
 
         if(response.status === 200){
             const responseText = await response.json();
@@ -105,7 +108,7 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
             })
         }
 
-        const response = await fetch("http://localhost:8083/customer/map/multiple", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/customer/map/multiple`, requestOptions);
         
         if(response.status == 200){
             const jsonData = await response.text();
@@ -137,7 +140,7 @@ export const fetchByGroupAndSend = async (groupName, customerId) => {
             })
         }
 
-        const response = await fetch("http://localhost:8083/fetch/groupName", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/groupName`, requestOptions);
         
         if(response.status == 200){
             const jsonData = await response.text();
@@ -163,7 +166,7 @@ export const getBasketGroups = async () => {
                 "Content-Type": "application/json",
             }
         }
-        const response = await fetch("http://localhost:8083/groupname", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/groupname`, requestOptions);
 
         if (response.status === 200) {
             const res = await response.json();
@@ -190,7 +193,7 @@ export const fetchDetailsByGroupName = async (groupName) => {
             })
         }
 
-        const response = await fetch("http://localhost:8083/fetch/groupName/details", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/groupName/details`, requestOptions);
         
         if(response.status == 200){
             const jsonData = await response.json();
@@ -220,7 +223,7 @@ export const fetchDetailsByCustomer = async (groupName, customerId) => {
             })
         }
 
-        const response = await fetch("http://localhost:8083/fetch/map/details/customer", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/map/details/customer`, requestOptions);
         
         if(response.status == 200){
             const jsonData = await response.json();
