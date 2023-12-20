@@ -1,5 +1,8 @@
 import { decrypt } from "@/utils/aesDecryptor";
 
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
+
 // API call to submit the whole basket to backend
 export const submitBasket = async (adminName, basketName, modelBasket, basketValidity, transType, investmentAmount, basketActualValue, basketCategory, basketRequests) => {
     try{
@@ -20,7 +23,7 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
                 "basketRequests": basketRequests,
             })
         }
-        const response = await fetch('http://localhost:8083/basket/create', requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/create`, requestOptions);
         if (response.status == 200) {
             return true;
         }
@@ -44,19 +47,19 @@ export const getBasketList = async(filteredBasket) => {
         let response;
         switch(filteredBasket){
             case 'ALL':
-                response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
+                response = await fetch(`http://${DOMAIN}:${PORT}/view/basketlist`, requestOptions);
                 break;
             case 'MODEL':
-                response = await fetch("http://localhost:8083/view/basketlist/model", requestOptions);
+                response = await fetch(`http://${DOMAIN}:${PORT}/view/basketlist/model`, requestOptions);
                 break;
             case 'BUY':
-                response = await fetch("http://localhost:8083/view/basketlist/buy", requestOptions);
+                response = await fetch(`http://${DOMAIN}:${PORT}/view/basketlist/buy`, requestOptions);
                 break;
             case 'SELL':
-                response = await fetch("http://localhost:8083/view/basketlist/sell", requestOptions);
+                response = await fetch(`http://${DOMAIN}:${PORT}/view/basketlist/sell`, requestOptions);
                 break;
             default:
-                response = await fetch("http://localhost:8083/view/basketlist", requestOptions);
+                response = await fetch(`http://${DOMAIN}:${PORT}/view/basketlist`, requestOptions);
                 break;
         }
         
@@ -65,8 +68,7 @@ export const getBasketList = async(filteredBasket) => {
             return jsonData;
         }
         else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return [];
         }
     }
     catch(error)
@@ -87,15 +89,14 @@ export const getSpecificBasket = async(basketName) => {
                 "basketName": basketName,
             })
         }
-        const response = await fetch("http://localhost:8083/view/basket", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/view/basket`, requestOptions);
 
         if(response.ok){
             const jsonData = await response.json();
             return jsonData;
         }
         else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return [];
         }
     }
     catch(error)
@@ -118,7 +119,7 @@ export const cloneBasket = async (basketName, newBasketName, adminId) => {
                 "adminId": adminId,
             })
         }
-        const response = await fetch("http://localhost:8083/basket/clone", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/clone`, requestOptions);
 
         if(response.status === 200){
             return true;
@@ -144,7 +145,7 @@ export const basketNameCheck = async (basketName) => {
                 "basketName": basketName,
             })
         }
-        const response = await fetch("http://localhost:8083/basket/namecheck", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/namecheck`, requestOptions);
         if(response.status === 200){
             return true;
         }
@@ -171,15 +172,14 @@ export const getEquityPrice = async (instrumentName, exchange) => {
             })
         };
 
-        const response = await fetch("http://localhost:8083/equity-price", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/equity-price`, requestOptions);
         
         if (response.ok) {
             const responseText = await response.text();
             let data = JSON.parse(responseText);
             return data.price;
         } else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return null;
         }
     }
     catch(error){
@@ -191,15 +191,14 @@ export const getEquityPrice = async (instrumentName, exchange) => {
 // API call to get the scripts details
 export const getInstrumentDetails = async () => {
     try{
-        const response = await fetch("http://localhost:8083/instruments")
+        const response = await fetch(`http://${DOMAIN}:${PORT}/instruments`)
         
         if(response.status === 200){
             const jsonData = await response.json();
             return (jsonData);
         }
         else {
-            const errorText = await response.text();
-            throw new Error(`Failed to fetch data: ${errorText}`);
+            return [];
         }
         
     }
@@ -222,7 +221,7 @@ export const sendWeightage = async(weightage, totalAmount, priceofAsset) => {
                 "priceofAsset": priceofAsset,
             })
         }
-        const response = await fetch("http://localhost:8083/quantity-calc", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/quantity-calc`, requestOptions);
 
         if(response.ok) {
             const responseText = await response.text();
@@ -246,7 +245,7 @@ export const getCustomers = async() => {
                 'Content-Type': 'application/json'
             }
         }
-        const response = await fetch("http://localhost:8083/customer/details", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/customer/details`, requestOptions);
 
         if(response.status === 200){
             const jsonData = await response.json();
@@ -274,7 +273,7 @@ export const getBasketValue = async(basketName, adminId) => {
                 "adminId": adminId,
             })
         }
-        const response = await fetch("http://localhost:8083/basket/details", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/details`, requestOptions);
 
         if(response.status === 200) {
             const data = await response.json();
@@ -299,7 +298,7 @@ export const getBasketCategories = async () => {
             },
         }
 
-        const response = await fetch("http://localhost:8083/basket/category", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/basket/category`, requestOptions);
         if (response.status == 200) {
             const data = await response.json();
             return data;
@@ -325,7 +324,7 @@ export const addBasketCategory = async (query) => {
             })
         }
 
-        const response = await fetch("http://localhost:8083/add/basket-category", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/add/basket-category`, requestOptions);
 
         if (response.status === 200) {
             return true;
