@@ -1,3 +1,7 @@
+
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
+const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
+
 // API endpoint to send the communication
 export const sendCommunication = async (customerId, message) => {
     try {
@@ -12,7 +16,7 @@ export const sendCommunication = async (customerId, message) => {
             })
         }
         
-        const response = await fetch("http://localhost:8083/communication", requestOptions);
+        const response = await fetch(`http://${DOMAIN}:${PORT}/communication`, requestOptions);
 
         if (response.status === 200) {
             const res = await response.text();
