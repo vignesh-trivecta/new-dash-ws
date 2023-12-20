@@ -17,7 +17,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
     const pathname = usePathname();
     const baskCat = basketCategory ?? records[0]?.basketCategory;
-
+    
     // modal variables
     const [openModal, setOpenModal] = useState(false);
     const props = { openModal, setOpenModal };
@@ -36,22 +36,22 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     const [quantity, setQuantity] = useState('');
     const [message, setMessage] = useState("");
     const [disabledButton, setDisabledButton] = useState(false);
-
+    
     const [fetch, setFetch] = useState(false);
-
+    
     // function to handle the exchange radio button
     const handleExchange = async (exchange) => {
         // (setExchange(exchange));
         const data = await getEquityPrice(selectedStock, exchange);
         setPrice(data);
     }
-
+    
     useEffect(() => {
         if (selectedStock !== "") {
             handleExchange(exchange);
         }
     }, [fetch])
-
+    
     //function to get the quantity of stocks based on weightage
     const handleChange = async (e) => {
         // setWeightage(e?.target.value || weightage );
@@ -66,14 +66,14 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             setMessage("");
         }
     };
-
+    
     const isInitialRender = useRef(true);
     useEffect(() => {
         if (weightage !== "") {
             handleChange();
         }
     }, [price])
-
+    
     // function to submit the modal values and add record to the table
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -94,14 +94,14 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                 props.setOpenModal(undefined);
             }
         }
-
+        
         postData();
         setWeightage('');
         setLimitPrice(undefined);
     }
     
     return (
-    <>
+        <>
         {/* Add record button */}
         <Button 
         onClick={() => {
@@ -244,7 +244,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         <div className='flex '>
                             <Button 
                                 type='submit' 
-                                disabled={disabledButton || (weightage > 100 || weightage < 1) || selectedStock === ""}
+                                disabled={disabledButton || (weightage > 100 || weightage < 1) || selectedStock === "" || quantity === 0}
                             >
                                 Add
                             </Button>
