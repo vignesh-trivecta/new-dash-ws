@@ -385,7 +385,7 @@ const LoginAuth = () => {
                   <Button
                     type="submit"
                     size={"sm"}
-                    className="text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-400"
+                    className="text-sm font-medium text-white rounded-md"
                     isProcessing={loading}
                   >
                     {loading ? `Log In` : "Log In"}

@@ -176,9 +176,11 @@ const Customers = () => {
                             </Link>
                           </Tooltip>
                         </div>
-                        {/* Checking if the table is created by admin and showing options based on it */}
+                        {/* 
+                            // code commented out for future usage - disable update/delete options
+                        Checking if the table is created by admin and showing options based on it 
                         {record.createdBy == username ? (
-                          // enabled update, delete options
+                          // enabled update, delete options */}
                           <>
                             <div className="mr-2">
                               {/* SVG icon for updating table */}
@@ -210,11 +212,13 @@ const Customers = () => {
                               </Tooltip>
                             </div>
                           </>
+                        {/* 
+                              // code commented out for future usage - disable update/delete options
                         ) : (
                           // disabled update/delete options
                           <>
                             <div className="mr-2">
-                              {/* SVG icon for updating table */}
+                               
                               <Tooltip content="Update Denied">
                                 <Link href="#" className="pointer-events-none">
                                   <svg
@@ -231,7 +235,7 @@ const Customers = () => {
                               </Tooltip>
                             </div>
                             <div className="mr-2">
-                              {/* SVG icon for deleting table */}
+                              
                               <Tooltip content="Delete Denied">
                                 <Link href="#" className="pointer-events-none">
                                   <svg
@@ -253,7 +257,7 @@ const Customers = () => {
                               </Tooltip>
                             </div>
                           </>
-                        )}
+                        )} */}
                       </div>
                     </td>
                   </tr>
