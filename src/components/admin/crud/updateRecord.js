@@ -456,8 +456,8 @@ const UpdateRecord = ({
                   disabled
                   id="quantity"
                   name="quantity"
-                  value={localQuantity || lquantity}
-                  type="string"
+                  value={localQuantity || 0}
+                  type="number"
                   className="absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md text-right"
                 />
               </div>
@@ -497,7 +497,7 @@ const UpdateRecord = ({
               <div className="flex">
                 <Button
                   type="submit"
-                  disabled={(localWeightage > 100 || localWeightage < 1) || (localOrderType === "LIMIT" && !limitPrice) || (localOrderType === "LIMIT" && limitPrice < 1)}
+                  disabled={(localWeightage > 100 || localWeightage < 1) || (localOrderType === "LIMIT" && !limitPrice) || (localOrderType === "LIMIT" && limitPrice < 1) || (localQuantity < 1)}
                 >
                   Update
                 </Button>
