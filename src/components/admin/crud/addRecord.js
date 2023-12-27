@@ -221,7 +221,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         {/* Quantity element */}
                         <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
                             <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                            <input disabled id='quantity' name='quantity' value={quantity} type="string" className=' text-right absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
+                            <input disabled id='quantity' name='quantity' value={quantity} type="number" className=' text-right absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
                         </div>
                     </div>
 
@@ -244,7 +244,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         <div className='flex '>
                             <Button 
                                 type='submit' 
-                                disabled={disabledButton || (weightage > 100 || weightage < 1) || selectedStock === "" || quantity === 0}
+                                disabled={disabledButton || (weightage > 100 || weightage < 1) || selectedStock === "" || quantity < 1}
                             >
                                 Add
                             </Button>
