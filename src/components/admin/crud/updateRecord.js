@@ -456,7 +456,7 @@ const UpdateRecord = ({
                   disabled
                   id="quantity"
                   name="quantity"
-                  value={localQuantity || 0}
+                  value={localQuantity || lquantity}
                   type="number"
                   className="absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md text-right"
                 />
