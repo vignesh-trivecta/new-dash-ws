@@ -298,7 +298,7 @@ const BasketMapping = () => {
         {/* investment value */}
         <div className="flex flex-col items-left ">
           <label className="text-black text-sm dark:text-white">
-            Investment &#8377;
+            Investment/ Sale Value &#8377;
           </label>
           <input
             type="text"

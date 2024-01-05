@@ -145,7 +145,7 @@ const UpdateBasket = ({ params }) => {
         {/* Max Investment Value */}
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">
-            Max Investment Value ₹
+            Investment/ Sale Value ₹
           </label>
           <input
             type="text"

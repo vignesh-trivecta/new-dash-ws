@@ -26,6 +26,8 @@ const CreateBasket = () => {
   const msg5 = "Basket Value is lesser than Investment Amount";
   const msg6 = "Basket Value is higher than Investment Amount";
   const msg7 = "Unable to save basket! Try agian";
+  const msg8 = "Name should be less than 20 characters";
+  const msg9 = "Type and Add to create a new basket category";
 
   // getting the url path
   const pathname = usePathname();
@@ -145,59 +147,48 @@ const CreateBasket = () => {
 
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>
-      <h3 className="mb-2 font-bold">Create new Basket</h3>
+      <h3 className="mb-2 font-bold">Create new basket</h3>
 
       {/* Investment details row */}
       <div className="flex justify-between">
         {/* Basket Name input */}
-        {nameCheck ? ( // checking whether the entered name already exists in the database or not
-          <div className="flex flex-col items-center">
+        {/* {nameCheck ? ( // checking whether the entered name already exists in the database or not */}
+          <div className="flex flex-col ">
             <div className="flex flex-col items-left">
-              <label className="text-black text-sm dark:text-white mr-2">
-                Basket Name
-              </label>
+              <div className="flex items-center space-x-1">
+                <label className="text-black text-sm dark:text-white">
+                  Basket Name
+                </label>
+                <Tooltip content={msg8}>
+                  <svg className="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                  </svg>
+                </Tooltip>
+              </div>
               <input
                 type="text"
                 value={basketName}
                 onChange={(e) => {
-                  dispatch(setBasketName(e.target.value));
+                  if ((e.target.value.length) > 20) {
+                    setMessage(msg8);
+                  } else {
+                    dispatch(setBasketName(e.target.value));
+                  }
                 }}
-                className="border border-gray-200 rounded-lg w-24 md:w-44 text-sm"
+                className={nameCheck ? "border border-gray-200 rounded-lg w-24 md:w-44 text-sm" : "border border-gray-200 focus:border-red-500 focus:ring-0 rounded-lg w-24 md:w-44 text-sm"}
               />
             </div>
-            <div className="ml-8 mt-2">
+            <div className="m-2">
               <p className="text-xs text-red-500">
-                &nbsp;
+                {nameCheck ? `` : msg3}
               </p>
             </div>
           </div>
-        ) : (
-          <div className="flex flex-col items-start">
-            <div className="flex flex-col items-left">
-              <label className="text-black text-sm dark:text-white mr-2">
-                Basket Name
-              </label>
-              <input
-                type="text"
-                value={basketName}
-                onChange={(e) => {
-                  dispatch(setBasketName(e.target.value));
-                }}
-                className="border border-gray-200 focus:border-red-500 focus:ring-0 rounded-lg w-24 md:w-44 text-sm"
-              />
-            </div>
-            <div className="mt-2">
-              <p className="text-xs text-red-600">
-                <div>{msg3}</div>
-              </p>
-            </div>
-          </div>
-        )}
-
+        
         {/* Investment value input to be entered by admin */}
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">
-            Max Investment Value &#8377;
+            Investment/ Sale Value &#8377;
           </label>
           <input
             type="text"
@@ -214,9 +205,16 @@ const CreateBasket = () => {
 
         {/* Basket Category listbox */}
         <div className="">
-          <p className="text-black text-sm dark:text-white mr-2">
-            Basket Category
-          </p>
+          <div className="flex items-center space-x-1">
+            <label className="text-black text-sm dark:text-white">
+              Basket Category
+            </label>
+            <Tooltip content={msg9}>
+              <svg className="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+              </svg>
+            </Tooltip>
+          </div>
           <div className="relative w-44 z-10 border rounded-md">
             <BasketCategory
               setBasketCategory={setBasketCategory}
@@ -332,14 +330,14 @@ const CreateBasket = () => {
         {/* Message area showing the status of basket operations */}
         {message !== msg4 ? (
           <div>
-            <Alert className="w-96" color="warning" icon={HiInformationCircle} rounded>
+            <Alert className="w-96 h-auto" color="warning" icon={HiInformationCircle} rounded>
               <span className="w-4 h-4">{message}</span>
             </Alert>
           </div>
         ) : (
           <div>
             <Alert
-              className="bg-green-200 text-green-500 w-96"
+              className="bg-green-200 text-green-500 w-96 h-auto"
               icon={HiCheckCircle}
               rounded
             >
