@@ -118,7 +118,7 @@ const DashNavbar = function () {
                 </span>
                 <div className="flex flex-col space-y-1 mt-4">
                   <span className="underline">Time Format: </span>
-                  <div className="space-x-1">
+                  <div className="space-x-2">
                     <input
                       type="radio"
                       name="timeFormat"
