@@ -28,9 +28,9 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     const adminName = useSelector((state) => state.user.username);
     
     // local state variables
-    const [limitPrice, setLimitPrice] = useState(undefined);
     const [weightage, setWeightage] = useState(undefined);
     const [price, setPrice] = useState('');
+    const [limitPrice, setLimitPrice] = useState(price);
     const [exchange, setExchange] = useState('NSE');
     const [orderType, setOrderType] = useState('LIMIT');
     const [quantity, setQuantity] = useState('');
@@ -79,8 +79,13 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         e.preventDefault();
         const postData = async() => {
             let data;
+            let lprice = limitPrice;
+            if (orderType === "MARKET") {
+                lprice = 0;
+            }
+
             if(pathname == '/admin/baskets/create'){
-                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice, baskCat);
+                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, lprice, baskCat);
                 if(data === true){
                     setHandleFetch(!handleFetch);
                     props.setOpenModal(undefined);
@@ -89,7 +94,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             else {
                 const newVal = amountSplitter(basketVal)
                 const newBasketName = mainBasketName.split("%20").join(" ");
-                data = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, newVal, baskCat);
+                data = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, lprice, investmentVal, newVal, baskCat);
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
             }
@@ -154,8 +159,9 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         {/* Exchange element */}
                         <Label value="Exchange" className='col-start-1 row-start-2 text-sm' />
                         <div className=' col-start-2 row-start-2'>
-                            {/* <input 
+                            <input 
                                 required
+                                disabled
                                 id="bse" 
                                 name="exchange" 
                                 type='radio' 
@@ -164,19 +170,19 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                                 onClick={() => {
                                     handleExchange("BSE");
                             }} />
-                            <label htmlFor='bse' className='ml-1 text-sm'>BSE</label> */}
+                            <label htmlFor='bse' className='ml-2 text-sm text-gray-400'>BSE</label>
                             <input 
                                 required
                                 id="nse" 
                                 name="exchange" 
                                 type='radio' 
                                 value="NSE" 
-                                className='ml-1' 
+                                className='ml-2' 
                                 defaultChecked={exchange === "NSE"}
                                 onClick={() => {
                                     handleExchange("NSE");
                             }} />
-                            <label htmlFor='nse' className='ml-1 text-sm'>NSE</label>
+                            <label htmlFor='nse' className='ml-2 text-sm'>NSE</label>
                         </div>
                         
                         {/* Weightage element */}
@@ -197,26 +203,25 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
                         <div className='col-start-2'>
                             <input required id="market" name="orderType" type='radio' value="MARKET" defaultChecked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
-                            <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
-                            <input required id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' defaultChecked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
-                            <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
+                            <label htmlFor='market' className='ml-2 text-sm'>MARKET</label>
+                            <input required id="limit" name="orderType" type='radio' value="LIMIT" className='ml-2' defaultChecked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
+                            <label htmlFor='limit' className='ml-2 text-sm'>LIMIT</label>
                         </div>
 
                         {/* Limit value element */}    
-                        {orderType === "LIMIT" && (   
-                            <span className='relative ml-8'>
-                                <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                                <input 
-                                    required 
-                                    id="limitInput" 
-                                    name="limitInput" 
-                                    value={limitPrice} 
-                                    onChange={(e) => setLimitPrice(e.target.value ?? undefined)} 
-                                    type="number" 
-                                    className=' text-right absolute w-32 rounded-md border border-gray-200' />                                             
-                            </span>                             
-                        )}
-
+                        <div className='relative ml-8'>
+                            <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                            <input 
+                                required 
+                                disabled={orderType === "MARKET"}
+                                id="limitInput" 
+                                name="limitInput" 
+                                value={limitPrice || price} 
+                                onChange={(e) => setLimitPrice(e.target.value ?? undefined)} 
+                                type="number" 
+                                className={`text-right absolute ml-1 w-40 rounded-md border border-gray-200 ${orderType === "MARKET" ? "bg-gray-50" : ""}`}
+                            />       
+                        </div>
                             
                         {/* Quantity element */}
                         <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>

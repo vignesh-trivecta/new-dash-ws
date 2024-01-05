@@ -82,6 +82,11 @@ const UpdateRecord = ({
     e.preventDefault();
     const localtransType = toggle;
     const postDataAPI = async () => {
+      let lprice = limitPrice;
+      if (localOrderType === "MARKET") {
+          lprice = 0;
+      }
+
       if (pathname == "/admin/baskets/create") {
         let val1 = String(basketAmount).split(",").join("");
         let val2 = String(basketVal).split(",").join("");
@@ -98,7 +103,7 @@ const UpdateRecord = ({
           localPrice,
           val1,
           val2,
-          limitPrice
+          lprice
         );
         if (data === true) {
           setHandleFetch(!handleFetch);
@@ -123,7 +128,7 @@ const UpdateRecord = ({
           localPrice,
           val1,
           val2,
-          limitPrice
+          lprice
         );
         if (data === true) {
           setHandleFetch(!handleFetch);
@@ -149,9 +154,9 @@ const UpdateRecord = ({
 
   // handling orderType radio button selection
   const handleOrderType = (type) => {
-    if (type === "MARKET") {
-      setLimitPrice("0");
-    }
+    // if (type === "MARKET") {
+    //   setLimitPrice("0");
+    // }
     setLocalOrderType(type); // Update localOrderType when a radio button is clicked
   };
 
@@ -230,7 +235,7 @@ const UpdateRecord = ({
           <form onSubmit={handleUpdate}>
             <div className="grid grid-rows-4 grid-cols-3 gap-x- gap-y-4 mt-4">
               {/* Search Dropdown */}
-              <Label htmlFor="stock" value="Stock" className="text-md" />
+              <Label htmlFor="stock" value="Stock" className="text-sm" />
               <div className="">
                 <div className="">
                   <Combobox
@@ -338,10 +343,11 @@ const UpdateRecord = ({
               {/* Exchange element */}
               <Label
                 value="Exchange"
-                className="col-start-1 row-start-2 text-md"
+                className="col-start-1 row-start-2 text-sm"
               />
               <div className=" col-start-2 row-start-2">
-                {/* <input
+                <input
+                  disabled
                   id="bse"
                   name="exchange"
                   type="radio"
@@ -351,21 +357,21 @@ const UpdateRecord = ({
                     handleExchange("BSE");
                   }}
                 />
-                <label htmlFor="bse" className="ml-1">
+                <label htmlFor="bse" className="ml-2 text-sm text-gray-400">
                   BSE
-                </label> */}
+                </label>
                 <input
                   id="nse"
                   name="exchange"
                   type="radio"
                   value="NSE"
-                  className="ml-1"
+                  className="ml-2"
                   defaultChecked={localExchange === "NSE"}
                   onClick={() => {
                     handleExchange("NSE");
                   }}
                 />
-                <label htmlFor="nse" className="ml-1">
+                <label htmlFor="nse" className="ml-2 text-sm">
                   NSE
                 </label>
               </div>
@@ -428,7 +434,7 @@ const UpdateRecord = ({
                   defaultChecked={localOrderType === "MARKET"}
                   onClick={() => handleOrderType("MARKET")}
                 />
-                <label htmlFor="market" className="ml-1 text-sm">
+                <label htmlFor="market" className="ml-2 text-sm">
                   MARKET
                 </label>
                 <input
@@ -436,11 +442,11 @@ const UpdateRecord = ({
                   name="orderType"
                   type="radio"
                   value="LIMIT"
-                  className="ml-1"
+                  className="ml-2"
                   defaultChecked={localOrderType === "LIMIT"}
                   onClick={() => handleOrderType("LIMIT")}
                 />
-                <label htmlFor="limit" className="ml-1 text-sm">
+                <label htmlFor="limit" className="ml-2 text-sm">
                   LIMIT
                 </label>
               </div>
@@ -462,37 +468,37 @@ const UpdateRecord = ({
                 />
               </div>
 
-              {/* Limit Input element */}
-              {localOrderType === "LIMIT" && (
-                <span className="relative ml-8">
-                  <Label
-                    htmlFor="limitInput"
-                    value="Limit Price"
-                    className="absolute left-2 bg-white px-1 -top-2 text-sm z-10"
-                  />
-                  <input
-                    type="number"
-                    id="limitInput"
-                    name="limitInput"
-                    value={limitPrice}
-                    onChange={(e) => setLimitPrice(e.target.value)}
-                    className={`${(limitPrice < 1 || limitPrice === null) ? "focus:ring-red-500" : "focus:ring-blue-700" } focus:border-none absolute w-32 rounded-md border border-gray-200 text-right`}
-                  />
-                </span>
-              )}
+              {/* Limit value element */}    
+              <div className='relative ml-8'>
+                  <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                  <input 
+                    required 
+                    disabled={localOrderType === "MARKET"}
+                    id="limitInput" 
+                    name="limitInput" 
+                    value={limitPrice == 0 ? localPrice : limitPrice} 
+                    onChange={(e) => setLimitPrice(e.target.value ?? undefined)} 
+                    type="number" 
+                    className={`text-right absolute ml-1 w-40 rounded-md border border-gray-200 ${localOrderType === "MARKET" ? "bg-gray-50" : ""}`}
+                  />       
+              </div>
             </div>
 
             {/* Modal Butttons */}
             <div className="flex justify-between mt-4">
               <div>
-                <Alert
-                    color="warning"
-                    rounded
-                    className="h-12 w-56 p-1 flex justify-center max-w-sm"
-                    icon={HiInformationCircle}
-                    >
-                    <span>{message}</span>
-                </Alert>
+                {
+                  message 
+                  ? <Alert
+                          color="warning"
+                          rounded
+                          className="h-10 w-56 p-1 flex justify-center max-w-sm text-sm"
+                          icon={HiInformationCircle}
+                          >
+                          <span>{message}</span>
+                      </Alert>
+                  : ""
+                }
               </div>
               <div className="flex">
                 <Button
