@@ -4,7 +4,7 @@ import ValiditySelector from "@/utils/validitySelector";
 import { Button, Modal } from "flowbite-react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBasketAmount } from "@/store/basketSlice";
+import { setBasketAmount, setModelBasket } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
 import BasketType from "@/components/page/basketType";
 
@@ -29,14 +29,14 @@ const SubmitBasket = ({
 
   // local state variables
   // const [popup, setPopup] = useState(false);
-  const [modelBasket, setModelBasket] = useState(true);
 
   // redux state
   const adminName = useSelector((state) => state.user.username);
   const basketName = useSelector((state) => state.basket.basketName);
   const basketAmount = useSelector((state) => state.basket.basketAmount);
   const basketValidity = useSelector((state) => state.basket.basketValidity);
-
+  const modelBasket = useSelector((state) => state.basket.modelBasket);
+  
   // function to submit all the records
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,11 +60,7 @@ const SubmitBasket = ({
     setSaveMsg(response);
     setSaved(!saved);
     props.setOpenModal(undefined);
-  };
-
-  // function to handle check input
-  const handleCheckboxChange = (event) => {
-    setModelBasket(event.target.checked);
+    dispatch(setModelBasket(true));
   };
 
   return (
@@ -92,9 +88,9 @@ const SubmitBasket = ({
                 </p>
               </div>)
               : <></>}
-              <div className="z-40">
-                <BasketType />
-              </div>
+            <div className="z-40">
+              <BasketType />
+            </div>
             <div>
             </div>
             <div className="flex justify-center mt-4 gap-4">

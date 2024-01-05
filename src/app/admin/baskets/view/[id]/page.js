@@ -21,17 +21,16 @@ const ViewTable = ({ params }) => {
   const [error, setError] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [message, setMessage] = useState("");
-  const [modelBasket, setModelBasket] = useState(true);
 
   // modal elements
   const [openModal, setOpenModal] = useState();
   const props = { openModal, setOpenModal };
 
   const adminId = useSelector((state) => state.user.username);
-  const router = useRouter();
-  const dispatch = useDispatch();
+  const modelBasket = useSelector((state) => state.basket.modelBasket);
+  const basketValidity = useSelector((state) => state.basket.basketValidity);
 
-  const cancelButtonRef = useRef(null);
+  const router = useRouter();
 
   // useEffect to fetch the table records
   useEffect(() => {
@@ -60,24 +59,21 @@ const ViewTable = ({ params }) => {
     { [`${basketName} : ${records[0]?.basketCategory}`]: "" },
   ];
 
-  const handleClone = () => {
-    props.setOpenModal(undefined);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(input);
-    let response = await cloneBasket(
+    const response = await cloneBasket(
       basketName,
       input,
-      adminId
+      adminId,
+      modelBasket,
+      basketValidity
     );
     if (response) {
       setOpenModal(undefined);
       router.push("/admin/baskets/view");
     }
     else {
-      setOpenModal(undefined);
+      setMessage("Unable to clone basket");
     }
   };
 

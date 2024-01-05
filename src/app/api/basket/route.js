@@ -106,7 +106,7 @@ export const getSpecificBasket = async(basketName) => {
 }
 
 // API call to clone a basket
-export const cloneBasket = async (basketName, newBasketName, adminId) => {
+export const cloneBasket = async (basketName, newBasketName, adminId, modelBasket, basketValidity) => {
     try {
         const requestOptions = {
             method: 'POST',
@@ -117,6 +117,8 @@ export const cloneBasket = async (basketName, newBasketName, adminId) => {
                 "basketName": basketName,
                 "newBasketName": newBasketName,
                 "adminId": adminId,
+                "basketModel": modelBasket,
+                "basketValidity": basketValidity
             })
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/clone`, requestOptions);
