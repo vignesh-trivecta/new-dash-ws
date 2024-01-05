@@ -8,6 +8,8 @@ import { basketNameCheck, cloneBasket, getSpecificBasket } from "@/app/api/baske
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
+import ValiditySelector from "@/utils/validitySelector";
+import BasketType from "@/components/page/basketType";
 
 const ViewTable = ({ params }) => {
   const basketName = params.id.split("%20").join(" ");
@@ -19,6 +21,7 @@ const ViewTable = ({ params }) => {
   const [error, setError] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [message, setMessage] = useState("");
+  const [modelBasket, setModelBasket] = useState(true);
 
   // modal elements
   const [openModal, setOpenModal] = useState();
@@ -180,9 +183,9 @@ const ViewTable = ({ params }) => {
           <Modal.Header />
           <Modal.Body>
             <form onSubmit={handleSubmit} className="space-y-2">
-              <div>
+              <div className="z-12">
                 <div className="mb-2 block">
-                  <Label htmlFor="email" value="New Basket Name" />
+                  <Label htmlFor="email" value="New basket name" />
                 </div>
                 <TextInput
                   required
@@ -205,17 +208,20 @@ const ViewTable = ({ params }) => {
                     : <p>{""}</p>
                   }
                 </div>
+                <div>
+                  <BasketType />
+                </div>
               </div>
 
-              <div className="w-full flex justify-center items-center space-x-4">
+              <div className="w-full flex justify-center items-center space-x-4 z-10">
                 <button
                   className="rounded-md bg-cyan-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-cyan-700 shadow-sm"
                   disabled={isButtonDisabled}
                 >
                   Clone
                 </button>
-                <Button
-                  color="gray"
+                <button
+                  className="text-sm border border-gray-200 p-2.5 rounded-md"
                   onClick={() => {
                     setOpenModal(undefined);
                     setError(false);
@@ -224,7 +230,7 @@ const ViewTable = ({ params }) => {
                   }}
                 >
                   Cancel
-                </Button>
+                </button>
               </div>
             </form>
           </Modal.Body>

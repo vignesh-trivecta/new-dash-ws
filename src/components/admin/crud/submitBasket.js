@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setBasketAmount } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
+import BasketType from "@/components/page/basketType";
 
 const SubmitBasket = ({
   saved,
@@ -91,29 +92,9 @@ const SubmitBasket = ({
                 </p>
               </div>)
               : <></>}
-            <div className="flex items-center justify-center mt-4">
-              <label
-                htmlFor="default-checkbox"
-                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >
-                Save this as Model Basket
-              </label>
-              <input
-                id="default-checkbox"
-                type="checkbox"
-                checked={modelBasket}
-                onChange={handleCheckboxChange}
-                className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
-            </div>
-            {!modelBasket ? (
-              <div className="flex items-center justify-center mt-2 z-30">
-                <label className="mr-4">Basket Validity</label>
-                <ValiditySelector />
+              <div className="z-40">
+                <BasketType />
               </div>
-            ) : (
-              <></>
-            )}
             <div>
             </div>
             <div className="flex justify-center mt-4 gap-4">
