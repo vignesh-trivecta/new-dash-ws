@@ -3,7 +3,7 @@
 import React, { useEffect, useState, Fragment } from "react";
 import { Alert, Button, Label, Modal } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
-import { getEquityPrice, sendWeightage } from "@/app/api/basket/route";
+import { getEquityPrice, sendQuantity, sendWeightage } from "@/app/api/basket/route";
 import { updateRecordMainAPI } from "@/app/api/mainBasket/route";
 import { updateRecordAPI } from "@/app/api/tempBasket/route";
 import Link from "next/link";
@@ -30,6 +30,7 @@ const UpdateRecord = ({
   investmentVal,
   basketVal,
 }) => {
+  console.log(lp);
   // modal state values
   const [openModal, setOpenModal] = useState(false);
   const props = { openModal, setOpenModal };
@@ -52,7 +53,7 @@ const UpdateRecord = ({
   const [localExchange, setLocalExchange] = useState(exchange);
   const [localOrderType, setLocalOrderType] = useState(orderType);
   const [toggle, setToggle] = useState(transType);
-  const [limitPrice, setLimitPrice] = useState(Number(lp));
+  const [limitPrice, setLimitPrice] = useState(lp);
   const [fetch, setFetch] = useState(false);
 
   //search dropdown - local state variables
@@ -161,38 +162,67 @@ const UpdateRecord = ({
   };
 
   // Weightage event handler
-  const handleWeightage = async (e) => {
-    setLocalWeightage(e?.target.value);
-    // multiple OR statements used to handle 'undefined' being sent to api call issue
+  const handleOnChange = async (e) => {
+    const inputValue = e?.target?.value;
+    const id = e?.target?.id;
+    if (id === "weightage") {
+      setLocalWeightage(inputValue);
+      // multiple OR statements used to handle 'undefined' being sent to api call issue
+      const quantity = await sendWeightage(
+        inputValue || localWeightage,
+        basketAmount || investmentVal,
+        localPrice
+      );
+      setLocalQuantity(quantity);
+
+      if (inputValue > 100 || inputValue < 1) {
+        setMessage("Weightage must be between 1-100")
+      }
+      else {
+        setMessage("");
+      }
+    } else if (id === "quantity") {
+      setLocalQuantity(inputValue);
+      const weight = await sendQuantity(
+        inputValue || localQuantity,
+        basketAmount || investmentVal,
+        localPrice
+      );
+      setLocalWeightage(weight);
+      if (weight > 100 || weight < 1 ) {
+        setMessage("Weightage must be between 1-100")
+      }
+      else {
+        setMessage("");
+      }
+    }
+  };
+
+  const handlePriceChange = async (weightage) => {
     const quantity = await sendWeightage(
-      e?.target.value || localWeightage,
+      weightage || localWeightage,
       basketAmount || investmentVal,
       localPrice
     );
     setLocalQuantity(quantity);
-    if (e?.target.value > 100 || e?.target.value < 1) {
-      setMessage("Weightage must be between 1-100")
-    }
-    else {
-      setMessage("");
-    }
-  };
+  }
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        const list = await getInstrumentDetails();
+        setStocksList(list);
+      };
+  
+      fetchData();
+    }, []);
 
   useEffect(() => {
     handleExchange(localExchange);
   }, [fetch]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const list = await getInstrumentDetails();
-      setStocksList(list);
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    handleWeightage();
+    handlePriceChange(localWeightage);
+    setLimitPrice(localPrice);
   }, [localPrice]);
 
   return (
@@ -347,7 +377,6 @@ const UpdateRecord = ({
               />
               <div className=" col-start-2 row-start-2">
                 <input
-                  disabled
                   id="bse"
                   name="exchange"
                   type="radio"
@@ -357,7 +386,7 @@ const UpdateRecord = ({
                     handleExchange("BSE");
                   }}
                 />
-                <label htmlFor="bse" className="ml-2 text-sm text-gray-400">
+                <label htmlFor="bse" className="ml-2 text-sm">
                   BSE
                 </label>
                 <input
@@ -384,11 +413,10 @@ const UpdateRecord = ({
               />
               <div className="rounded-md col-start-2 row-start-3 h-10">
                 <input
+                  id="weightage"
                   type="number"
                   value={localWeightage ?? weightage}
-                  onChange={(e) => {
-                    handleWeightage(e);
-                  }}
+                  onChange={(e) => handleOnChange(e)}
                   className={`${(localWeightage > 100 || localWeightage < 1) ? "focus:ring-red-500" : "focus:ring-blue-700"} focus:border-none w-full border border-gray-200 rounded-md text-right`}
                 />
               </div>
@@ -459,12 +487,12 @@ const UpdateRecord = ({
                   className="absolute left-2 -top-2 bg-white px-1 text-sm z-10"
                 />
                 <input
-                  disabled
                   id="quantity"
                   name="quantity"
-                  value={localQuantity || lquantity}
                   type="number"
-                  className="absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md text-right"
+                  value={localQuantity || lquantity}
+                  onChange={(e) => handleOnChange(e)}
+                  className="absolute pl-8 p-2 w-full border border-gray-200 rounded-md text-right"
                 />
               </div>
 
@@ -476,7 +504,7 @@ const UpdateRecord = ({
                     disabled={localOrderType === "MARKET"}
                     id="limitInput" 
                     name="limitInput" 
-                    value={limitPrice == 0 ? localPrice : limitPrice} 
+                    value={limitPrice} 
                     onChange={(e) => setLimitPrice(e.target.value ?? undefined)} 
                     type="number" 
                     className={`text-right absolute ml-1 w-40 rounded-md border border-gray-200 ${localOrderType === "MARKET" ? "bg-gray-50" : ""}`}
@@ -490,13 +518,13 @@ const UpdateRecord = ({
                 {
                   message 
                   ? <Alert
-                          color="warning"
-                          rounded
-                          className="h-10 w-56 p-1 flex justify-center max-w-sm text-sm"
-                          icon={HiInformationCircle}
-                          >
-                          <span>{message}</span>
-                      </Alert>
+                      color="warning"
+                      rounded
+                      className="h-10 w-56 p-1 flex justify-center max-w-sm text-sm"
+                      icon={HiInformationCircle}
+                      >
+                      <span>{message}</span>
+                    </Alert>
                   : ""
                 }
               </div>
