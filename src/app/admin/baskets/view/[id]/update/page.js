@@ -149,8 +149,9 @@ const UpdateBasket = ({ params }) => {
           </label>
           <input
             type="text"
+            disabled
             value={segregate(investmentVal)}
-            className="border border-gray-200 rounded-lg w-44 text-right text-sm"
+            className="border border-gray-200 rounded-lg w-44 text-right text-sm bg-gray-50"
             onChange={(e) => setInvestmentVal(e.target.value)}
           />
         </div>

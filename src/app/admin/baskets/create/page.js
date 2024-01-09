@@ -50,7 +50,6 @@ const CreateBasket = () => {
   const [basketAmount, setBasketAmount] = useState("");
   const [comparison, setComparison] = useState(true); // comparison to check whether basketVal is greater than investmentVal
   const [basketCategory, setBasketCategory] = useState("");
-  const [selected, setSelected] = useState("");
 
   // basket value variable
   const basketVal = segreagatorWoComma(total);
@@ -63,7 +62,6 @@ const CreateBasket = () => {
       dispatch(setBasketName(""));
       setBasketCategory("");
       setMessage(msg4);
-      setSelected("")
     } else {
       setMessage(msg7);
     }
@@ -217,10 +215,10 @@ const CreateBasket = () => {
           </div>
           <div className="relative w-44 z-10 border rounded-md">
             <BasketCategory
-              setBasketCategory={setBasketCategory}
-              nameCheck={nameCheck}
-              selected={selected}
-              setSelected={setSelected}
+              selected={basketCategory}
+              setSelected={setBasketCategory}
+              isDisabled={nameCheck}
+              pageName={"create"}
             />
             {/* <div className="relative bottom-10 z-20">Add</div> */}
           </div>
