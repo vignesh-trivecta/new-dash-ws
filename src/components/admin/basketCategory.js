@@ -71,12 +71,14 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
           <div className="relative h-8 w-full cursor-default overflow-hidden rounded-lg bg-white text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
               disabled
+              maxLength={20}
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={selected}
               onChange={(event) => {
-                setQuery(event.target.value);
+                const inputValue = event?.target?.value;                  
+                setQuery(inputValue);
                 if (pageName !== "create") {
-                  setSelected(event.target.value);
+                  setSelected(inputValue);
                 }
               }}
             />

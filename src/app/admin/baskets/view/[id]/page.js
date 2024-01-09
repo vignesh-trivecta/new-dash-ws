@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { Button, Label, Modal, TextInput, Tooltip } from "flowbite-react";
 import { basketNameCheck, cloneBasket, getSpecificBasket } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
@@ -180,12 +180,18 @@ const ViewTable = ({ params }) => {
           <Modal.Body>
             <form onSubmit={handleSubmit} className="space-y-2">
               <div className="z-12">
-                <div className="mb-2 block">
+                <div className=" flex mb-2 items-center space-x-1">
                   <Label htmlFor="email" value="New basket name" />
+                  <Tooltip content={"Name should be less than 20 characters"}>
+                    <svg className="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                  </Tooltip>
                 </div>
                 <TextInput
                   required
                   id="email"
+                  maxLength={20}
                   className="border-red-500"
                   autoFocus
                   // value={""}
