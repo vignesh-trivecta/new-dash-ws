@@ -24,7 +24,6 @@ const CustomerMapping = () => {
   // local state
   const [basketName, setBasketName] = useState("");
   const [customers, setCustomers] = useState([]);
-  const [weblinkSIP, setWeblinkSIP] = useState(false);
   const [message, setMessage] = useState("");
   const [records, setRecords] = useState([]);
   const [basketCategory, setBasketCategory] = useState("");
@@ -70,7 +69,7 @@ const CustomerMapping = () => {
   // useEffect to fetch the view table baskets
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getBasketList();
+      const response = await getBasketList("MAP");
       setRecords(response);
 
       const customersData = await getCustomers();
