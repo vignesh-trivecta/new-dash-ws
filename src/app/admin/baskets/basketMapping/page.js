@@ -11,11 +11,12 @@ import {
 } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketMappingTable from "@/components/admin/table/basketMappingTable";
-import { fetchByGroupAndSend, fetchDetailsByCustomer, fetchDetailsByGroupName, getBasketGroups, sendMultipleBaskets } from "@/app/api/map/baskets/route";
+import { fetchByGroupAndSend, fetchDetailsByCustomer, fetchDetailsByGroupName, getBasketGroups, sendMultipleBaskets, unMapMultipleBaskets } from "@/app/api/map/baskets/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 import StaticBasketMappingTable from "@/components/admin/table/staticBasketMappingTable";
 import { FcRefresh } from "react-icons/fc";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
+import BasketCategory from "@/components/admin/basketCategory";
 
 const BasketMapping = () => {
   // broker inputs
@@ -43,7 +44,7 @@ const BasketMapping = () => {
   const [checkedBaskets, setCheckedBaskets] = useState([]);
   const [errorHighlight, setErrorHighlight] = useState(false);
   const [basketData, setBasketData] = useState({});
-  const [aliasName, setAliasName] = useState("");
+  // const [aliasName, setAliasName] = useState("");
   const [basketGroups, setBasketGroups] = useState([]);
   const [basketDetails, setBasketDetails] = useState([]);
   const [selectedBasketGroup, setSelectedBasketGroup] = useState("");
@@ -52,6 +53,7 @@ const BasketMapping = () => {
   const [loading, setLoading] = useState(false);
   const [sendingMap, setSendingMap] = useState(false);
   const [sendingWeblink, setSendingWeblink] = useState(false);
+  const [buttonName, setButtonName] = useState("Map");
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -70,7 +72,7 @@ const BasketMapping = () => {
     setCustomerId(value);
     setBroker("");
     setInvestment(0);
-    setAliasName("");
+    // setAliasName("");
     setTotalBasketValue(0);
     setCustomerBasketsData([]);
     setCheckedBaskets([]);
@@ -79,21 +81,42 @@ const BasketMapping = () => {
   // handle map click
   const handleMapClick = async () => {
     setSendingMap(true);
-    const response = await sendMultipleBaskets(
-      basketData,
-      adminId,
-      customerId,
-      broker,
-      aliasName
-    );
-    if (response) {
-      setSendingMap(false);
-      setMessage(response);
-      fetchBasketGroups();
-    }
-    else {
-      setSendingMap(false);
-      setMessage("Server Error!")
+    if (buttonName === "Map") {
+      const response = await sendMultipleBaskets(
+        basketData,
+        adminId,
+        customerId,
+        broker,
+        selectedBasketGroup
+      );
+      if (response) {
+        setSendingMap(false);
+        setMessage(response);
+        setButtonName("UnMap");
+        setEnableWeblink(false);
+        fetchBasketGroups();
+      }
+      else {
+        setSendingMap(false);
+        setEnableWeblink(true);
+        setMessage("Server Error!");
+        setButtonName("Map");
+      }
+    } else {
+      const response = await unMapMultipleBaskets(selectedBasketGroup, customerId);
+      if (response) {
+        setSendingMap(false);
+        setMessage(response);
+        setButtonName("Map");
+        setEnableWeblink(false);
+        fetchBasketGroups();
+      }
+      else {
+        setSendingMap(false);
+        setEnableWeblink(true);
+        setMessage("Server Error!");
+        setButtonName("UnMap");
+      }
     }
   };
 
@@ -113,9 +136,8 @@ const BasketMapping = () => {
   
   // fetch the list of baskets 
   const fetchBaskets = async () => {
-    const response = await getBasketList();
+    const response = await getBasketList("MAP");
     setRecords(response);
-
   };
   
   // fetch the customer data list
@@ -137,17 +159,20 @@ const BasketMapping = () => {
     const total = response?.basketDetailsList?.reduce((acc, curr) => curr.basketActualValue  + acc, 0)
     if (response !== null && response?.customerId !== null) {
       setCustomerId(response.customerId);
-      setAliasName(selectedBasketGroup);
+      // setAliasName(selectedBasketGroup);
       setTotalBasketValue(total);
       setBroker(response.customerBroker);
       setShowGNStaticData(true);
+      setButtonName("UnMap");
+      setEnableMap(false);
+      setEnableWeblink(false);
     }
   }
 
   // fetch the basket data for each customer
   const getCustomerBasketsData = async () => {
     const response = await fetchDetailsByCustomer(selectedBasketGroup, customerId);
-
+    
     if (response !== null && response?.customerId !== null) {
       setCustomerBasketsData(response?.basketDetailsList);
     }
@@ -177,26 +202,25 @@ const BasketMapping = () => {
 
   useEffect(() => {
 
-    if (Number(totalBasketValue) === 0 || Number(investment) === NaN || aliasName === '') {
-
-      setEnableMap(true);
-      return;
-    }
-
-    if (Number(totalBasketValue) > Number(investment)) {
-
-      setMessage(msg3);
+    if (Number(totalBasketValue) === 0 || Number(investment) === NaN || selectedBasketGroup === '') {
       setEnableMap(true);
       return;
     }
     
-    if (showGNStaticData) {
+    if (Number(totalBasketValue) > Number(investment)) {
+      setMessage(msg3);
       setEnableMap(true);
+      if (showGNStaticData) {
+        setEnableMap(false);
+        setEnableWeblink(false);
+        return;
+      }
       return;
     }
+    
 
     setEnableMap(false);
-  }, [investment, totalBasketValue, aliasName]);
+  }, [investment, totalBasketValue, selectedBasketGroup]);
 
   useEffect(() => {
     const result = Object.values(total).reduce((acc, curr) => {
@@ -314,8 +338,8 @@ const BasketMapping = () => {
           />
         </div>
 
-        {/* Basket Alias Name */}
-        <div className="flex flex-col items-left ">
+        {/* Basket Group Name */}
+        {/* <div className="flex flex-col items-left ">
           <p className="text-black text-sm dark:text-white mr-2">
             Basket Group Name
           </p>
@@ -329,17 +353,34 @@ const BasketMapping = () => {
             }}
             className="border border-gray-200  text-right rounded-lg w-36 text-sm"
           />
+        </div> */}
+
+        
+        {/* Basket Group Name */}
+        <div className="flex flex-col items-left ">
+          <p className="text-black text-sm dark:text-white mr-2">
+              Basket Group Name
+            </p>
+          <div className="relative w-44 z-10 border rounded-md">
+            <BasketCategory 
+              selected={selectedBasketGroup}
+              setSelected={setSelectedBasketGroup}
+              isDisabled={true}
+              pageName={"basketMapping"}
+            />
+          </div>
         </div>
+
 
         {/* Buttons group */}
         <div className="mt-4">
           <Button isProcessing={sendingMap} size={'sm'} disabled={enableMap} onClick={handleMapClick}>
-            Map
+            {buttonName}
           </Button>
         </div>
 
         {/* Group basket selector */}
-        <div className="flex flex-col items-left ">
+        {/* <div className="flex flex-col items-left ">
           <label className="text-black text-sm dark:text-white">Select Basket Group</label>
           <select
             name="basketGroups"
@@ -363,20 +404,20 @@ const BasketMapping = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
           
         <div className="mt-4">
           <Button isProcessing={sendingWeblink} size={'sm'} onClick={handleWebLinkClick} disabled={enableWeblink}>
-            {sendingWeblink ? "Sending" : "Send Weblink"}
+            {sendingWeblink ? "Sending" : "Weblink"}
           </Button>
         </div>
         
         <Tooltip content="Reset">
-          <div 
-            className="mt-4 border border-cyan-800 rounded-md p-2 hover:cursor-pointer"
+          <button 
+            className="mt-4 bg-cyan-700 hover:bg-cyan-600 rounded-md p-1.5 text-white hover:cursor-pointer"
             onClick={() => {
               setShowGNStaticData(false);
-              setAliasName("");
+              // setAliasName("");
               setTotalBasketValue(0);
               setInvestment(0);
               setSelectedBasketGroup("");
@@ -384,12 +425,11 @@ const BasketMapping = () => {
               setCustomerId("");
               setBroker("");
               setMessage("");
+              setButtonName("Map  ");
             }} 
           >
-            <FcRefresh 
-              color="white"
-            />
-          </div>
+            Reset
+          </button>
         </Tooltip>
       </div>
 
