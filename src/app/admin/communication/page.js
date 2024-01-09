@@ -2,7 +2,7 @@
 
 import { getCustomers } from '@/app/api/basket/route';
 import { sendCommunication } from '@/app/api/communication/route';
-import { Alert, Button } from 'flowbite-react'
+import { Alert, Button, Tooltip } from 'flowbite-react'
 import React, { useEffect, useState } from 'react'
 import { HiInformationCircle } from 'react-icons/hi';
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
@@ -15,11 +15,13 @@ const Communication = () => {
   // local state
   const [customers, setCustomers] = useState([]);
   const [customerId, setCustomerId] = useState("");
+  const [customerData, setCustomerData] = useState([]);
   const [msgChannel, setMsgChannel] = useState("");
   const [message, setMessage] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [info, setInfo] = useState("");
 
   // messages
   const msg1 = "Email sent successfully.";
@@ -27,10 +29,18 @@ const Communication = () => {
   const handleChange = (e) => {
 
     if (e.target.id === "customer") {
-      setCustomerId(e.target.value);
-    } else if (e.target.id === "msgChannel") {
-      setMsgChannel(e.target.value);
-    } else if (e.target.id === "message") {
+      const input = e?.target?.value;
+      setCustomerId(input);
+      const data = customers.filter((data) => data.customerId == input.split(" ")[0]);
+      setCustomerData(data);
+    } 
+    else if (e.target.id === "msgChannel") 
+    { 
+      const channel = e?.target?.value;
+      setMsgChannel(channel);
+    } 
+    else if (e.target.id === "message") 
+    {
       if (e.target.value.length > 1000) {
         setAlertMessage("Message limit exceeds!");
       }
@@ -41,11 +51,11 @@ const Communication = () => {
       }
     }
   }
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+    
     const res = await sendCommunication(customerId, message);
     setAlertMessage(res);
     
@@ -54,6 +64,41 @@ const Communication = () => {
     setMsgChannel("");
     setCustomerId("");
   }
+  
+  const displayTitle = () => {
+    switch(msgChannel) {
+      case "EMAIL":
+        return "Email ID";
+      case "SMS":
+        return "Mobile No";
+      case "WHATSAPP":
+        return "Whatsapp No";
+      default:
+        return "Email ID";
+    }
+  }
+          
+  const displayData = (channel) => {
+    switch(channel) {
+      case "EMAIL":
+        setInfo(customerData[0]?.email);
+        break;
+      case "SMS":
+        setInfo(customerData[0]?.contactOne);
+      break;
+      case "WHATSAPP":
+        setInfo(customerData[0]?.contactOne);
+        break;
+      default:
+        setInfo("");
+        break;
+    }
+  }
+
+  useEffect(() => {
+    displayData(msgChannel);
+  }, [customerData, msgChannel])
+ 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,7 +120,7 @@ const Communication = () => {
               id="customer"
               className="border border-gray-200 rounded-md w-44 text-sm"
               required
-              defaultValue={"EMAIL"}
+              defaultValue={""}
               onChange={(e) => handleChange(e)}
             >
             <option disabled value="">
@@ -104,6 +149,21 @@ const Communication = () => {
               }
           </select>
         </div>
+        <div className='flex flex-col'>
+          <label>
+            {
+              displayTitle()
+            }
+          </label>
+          <Tooltip content={info}>
+            <input 
+              value={info}
+              disabled
+              className='border border-gray-200 rounded-md w-44 text-sm h-9 pl-2 truncate'
+            />
+
+          </Tooltip>
+        </div>
       </div>
       <div className='flex gap-4'>
         <textarea 
@@ -113,8 +173,8 @@ const Communication = () => {
           value={message}
           className={`mt-4 resize-none rounded-md border-gray-300 ${error ? "outline-red-500 outline outline-1" : ""}`}
           rows={10} 
-          cols={50}
-          maxLength={1001}
+          cols={58}
+          maxLength={251}
           placeholder='Enter your message here...'
           onChange={(e) => handleChange(e)}
         >
