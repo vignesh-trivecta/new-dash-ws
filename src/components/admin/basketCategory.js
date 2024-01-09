@@ -4,40 +4,67 @@ import { Fragment, useState, useEffect } from "react";
 import { Combobox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
 import { addBasketCategory, getBasketCategories } from "@/app/api/basket/route";
+import { getBasketGroups } from "@/app/api/map/baskets/route";
+import { Tooltip } from "flowbite-react";
 
-export default function BasketCategory({setBasketCategory, nameCheck, selected, setSelected}) {
-  const [basketCategoryList, setBasketCategoryList] = useState([]);
+export default function BasketCategory({selected, setSelected, isDisabled,  pageName}) {
+
+  const [list, setList] = useState([]);
   const [query, setQuery] = useState("");
+  const propertyName = pageName === "create" ? "basketCategory" : "groupName";
 
-  const filteredPeople =
-    query === ""
-      ? basketCategoryList
-      : basketCategoryList.filter((basket) =>
-          basket.basketCategory
+  const filteredList = () => {
+    return query === ""
+      ? list
+      : list.filter((basket) =>
+          basket[propertyName]
             .toLowerCase()
             .replace(/\s+/g, "")
             .startsWith(query.toLowerCase().replace(/\s+/g, ""))
-  );
+        );
+  };
       
   // to get the basket category
   async function getCategory() {
     const response = await getBasketCategories();
+    console.log(response)
     if (response) {
-      setBasketCategoryList(response);
+      setList(response);
     }
   }
+
+  // get the basket groups name list
+  const fetchBasketGroups = async () => {    
+    const res = await getBasketGroups();
+    console.log(res)
+    setList(res);
+  }
+
+  // to add a new category to the list of basket category names
+  const addCategory = async (query) => {
+    const res = await addBasketCategory(query);
+    if (res) {
+      setSelected(query);
+    }
+  }
+
   useEffect(() => {
-    getCategory();
+    if (pageName === "create") {
+      getCategory();
+    }
+    else {
+      fetchBasketGroups();
+    }
   }, [selected]);
 
   return (
     <div className="">
       <Combobox 
         value={selected} 
-        disabled={!nameCheck}
-        onChange={(selected) => {
-          setSelected(selected);
-          setBasketCategory(selected);
+        disabled={!isDisabled}
+        onChange={(value) => {
+          // setSelected(selected);
+          setSelected(value);
         }}
       >
         <div className="relative mt-1 h-8">
@@ -47,7 +74,10 @@ export default function BasketCategory({setBasketCategory, nameCheck, selected, 
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={selected}
               onChange={(event) => {
-                setQuery(event.target.value)
+                setQuery(event.target.value);
+                if (pageName !== "create") {
+                  setSelected(event.target.value);
+                }
               }}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -65,24 +95,19 @@ export default function BasketCategory({setBasketCategory, nameCheck, selected, 
             afterLeave={() => setQuery("")}
           >
             <Combobox.Options className="absolute mt-1 max-h-32 w-full overflow-auto rounded-md bg-white py-1 text-base ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {filteredPeople.length === 0 && query !== "" ? (
-                <button
+              {filteredList()?.length === 0 && query !== "" ? (
+                (pageName === "create") ? (
+                  <button
                   className="relative cursor-pointer text-left py-2 px-4 text-gray-700 w-full"
                   onClick={() => {
-                    const addCategory = async (query) => {
-                      const res = await addBasketCategory(query);
-                      if (res) {
-                        setSelected(query);
-                        setBasketCategory(query);
-                      }
-                    }
                     addCategory(query);
                   }}
-                >
+                  >
                   {`Add "${query}"`}
-                </button>
+                  </button>
+                ) : ``
                 ) : (
-                filteredPeople.map((basket, index) => (
+                filteredList()?.map((basket, index) => (
                   <Combobox.Option
                     key={index}
                     className={({ active }) =>
@@ -90,7 +115,7 @@ export default function BasketCategory({setBasketCategory, nameCheck, selected, 
                         active ? "bg-blue-600 text-white" : "text-gray-900"
                       }`
                     }
-                    value={basket.basketCategory}
+                    value={basket[propertyName]}
                   >
                     {({ selected, active }) => (
                       <>
@@ -98,8 +123,9 @@ export default function BasketCategory({setBasketCategory, nameCheck, selected, 
                           className={`block truncate ${
                             selected ? "font-medium" : "font-normal"
                           }`}
-                        >
-                          {basket.basketCategory}
+                        > 
+
+                          {basket[propertyName]}
                         </span>
                         {selected ? (
                           <span
