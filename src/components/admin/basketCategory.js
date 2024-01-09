@@ -20,13 +20,13 @@ export default function BasketCategory({setBasketCategory, nameCheck, selected, 
   );
       
   // to get the basket category
-  useEffect(() => {
-    async function getCategory() {
-      const response = await getBasketCategories();
-      if (response) {
-        setBasketCategoryList(response);
-      }
+  async function getCategory() {
+    const response = await getBasketCategories();
+    if (response) {
+      setBasketCategoryList(response);
     }
+  }
+  useEffect(() => {
     getCategory();
   }, [selected]);
 
@@ -36,17 +36,19 @@ export default function BasketCategory({setBasketCategory, nameCheck, selected, 
         value={selected} 
         disabled={!nameCheck}
         onChange={(selected) => {
-        setSelected(selected);
-        setBasketCategory(selected);
-        
-      }}>
+          setSelected(selected);
+          setBasketCategory(selected);
+        }}
+      >
         <div className="relative mt-1 h-8">
           <div className="relative h-8 w-full cursor-default overflow-hidden rounded-lg bg-white text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
               disabled
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={selected}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value)
+              }}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronDownIcon
@@ -71,7 +73,7 @@ export default function BasketCategory({setBasketCategory, nameCheck, selected, 
                       const res = await addBasketCategory(query);
                       if (res) {
                         setSelected(query);
-                        setQuery("");
+                        setBasketCategory(query);
                       }
                     }
                     addCategory(query);
