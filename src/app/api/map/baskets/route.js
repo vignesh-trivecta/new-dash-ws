@@ -32,6 +32,37 @@ export const mapBasket = async(basketName, adminId, customerId, broker, quantity
     }
 }
 
+// API to un-map a basket from a customer
+export const unMapBasket = async(basketName, adminId, customerId, broker, quantity) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "basketName": basketName,
+                "adminId": adminId,
+                "customerId": customerId,
+                "brokerName": broker,
+                "basketUnits": quantity
+            })
+        }
+        const response = await fetch(`http://${DOMAIN}:${PORT}/customer/single/unmap`, requestOptions);
+        if(response.status === 200) {
+            const data = await response.text();
+            return data;
+        } else {
+            const data = await response.text();
+            return data;
+        }
+    }
+    catch(error){
+        console.log(error);
+        return false;
+    }
+}
+
 // API call to send weblink to a customer
 export const sendWeblink = async(basketName, adminId, customerId, brokerName, basketUnits) => {
     try{
@@ -92,7 +123,7 @@ export const getCustomerStatus = async (basketName) => {
 }
 
 // API endpoint to map the multiple baskets to a customer
-export const sendMultipleBaskets = async (basketData, adminId, customerId, brokerName, groupName) => {
+export const sendMultipleBaskets = async (basketData, adminId, customerId, brokerName, selectedBasketGroup) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -104,11 +135,43 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
                 "adminId": adminId,
                 "customerId": customerId.split(" ")[0],
                 "brokerName": brokerName,
-                "groupName": groupName,
+                "groupName": selectedBasketGroup,
             })
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/map/multiple`, requestOptions);
+        
+        if(response.status == 200){
+            const jsonData = await response.text();
+            return jsonData;
+        }
+        else {
+            const jsonData = await response.text();
+            return jsonData;
+        }
+    }
+    
+    catch (error) {
+        return false;
+    }
+}
+
+
+// API endpoint to map the multiple baskets to a customer
+export const unMapMultipleBaskets = async (selectedBasketGroup, customerId) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "groupName": selectedBasketGroup,
+                "customerId": customerId.split(" ")[0],
+            })
+        }
+
+        const response = await fetch(`http://${DOMAIN}:${PORT}/customer/multiple/unmap`, requestOptions);
         
         if(response.status == 200){
             const jsonData = await response.text();
