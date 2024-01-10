@@ -58,6 +58,9 @@ export const getBasketList = async(filteredBasket) => {
             case 'SELL':
                 response = await fetch(`http://${DOMAIN}:${PORT}/view/basketlist/sell`, requestOptions);
                 break;
+            case 'MAP':
+                response = await fetch(`http://${DOMAIN}:${PORT}/view/map/section/basketlist`, requestOptions);
+                break;
             default:
                 response = await fetch(`http://${DOMAIN}:${PORT}/view/basketlist`, requestOptions);
                 break;
@@ -106,7 +109,7 @@ export const getSpecificBasket = async(basketName) => {
 }
 
 // API call to clone a basket
-export const cloneBasket = async (basketName, newBasketName, adminId) => {
+export const cloneBasket = async (basketName, newBasketName, adminId, modelBasket, basketValidity) => {
     try {
         const requestOptions = {
             method: 'POST',
@@ -117,6 +120,8 @@ export const cloneBasket = async (basketName, newBasketName, adminId) => {
                 "basketName": basketName,
                 "newBasketName": newBasketName,
                 "adminId": adminId,
+                "basketModel": modelBasket,
+                "basketValidity": basketValidity
             })
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/clone`, requestOptions);
@@ -225,8 +230,38 @@ export const sendWeightage = async(weightage, totalAmount, priceofAsset) => {
 
         if(response.ok) {
             const responseText = await response.text();
-            let data = JSON.parse(responseText);
+            const data = JSON.parse(responseText);
             return data.quantity;
+        } else {
+            return false;
+        }
+    }
+    catch(error){
+        return false;
+    }
+}
+
+// API call to post the quantity and get the weightage
+export const sendQuantity = async(quantity, totalAmount, priceofAsset) => {
+    try{
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "quantity": quantity,
+                "totalAmount": totalAmount,
+                "priceofAsset": priceofAsset,
+            })
+        }
+        const response = await fetch(`http://${DOMAIN}:${PORT}/weightage/rebalancing`, requestOptions);
+
+        if(response.ok) {
+            const responseText = await response.text();
+            const data = JSON.parse(responseText);
+            console.log(data)
+            return data.weightage;
         } else {
             return false;
         }

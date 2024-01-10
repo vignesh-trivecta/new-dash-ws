@@ -4,8 +4,9 @@ import ValiditySelector from "@/utils/validitySelector";
 import { Button, Modal } from "flowbite-react";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setBasketAmount } from "@/store/basketSlice";
+import { setBasketAmount, setModelBasket } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
+import BasketType from "@/components/page/basketType";
 
 const SubmitBasket = ({
   saved,
@@ -28,14 +29,14 @@ const SubmitBasket = ({
 
   // local state variables
   // const [popup, setPopup] = useState(false);
-  const [modelBasket, setModelBasket] = useState(true);
 
   // redux state
   const adminName = useSelector((state) => state.user.username);
   const basketName = useSelector((state) => state.basket.basketName);
   const basketAmount = useSelector((state) => state.basket.basketAmount);
   const basketValidity = useSelector((state) => state.basket.basketValidity);
-
+  const modelBasket = useSelector((state) => state.basket.modelBasket);
+  
   // function to submit all the records
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,11 +60,7 @@ const SubmitBasket = ({
     setSaveMsg(response);
     setSaved(!saved);
     props.setOpenModal(undefined);
-  };
-
-  // function to handle check input
-  const handleCheckboxChange = (event) => {
-    setModelBasket(event.target.checked);
+    dispatch(setModelBasket(true));
   };
 
   return (
@@ -91,29 +88,9 @@ const SubmitBasket = ({
                 </p>
               </div>)
               : <></>}
-            <div className="flex items-center justify-center mt-4">
-              <label
-                htmlFor="default-checkbox"
-                className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >
-                Save this as Model Basket
-              </label>
-              <input
-                id="default-checkbox"
-                type="checkbox"
-                checked={modelBasket}
-                onChange={handleCheckboxChange}
-                className="ml-2 w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-              />
+            <div className="z-40">
+              <BasketType />
             </div>
-            {!modelBasket ? (
-              <div className="flex items-center justify-center mt-2 z-30">
-                <label className="mr-4">Basket Validity</label>
-                <ValiditySelector />
-              </div>
-            ) : (
-              <></>
-            )}
             <div>
             </div>
             <div className="flex justify-center mt-4 gap-4">

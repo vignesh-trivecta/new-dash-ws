@@ -5,6 +5,7 @@ const initialState = {
   basketName: '',
   basketAmount: '',
   basketValue: 0,
+  modelBasket: true,
   basketValidity: '1 day',
   basketBroker: '',
   basketRecords: [],
@@ -24,6 +25,9 @@ const basketSlice = createSlice({
     setBasketValue: (state, action) => {
       state.basketValue = action.payload;
     },
+    setModelBasket: (state, action) => {
+      state.modelBasket = action.payload;
+    },
     setBasketValidity: (state, action) => {
       state.basketValidity = action.payload;
     },
@@ -36,6 +40,6 @@ const basketSlice = createSlice({
   },
 });
 
-export const { setBasketName, setBasketAmount, setBasketValue, setBasketValidity, setBasketBroker, setBasketRecords } = basketSlice.actions;
+export const { setBasketName, setBasketAmount, setBasketValue, setModelBasket, setBasketValidity, setBasketBroker, setBasketRecords } = basketSlice.actions;
 
 export default basketSlice.reducer;

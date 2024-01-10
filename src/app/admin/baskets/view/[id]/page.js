@@ -3,11 +3,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { Button, Label, Modal, TextInput, Tooltip } from "flowbite-react";
 import { basketNameCheck, cloneBasket, getSpecificBasket } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
+import ValiditySelector from "@/utils/validitySelector";
+import BasketType from "@/components/page/basketType";
 
 const ViewTable = ({ params }) => {
   const basketName = params.id.split("%20").join(" ");
@@ -25,10 +27,10 @@ const ViewTable = ({ params }) => {
   const props = { openModal, setOpenModal };
 
   const adminId = useSelector((state) => state.user.username);
-  const router = useRouter();
-  const dispatch = useDispatch();
+  const modelBasket = useSelector((state) => state.basket.modelBasket);
+  const basketValidity = useSelector((state) => state.basket.basketValidity);
 
-  const cancelButtonRef = useRef(null);
+  const router = useRouter();
 
   // useEffect to fetch the table records
   useEffect(() => {
@@ -57,24 +59,21 @@ const ViewTable = ({ params }) => {
     { [`${basketName} : ${records[0]?.basketCategory}`]: "" },
   ];
 
-  const handleClone = () => {
-    props.setOpenModal(undefined);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(input);
-    let response = await cloneBasket(
+    const response = await cloneBasket(
       basketName,
       input,
-      adminId
+      adminId,
+      modelBasket,
+      basketValidity
     );
     if (response) {
       setOpenModal(undefined);
       router.push("/admin/baskets/view");
     }
     else {
-      setOpenModal(undefined);
+      setMessage("Unable to clone basket");
     }
   };
 
@@ -180,13 +179,19 @@ const ViewTable = ({ params }) => {
           <Modal.Header />
           <Modal.Body>
             <form onSubmit={handleSubmit} className="space-y-2">
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="email" value="New Basket Name" />
+              <div className="z-12">
+                <div className=" flex mb-2 items-center space-x-1">
+                  <Label htmlFor="email" value="New basket name" />
+                  <Tooltip content={"Name should be less than 20 characters"}>
+                    <svg className="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                    </svg>
+                  </Tooltip>
                 </div>
                 <TextInput
                   required
                   id="email"
+                  maxLength={20}
                   className="border-red-500"
                   autoFocus
                   // value={""}
@@ -205,17 +210,20 @@ const ViewTable = ({ params }) => {
                     : <p>{""}</p>
                   }
                 </div>
+                <div>
+                  <BasketType />
+                </div>
               </div>
 
-              <div className="w-full flex justify-center items-center space-x-4">
+              <div className="w-full flex justify-center items-center space-x-4 z-10">
                 <button
                   className="rounded-md bg-cyan-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-cyan-700 shadow-sm"
                   disabled={isButtonDisabled}
                 >
                   Clone
                 </button>
-                <Button
-                  color="gray"
+                <button
+                  className="text-sm border border-gray-200 p-2.5 rounded-md"
                   onClick={() => {
                     setOpenModal(undefined);
                     setError(false);
@@ -224,7 +232,7 @@ const ViewTable = ({ params }) => {
                   }}
                 >
                   Cancel
-                </Button>
+                </button>
               </div>
             </form>
           </Modal.Body>

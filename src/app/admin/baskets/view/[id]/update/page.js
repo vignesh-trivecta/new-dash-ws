@@ -145,12 +145,13 @@ const UpdateBasket = ({ params }) => {
         {/* Max Investment Value */}
         <div className="flex flex-col items-left mb-6">
           <label className="text-black text-sm dark:text-white">
-            Max Investment Value ₹
+            Investment/ Sale Value ₹
           </label>
           <input
             type="text"
+            disabled
             value={segregate(investmentVal)}
-            className="border border-gray-200 rounded-lg w-44 text-right text-sm"
+            className="border border-gray-200 rounded-lg w-44 text-right text-sm bg-gray-50"
             onChange={(e) => setInvestmentVal(e.target.value)}
           />
         </div>

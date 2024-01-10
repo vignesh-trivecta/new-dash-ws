@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import { Alert, Button, Label, Modal } from 'flowbite-react';
+import React, { useEffect, useState } from 'react';
+import { Alert, Button, Label, Modal, Tooltip } from 'flowbite-react';
 import SearchDropdown from '@/utils/searchDropdown';
 import { useDispatch, useSelector } from 'react-redux';
-import { getEquityPrice, sendWeightage } from '@/app/api/basket/route';
+import { getEquityPrice, sendQuantity, sendWeightage } from '@/app/api/basket/route';
 import { AddRecordMainAPI } from '@/app/api/mainBasket/route';
 import { addRecord } from '@/app/api/tempBasket/route';
 import { setSelectedStock} from '@/store/addRecordSlice';
@@ -28,46 +28,61 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     const adminName = useSelector((state) => state.user.username);
     
     // local state variables
-    const [limitPrice, setLimitPrice] = useState(undefined);
     const [weightage, setWeightage] = useState(undefined);
     const [price, setPrice] = useState('');
+    const [limitPrice, setLimitPrice] = useState(price);
     const [exchange, setExchange] = useState('NSE');
     const [orderType, setOrderType] = useState('LIMIT');
     const [quantity, setQuantity] = useState('');
     const [message, setMessage] = useState("");
     const [disabledButton, setDisabledButton] = useState(false);
-    
     const [fetch, setFetch] = useState(false);
     
     // function to handle the exchange radio button
     const handleExchange = async (exchange) => {
-        // (setExchange(exchange));
+        setExchange(exchange);
         const data = await getEquityPrice(selectedStock, exchange);
         setPrice(data);
     }
+    
+    //function to get the quantity of stocks based on weightage
+    const handleChange = async (e) => {
+        // setWeightage(e?.target.value || weightage );
+        const inputValue = e?.target?.value;
+        const id = e?.target?.id;
+        
+        // makes API call based on id
+        if (id === "weightage") {
+            setWeightage(inputValue);
+            const response = await sendWeightage(inputValue, investmentVal, price);
+            response ? setQuantity(response) : setQuantity(0);
+            // check whether input value is between 1 - 100
+            if (inputValue > 100 || inputValue < 1 ) {
+                setMessage("Weightage must be between 1-100")
+            }
+            else {
+                setMessage("");
+            }
+        } else if (id === "quantity") {
+            setQuantity(inputValue);
+            const response = await sendQuantity(inputValue, investmentVal, price);
+            response ? setWeightage(response) : setWeightage(0);
+            if (response > 100 || response < 1 ) {
+                setMessage("Weightage must be between 1-100")
+            }
+            else {
+                setMessage("");
+            }
+        }
+    };
+    
     
     useEffect(() => {
         if (selectedStock !== "") {
             handleExchange(exchange);
         }
     }, [fetch])
-    
-    //function to get the quantity of stocks based on weightage
-    const handleChange = async (e) => {
-        // setWeightage(e?.target.value || weightage );
-        setWeightage(e?.target?.value);
-        // const quantity = await sendWeightage(e?.target?.value || weightage, investmentVal, price);
-        const response = await sendWeightage(e?.target?.value, investmentVal, price);
-        response ? setQuantity(response) : setQuantity(0);
-        if (e?.target?.value > 100 || e?.target?.value < 1 ) {
-            setMessage("Weightage must be between 1-100")
-        }
-        else {
-            setMessage("");
-        }
-    };
-    
-    const isInitialRender = useRef(true);
+
     useEffect(() => {
         if (weightage !== "") {
             handleChange();
@@ -77,10 +92,16 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     // function to submit the modal values and add record to the table
     const handleSubmit = (e) => {
         e.preventDefault();
+
         const postData = async() => {
             let data;
+            let lprice = limitPrice || price;
+            if (orderType === "MARKET") {
+                lprice = 0;
+            }
+
             if(pathname == '/admin/baskets/create'){
-                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, limitPrice, baskCat);
+                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, lprice, baskCat);
                 if(data === true){
                     setHandleFetch(!handleFetch);
                     props.setOpenModal(undefined);
@@ -89,7 +110,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             else {
                 const newVal = amountSplitter(basketVal)
                 const newBasketName = mainBasketName.split("%20").join(" ");
-                data = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, newVal, baskCat);
+                data = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, lprice, investmentVal, newVal, baskCat);
                 setHandleFetch(!handleFetch);
                 props.setOpenModal(undefined);
             }
@@ -104,15 +125,15 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         <>
         {/* Add record button */}
         <Button 
-        onClick={() => {
-            props.setOpenModal('form-elements');
-            dispatch(setSelectedStock(''));
-            setWeightage('');
-            setPrice('');
-            setQuantity('');
-            setExchange('NSE');
-            setOrderType('LIMIT');
-        }}
+            onClick={() => {
+                props.setOpenModal('form-elements');
+                dispatch(setSelectedStock(''));
+                setWeightage(null);
+                setPrice('');
+                setQuantity('');
+                setExchange('NSE');
+                setOrderType('LIMIT');
+            }}
         >
             Add Record
         </Button>
@@ -147,36 +168,57 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
 
                         {/* Price element */}
                         <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
-                            <Label htmlFor="price" value="Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                            <input disabled id='price' name="price" value={segreagatorWoComma(price)} type="string" className=' text-right pr-2 w-full h-11 bg-gray-50 rounded-md border border-gray-200' />
+                            <div className='flex items-center space-x-2 absolute left-2 px-1 -top-2 bg-white '>
+                                <Label htmlFor="price" value="Price" className='text-sm z-10' />
+                                {
+                                    exchange === "BSE"
+                                    ?
+                                    <Tooltip content={"LTP is NSE"}>
+                                        <svg className="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                        </svg>
+                                    </Tooltip>
+                                    : 
+                                    ""
+                                }
+                            </div>
+                            <input 
+                                disabled 
+                                id='price' 
+                                name="price" 
+                                value={segreagatorWoComma(price)} 
+                                type="string" 
+                                className=' text-right pr-2 w-full h-11 bg-gray-50 rounded-md border border-gray-200' 
+                            />
                         </div>
 
                         {/* Exchange element */}
                         <Label value="Exchange" className='col-start-1 row-start-2 text-sm' />
                         <div className=' col-start-2 row-start-2'>
-                            {/* <input 
+                            <input 
                                 required
                                 id="bse" 
                                 name="exchange" 
                                 type='radio' 
                                 value="BSE"
-                                checked={exchange === "BSE"}
+                                defaultChecked={exchange === "BSE"}
                                 onClick={() => {
                                     handleExchange("BSE");
                             }} />
-                            <label htmlFor='bse' className='ml-1 text-sm'>BSE</label> */}
+                            <label htmlFor='bse' className='ml-2 text-sm'>BSE</label>
                             <input 
                                 required
                                 id="nse" 
                                 name="exchange" 
                                 type='radio' 
                                 value="NSE" 
-                                className='ml-1' 
+                                className='ml-2' 
                                 defaultChecked={exchange === "NSE"}
                                 onClick={() => {
                                     handleExchange("NSE");
-                            }} />
-                            <label htmlFor='nse' className='ml-1 text-sm'>NSE</label>
+                                }} 
+                            />
+                            <label htmlFor='nse' className='ml-2 text-sm'>NSE</label>
                         </div>
                         
                         {/* Weightage element */}
@@ -184,11 +226,12 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         <div className='rounded-md col-start-2 row-start-3 h-10'>
                             <input
                                 required
+                                id='weightage' 
+                                name="weightage"
                                 type='number'
                                 value={weightage}
                                 onChange={handleChange}
                                 className={`${(weightage > 100 || weightage < 1) ? "focus:ring-red-500" : "focus:ring-blue-700"} focus:border-none w-full border border-gray-200 rounded-md text-right`}
-                                
                             />
                             {/* <input type='text' id="weightage" placeholder='Enter...' /> */}
                         </div>
@@ -197,31 +240,38 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
                         <div className='col-start-2'>
                             <input required id="market" name="orderType" type='radio' value="MARKET" defaultChecked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
-                            <label htmlFor='market' className='ml-1 text-sm'>MARKET</label>
-                            <input required id="limit" name="orderType" type='radio' value="LIMIT" className='ml-1' defaultChecked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
-                            <label htmlFor='limit' className='ml-1 text-sm'>LIMIT</label>
+                            <label htmlFor='market' className='ml-2 text-sm'>MARKET</label>
+                            <input required id="limit" name="orderType" type='radio' value="LIMIT" className='ml-2' defaultChecked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
+                            <label htmlFor='limit' className='ml-2 text-sm'>LIMIT</label>
                         </div>
 
                         {/* Limit value element */}    
-                        {orderType === "LIMIT" && (   
-                            <span className='relative ml-8'>
-                                <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
-                                <input 
-                                    required 
-                                    id="limitInput" 
-                                    name="limitInput" 
-                                    value={limitPrice} 
-                                    onChange={(e) => setLimitPrice(e.target.value ?? undefined)} 
-                                    type="number" 
-                                    className=' text-right absolute w-32 rounded-md border border-gray-200' />                                             
-                            </span>                             
-                        )}
-
+                        <div className='relative ml-8'>
+                            <Label htmlFor="limitInput" value="Limit Price" className='absolute left-2 bg-white px-1 -top-2 text-sm z-10' />
+                            <input 
+                                required 
+                                disabled={orderType === "MARKET"}
+                                id="limitInput" 
+                                name="limitInput" 
+                                value={limitPrice || price} 
+                                onChange={(e) => setLimitPrice(e.target.value)} 
+                                type="number" 
+                                className={`text-right absolute ml-1 w-40 rounded-md border border-gray-200 ${orderType === "MARKET" ? "bg-gray-50" : ""}`}
+                            />       
+                        </div>
                             
                         {/* Quantity element */}
                         <div className='relative col-start-3 row-start-3 flex flex-col ml-8'>
                             <Label htmlFor='quantity' value="Quantity" className='absolute left-2 -top-2 bg-white px-1 text-sm z-10' />
-                            <input disabled id='quantity' name='quantity' value={quantity} type="number" className=' text-right absolute pl-8 p-2 w-full bg-gray-50 border border-gray-200 rounded-md' />
+                            <input 
+                                required
+                                id='quantity' 
+                                name='quantity' 
+                                type="number" 
+                                value={quantity} 
+                                onChange={handleChange} 
+                                className=' text-right absolute pl-8 p-2 w-full border border-gray-200 rounded-md' 
+                            />
                         </div>
                     </div>
 
@@ -230,14 +280,15 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         <div>
                             {
                                 message 
-                                ? <Alert
-                                        color="warning"
-                                        rounded
-                                        className="h-10 w-56 p-1 flex justify-center max-w-sm text-sm"
-                                        icon={HiInformationCircle}
-                                        >
-                                        <span>{message}</span>
-                                    </Alert>
+                                ?   
+                                <Alert
+                                    color="warning"
+                                    rounded
+                                    className="h-10 w-56 p-1 flex justify-center max-w-sm text-sm"
+                                    icon={HiInformationCircle}
+                                >
+                                    <span>{message}</span>
+                                </Alert>
                                 : ""
                             }
                         </div>
@@ -248,11 +299,12 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                             >
                                 Add
                             </Button>
-                            <Button color="gray"                
+                            <Button 
+                                color="gray"                
                                 onClick={() => {
                                     props.setOpenModal(undefined);
                                     dispatch(setSelectedStock(''));
-                                    setWeightage('');
+                                    setWeightage(null);
                                     setPrice(0);
                                     setLimitPrice(undefined);
                                     setQuantity('');
