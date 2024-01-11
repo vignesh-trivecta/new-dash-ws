@@ -40,8 +40,11 @@ export default function SearchDropdown({ id, fetch, setFetch, records, setMessag
     
   useEffect(() => {
     const fetchData = async () => {
-      const list = await getInstrumentDetails();
-      setList(list);
+      const {status, data} = await getInstrumentDetails();
+      if (status !== 200) {
+        setList([]);
+      }
+      setList(data);
     };
   
     fetchData();

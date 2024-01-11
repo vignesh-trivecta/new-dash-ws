@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, Fragment } from "react";
-import { Alert, Button, Label, Modal } from "flowbite-react";
+import { Alert, Button, Label, Modal, Tooltip } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getEquityPrice, sendQuantity, sendWeightage } from "@/app/api/basket/route";
 import { updateRecordMainAPI } from "@/app/api/mainBasket/route";
@@ -13,6 +13,7 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { getInstrumentDetails } from "@/app/api/basket/route";
 import { usePathname } from "next/navigation";
 import { HiInformationCircle } from "react-icons/hi";
+import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const UpdateRecord = ({
   recId,
@@ -30,7 +31,6 @@ const UpdateRecord = ({
   investmentVal,
   basketVal,
 }) => {
-  console.log(lp);
   // modal state values
   const [openModal, setOpenModal] = useState(false);
   const props = { openModal, setOpenModal };
@@ -91,7 +91,7 @@ const UpdateRecord = ({
       if (pathname == "/admin/baskets/create") {
         let val1 = String(basketAmount).split(",").join("");
         let val2 = String(basketVal).split(",").join("");
-        const data = await updateRecordAPI(
+        const {status, data} = await updateRecordAPI(
           recId,
           basketName,
           adminId,
@@ -106,7 +106,7 @@ const UpdateRecord = ({
           val2,
           lprice
         );
-        if (data === true) {
+        if (status === 200) {
           setHandleFetch(!handleFetch);
           props.setOpenModal(undefined);
         }
@@ -116,7 +116,7 @@ const UpdateRecord = ({
       } else {
         let val1 = String(investmentVal).split(",").join("");
         let val2 = String(basketVal).split(",").join("");
-        const data = await updateRecordMainAPI(
+        const {status, data} = await updateRecordMainAPI(
           recId,
           basketName,
           adminId,
@@ -131,7 +131,7 @@ const UpdateRecord = ({
           val2,
           lprice
         );
-        if (data === true) {
+        if (status === 200) {
           setHandleFetch(!handleFetch);
           props.setOpenModal(undefined);
         }
@@ -147,7 +147,7 @@ const UpdateRecord = ({
   const handleExchange = (exchange) => {
     setLocalExchange(exchange);
     const fetchPrice = async () => {
-      const data = await getEquityPrice(localStock, exchange);
+      const data = await getEquityPrice(localStock, "NSE");
       setLocalPrice(data);
     };
     fetchPrice();
@@ -165,31 +165,34 @@ const UpdateRecord = ({
   const handleOnChange = async (e) => {
     const inputValue = e?.target?.value;
     const id = e?.target?.id;
+
     if (id === "weightage") {
       setLocalWeightage(inputValue);
       // multiple OR statements used to handle 'undefined' being sent to api call issue
-      const quantity = await sendWeightage(
+      const {status, data} = await sendWeightage(
         inputValue || localWeightage,
         basketAmount || investmentVal,
         localPrice
       );
-      setLocalQuantity(quantity);
-
+      const qty = data?.quantity;
+      qty ? setLocalQuantity(qty) : setLocalQuantity(0);
       if (inputValue > 100 || inputValue < 1) {
         setMessage("Weightage must be between 1-100")
       }
       else {
         setMessage("");
       }
-    } else if (id === "quantity") {
+    } 
+    else if (id === "quantity") {
       setLocalQuantity(inputValue);
-      const weight = await sendQuantity(
+      const { status, data } = await sendQuantity(
         inputValue || localQuantity,
         basketAmount || investmentVal,
         localPrice
       );
-      setLocalWeightage(weight);
-      if (weight > 100 || weight < 1 ) {
+      const weight = data.weightAge;
+      weight ? setLocalWeightage(weight) : setLocalWeightage(0);
+      if (weight > 100 || weight < 1) {
         setMessage("Weightage must be between 1-100")
       }
       else {
@@ -199,22 +202,26 @@ const UpdateRecord = ({
   };
 
   const handlePriceChange = async (weightage) => {
-    const quantity = await sendWeightage(
+    const { status, data } = await sendWeightage(
       weightage || localWeightage,
       basketAmount || investmentVal,
       localPrice
     );
-    setLocalQuantity(quantity);
+    const qty = data?.quantity;
+    qty ? setLocalQuantity(qty) : setLocalQuantity(0);
   }
   
-    useEffect(() => {
-      const fetchData = async () => {
-        const list = await getInstrumentDetails();
-        setStocksList(list);
-      };
-  
-      fetchData();
-    }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      const {status, data} = await getInstrumentDetails();
+      if (status !== 200) {
+        setStocksList([]);
+      }
+      setStocksList(data);
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     handleExchange(localExchange);
@@ -354,19 +361,28 @@ const UpdateRecord = ({
               </div>
 
               {/* Price element */}
-              <div className="relative col-start-3 row-start-1 flex flex-col ml-8">
-                <Label
-                  htmlFor="price"
-                  value="Price"
-                  className="absolute left-2 bg-white px-1 -top-2 text-sm z-10"
-                />
-                <input
-                  disabled
-                  id="price"
-                  name="price"
-                  value={localPrice}
-                  type="number"
-                  className="absolute pl-8 w-full bg-gray-50 rounded-md border border-gray-200 text-right"
+              <div className='relative col-start-3 row-start-1 flex flex-col ml-8'>
+                <div className='flex items-center space-x-2 absolute left-2 px-1 -top-2 bg-white '>
+                  <Label htmlFor="price" value="Price" className='text-sm z-10' />
+                  {
+                    localExchange === "BSE"
+                    ?
+                    <Tooltip content={"LTP is NSE"}>
+                      <svg className="w-3 h-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                      </svg>
+                    </Tooltip>
+                    : 
+                    ""
+                  }
+                </div>
+                <input 
+                  disabled 
+                  id='price' 
+                  name="price" 
+                  value={segreagatorWoComma(localPrice)} 
+                  type="string" 
+                  className=' text-right pr-2 w-full h-11 bg-gray-50 rounded-md border border-gray-200' 
                 />
               </div>
 

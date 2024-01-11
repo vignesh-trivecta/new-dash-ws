@@ -13,8 +13,9 @@ import { segreagatorWoComma } from '@/utils/formatter/segregatorWoComma';
 import { HiInformationCircle } from 'react-icons/hi';
 import { amountSplitter } from '@/utils/amountSplitter';
 
-const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, basketName, basketCategory,  mainBasketName, records }) => {
+const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, basketName, basketCategory,  mainBasketName, records, setMainMessage }) => {
 
+    console.log(investmentVal)
     const pathname = usePathname();
     const baskCat = basketCategory ?? records[0]?.basketCategory;
     
@@ -54,20 +55,26 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         // makes API call based on id
         if (id === "weightage") {
             setWeightage(inputValue);
-            const response = await sendWeightage(inputValue, investmentVal, price);
-            response ? setQuantity(response) : setQuantity(0);
+            const {status, data} = await sendWeightage(inputValue, investmentVal, price);
+            if (status === 200) {
+                data?.quantity ? setQuantity(data?.quantity) : setQuantity(0);
+            } else {
+                if(data?.messages) {
+                    setMessage(data.messages);
+                } else {
+                    setMessage("");
+                }
+            }
             // check whether input value is between 1 - 100
             if (inputValue > 100 || inputValue < 1 ) {
                 setMessage("Weightage must be between 1-100")
             }
-            else {
-                setMessage("");
-            }
         } else if (id === "quantity") {
             setQuantity(inputValue);
-            const response = await sendQuantity(inputValue, investmentVal, price);
-            response ? setWeightage(response) : setWeightage(0);
-            if (response > 100 || response < 1 ) {
+            const { status, data } = await sendQuantity(inputValue, investmentVal, price);
+            const wieght = data?.weightAge;
+            wieght ? setWeightage(wieght) : setWeightage(0);
+            if (wieght > 100 || wieght < 1 ) {
                 setMessage("Weightage must be between 1-100")
             }
             else {
@@ -75,7 +82,6 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             }
         }
     };
-    
     
     useEffect(() => {
         if (selectedStock !== "") {
@@ -101,24 +107,34 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             }
 
             if(pathname == '/admin/baskets/create'){
-                data = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, lprice, baskCat);
-                if(data === true){
+                const {status, messages} = await addRecord(adminName, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, investmentVal, lprice, baskCat);
+                if(status === 201){
                     setHandleFetch(!handleFetch);
                     props.setOpenModal(undefined);
+                    setWeightage('');
+                    setLimitPrice(undefined);
+                }
+                else {
+                    setMessage(messages);
                 }
             }
             else {
                 const newVal = amountSplitter(basketVal)
                 const newBasketName = mainBasketName.split("%20").join(" ");
-                data = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, lprice, investmentVal, newVal, baskCat);
+                const {status, data} = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, newVal, baskCat);
                 setHandleFetch(!handleFetch);
-                props.setOpenModal(undefined);
+                if (status === 200) {
+                    props.setOpenModal(undefined);
+                    setMessage("");
+                    setWeightage('');
+                    setLimitPrice(undefined);
+                } else {
+                    setMessage(data.messages);
+                }
             }
         }
         
         postData();
-        setWeightage('');
-        setLimitPrice(undefined);
     }
     
     return (

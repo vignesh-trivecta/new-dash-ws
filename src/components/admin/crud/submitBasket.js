@@ -42,11 +42,17 @@ const SubmitBasket = ({
     e.preventDefault();
     let basketRequests;
     if (pathname == "/admin/baskets/create") {
-      basketRequests = await getRecords(adminName, basketName);
+      const {status, data} = await getRecords(adminName, basketName);
+      if (status === 200) {
+        basketRequests = data;
+      } else {
+        basketRequests = [];
+      }    
     } else {
-      basketRequests = await getSpecificBasket(mainBasketName);
+      const {status, data} = await getSpecificBasket(mainBasketName);
+      basketRequests = data;
     }
-    const response = await submitBasket(
+    const {status, data} = await submitBasket(
       adminName,
       basketName,
       modelBasket,
@@ -57,10 +63,16 @@ const SubmitBasket = ({
       basketCategory,
       basketRequests,
     );
-    setSaveMsg(response);
-    setSaved(!saved);
-    props.setOpenModal(undefined);
-    dispatch(setModelBasket(true));
+    if (status === 200) {
+      setSaveMsg(data.messages);
+      setSaved(!saved);
+      props.setOpenModal(undefined);
+    } else { 
+      console.log(data);     
+      setSaveMsg(data.messages);
+      setSaved(!saved);
+      props.setOpenModal(undefined);
+    }
   };
 
   return (

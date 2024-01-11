@@ -230,6 +230,7 @@ export const getBasketGroups = async () => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/groupname`, requestOptions);
+        console.log(response)
 
         if (response.status === 200) {
             const res = await response.json();

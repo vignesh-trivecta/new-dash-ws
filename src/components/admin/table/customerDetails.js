@@ -12,12 +12,12 @@ const CustomerDetails = () => {
     // useEffect to fetch the customers data
     useEffect(() => {
         const fetchData = async () => {
-            const customersData = await getCustomers();
-            if (!customersData) {
-                setMessage("No data available to show");
+            const {status, data} = await getCustomers();
+            if (status !== 200) {
+                setMessage(data.messages);
                 return;
             }
-            setCustomers(customersData);
+            setCustomers(data);
             setMessage("");
         };
         fetchData();
@@ -96,7 +96,7 @@ const CustomerDetails = () => {
                 </div>
             </div>
                 {
-                    message && <div className="mt-4">No data available</div>
+                    message && <div className="mt-4">{message}</div>
                 }
         </div>
     );

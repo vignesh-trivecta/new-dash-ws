@@ -12,6 +12,7 @@ const BasketRecords = ({
   mainBasketName,
   investmentVal,
   basketVal,
+  setMessage
 }) => {
   return (
     <tr className="border-t border-b hover:bg-gray-100">
@@ -63,6 +64,7 @@ const BasketRecords = ({
           basketName={basketName}
           handleFetch={handleFetch}
           setHandleFetch={setHandleFetch}
+          setMessage={setMessage}
         />
       </td>
     </tr>

@@ -7,7 +7,7 @@ import { setBasketName } from "@/store/basketSlice";
 import { usePathname } from "next/navigation";
 import { HiInformationCircle, HiCheckCircle } from "react-icons/hi";
 import { Alert, Button, Tooltip } from "flowbite-react";
-import { basketNameCheck, getInstrumentDetails } from "@/app/api/basket/route";
+import { basketNameCheck } from "@/app/api/basket/route";
 import { getRecords } from "@/app/api/tempBasket/route";
 import AddRecord from "@/components/admin/crud/addRecord";
 import BasketRecords from "@/components/admin/table/basketRecords";
@@ -15,11 +15,10 @@ import SubmitBasket from "@/components/admin/crud/submitBasket";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import BasketCategory from "@/components/admin/basketCategory";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
-import CryptoJS from "crypto-js";
 
 const CreateBasket = () => {
   // basket status messages
-  const msg1 = "Enter Basket Name, Investment Amount and Basket Category";
+  const msg1 = "Enter Basket name, Investment, Category";
   const msg2 = "Add scripts to the basket";
   const msg3 = "Basket name exists!";
   const msg4 = "Basket Saved Successfully!";
@@ -56,14 +55,14 @@ const CreateBasket = () => {
 
   // useEffect for getting records after basket save clicked
   useEffect(() => {
-    if (saveMsg == true) {
+    if (saveMsg == "Success") {
       setRecords([]);
       setBasketAmount("");
       dispatch(setBasketName(""));
       setBasketCategory("");
       setMessage(msg4);
     } else {
-      setMessage(msg7);
+      setMessage(saveMsg);
     }
   }, [saved]);
 
@@ -104,8 +103,13 @@ const CreateBasket = () => {
       return;
     }
     const fetchData = async () => {
-      const response = await getRecords(adminId, basketName);
-      setRecords(response || []);
+      const {status, data} = await getRecords(adminId, basketName);
+      if (status === 200) {
+        setRecords(data);
+      } else {
+        setRecords([]);
+        setMessage(data?.messages ? data?.messages : "");
+      }
     };
     fetchData();
   }, [handleFetch]);
@@ -268,7 +272,7 @@ const CreateBasket = () => {
 
       {/* Table showing Create Basket Records */}
       <div className="flex mt-2">
-        <div className={"overflow-y-scroll border h-[calc(100vh-350px)]"}>
+        <div className={"overflow-y-scroll border border-b h-[calc(100vh-350px)]"}>
           <table className="table-fixed w-full">
             <thead className="sticky top-0 bg-gray-50">
               <tr>
@@ -309,6 +313,7 @@ const CreateBasket = () => {
                       basketName={basketName}
                       investmentVal={basketAmount}
                       basketVal={total}
+                      setMessage={setMessage}
                     />
                   ))
                 ) : (

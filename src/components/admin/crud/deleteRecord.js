@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { usePathname } from 'next/navigation';
 import { DeleteModal } from '@/components/page/deleteModal';
 
-const DeleteRecord = ({ recId, mainBasketName, basketName, handleFetch, setHandleFetch }) => {
+const DeleteRecord = ({ recId, mainBasketName, basketName, handleFetch, setHandleFetch, setMessage }) => {
 
     let pathname = usePathname();
 
@@ -13,16 +13,30 @@ const DeleteRecord = ({ recId, mainBasketName, basketName, handleFetch, setHandl
 
     const handleDelete = async() => {
         if((pathname == `/admin/baskets/view/${mainBasketName}/update`) && (mainBasketName.includes("%20"))){
-            const response = await deleteRecordMainAPI(recId, basketName, adminId );
-            setHandleFetch(!handleFetch);           
+            const {status, data} = await deleteRecordMainAPI(recId, basketName, adminId );
+            if (status === 200) {
+                setHandleFetch(!handleFetch);  
+                setMessage("");         
+            } else {
+                setMessage(data?.messages);
+            }         
         }
         else if(pathname == `/admin/baskets/view/${mainBasketName}/update`){
-            const response = await deleteRecordMainAPI(recId, basketName, adminId );
-            setHandleFetch(!handleFetch);           
+            const {status, data} = await deleteRecordMainAPI(recId, basketName, adminId );
+            if (status === 200) {
+                setHandleFetch(!handleFetch);  
+                setMessage("");         
+            } else {
+                setMessage(data?.messages);
+            }           
         }
         else{
-            const response = await deleteRecord(recId, basketName, adminId );
-            setHandleFetch(!handleFetch);
+            const {status, data} = await deleteRecord(recId, basketName, adminId );
+            if (status === 200) {
+                setHandleFetch(!handleFetch);
+            } else {
+                setMessage(data?.messages);
+            }
         }
     }
 

@@ -1,3 +1,7 @@
+import { decrypt } from "@/utils/aesDecryptor";
+import { encrypt } from "@/utils/aesEncryptor";
+import { errorLogger } from "@/utils/errorLogger";
+
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
 
@@ -37,7 +41,7 @@ export const AddRecordMainAPI = async( adminId, basketName, selectedStock, excha
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "adminName": adminId,
                 "basketName": String(basketName),
                 "instrumentName": selectedStock,
@@ -51,18 +55,18 @@ export const AddRecordMainAPI = async( adminId, basketName, selectedStock, excha
                 "basketInvestAmt": Number(investmentVal),       
                 "basketActualValue" : basketVal,
                 "basketCategory": basketCategory,
-            })
+            }))
         };
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/add-a-row`, requestOptions);
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = await decrypt(jsonData.payload);
+        return {status, data};
     }
     catch(error){
-        console.log(error);
+        errorLogger(error);
     }
 }
 
@@ -74,7 +78,7 @@ export const updateRecordMainAPI = async(recId, basketName, adminId, selectedSto
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "recId": recId,
                 "basketName": String(basketName),
                 "adminName": adminId,
@@ -88,15 +92,14 @@ export const updateRecordMainAPI = async(recId, basketName, adminId, selectedSto
                 "basketInvAmount": Number(val1),       
                 "basketActualValue" : Number(val2),
                 "limitPrice": Number(limitPrice)          
-            })
+            }))
         };
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/update`, requestOptions);
+        const status = response.status;
 
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return {status, data};
     }
     catch(error){
         return false;
@@ -119,14 +122,13 @@ export const deleteRecordMainAPI = async(recId, basketName, adminId ) => {
         };
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/delete`, requestOptions);
+        const status = response.status;
 
-        if (response.ok) {
-            return true;
-        } else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return {status, data};
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }

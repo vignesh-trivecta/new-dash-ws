@@ -1,4 +1,6 @@
 import { decrypt } from "@/utils/aesDecryptor";
+import { encrypt } from "@/utils/aesEncryptor";
+import { errorLogger } from "@/utils/errorLogger";
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
@@ -11,7 +13,7 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "adminName": adminName,
                 "basketName": basketName,
                 "basketModel": modelBasket,
@@ -21,17 +23,17 @@ export const submitBasket = async (adminName, basketName, modelBasket, basketVal
                 "basketActualValue": Number(basketActualValue),
                 "basketCategory": basketCategory,
                 "basketRequests": basketRequests,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/create`, requestOptions);
-        if (response.status == 200) {
-            return true;
-        }
-        else return false;
-
+        const status = response.status;
+        
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -88,23 +90,20 @@ export const getSpecificBasket = async(basketName) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/view/basket`, requestOptions);
+        const status = response.status;
 
-        if(response.ok){
-            const jsonData = await response.json();
-            return jsonData;
-        }
-        else {
-            return [];
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error)
     {
-        console.log(error);
+        errorLogger(error);
     }
 }
 
@@ -146,9 +145,9 @@ export const basketNameCheck = async (basketName) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/namecheck`, requestOptions);
         if(response.status === 200){
@@ -171,24 +170,20 @@ export const getEquityPrice = async (instrumentName, exchange) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "instrumentName": instrumentName,
                 "exchangeValue": exchange,
-            })
+            }))
         };
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/equity-price`, requestOptions);
-        
-        if (response.ok) {
-            const responseText = await response.text();
-            let data = JSON.parse(responseText);
-            return data.price;
-        } else {
-            return null;
-        }
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return data?.price;
     }
     catch(error){
-        console.log(error);
+        errorLogger(error);
     }
 
 }
@@ -196,19 +191,16 @@ export const getEquityPrice = async (instrumentName, exchange) => {
 // API call to get the scripts details
 export const getInstrumentDetails = async () => {
     try{
-        const response = await fetch(`http://${DOMAIN}:${PORT}/instruments`)
+        const response = await fetch(`http://${DOMAIN}:${PORT}/instruments`);
+        const status = response.status;
         
-        if(response.status === 200){
-            const jsonData = await response.json();
-            return (jsonData);
-        }
-        else {
-            return [];
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
         
     }
     catch(error){
-        console.log(error)
+        errorLogger(error);
     }
 }
 
@@ -220,24 +212,21 @@ export const sendWeightage = async(weightage, totalAmount, priceofAsset) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "weightAge": weightage,
-                "totalAmount": totalAmount,
+                "totalAmount": Number(totalAmount),
                 "priceofAsset": priceofAsset,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/quantity-calc`, requestOptions);
-
-        if(response.ok) {
-            const responseText = await response.text();
-            const data = JSON.parse(responseText);
-            return data.quantity;
-        } else {
-            return false;
-        }
+        const status = response.status;
+        
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -249,25 +238,21 @@ export const sendQuantity = async(quantity, totalAmount, priceofAsset) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "quantity": quantity,
                 "totalAmount": totalAmount,
                 "priceofAsset": priceofAsset,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/weightage/rebalancing`, requestOptions);
-
-        if(response.ok) {
-            const responseText = await response.text();
-            const data = JSON.parse(responseText);
-            console.log(data)
-            return data.weightage;
-        } else {
-            return false;
-        }
+        const status = response.status;
+        
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -282,16 +267,14 @@ export const getCustomers = async() => {
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/details`, requestOptions);
 
-        if(response.status === 200){
-            const jsonData = await response.json();
-            return jsonData;
-        }
-        else {
-            return false;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -334,14 +317,14 @@ export const getBasketCategories = async () => {
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/category`, requestOptions);
-        if (response.status == 200) {
-            const data = await response.json();
-            return data;
-        }
-        else return false;
+
+        const status = response.status;
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error) {
-        return false;
+        errorLogger(error);
     }
 }
 
