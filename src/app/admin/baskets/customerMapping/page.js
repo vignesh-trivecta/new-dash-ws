@@ -126,6 +126,7 @@ const CustomerMapping = () => {
           </label>
           <input
             type="text"
+            autoComplete="off"
             value={basketCategory}
             disabled
             className="border border-gray-200 bg-gray-50 text-left rounded-lg w-44 text-sm"
