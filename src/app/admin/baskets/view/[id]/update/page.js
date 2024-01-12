@@ -37,12 +37,18 @@ const UpdateBasket = ({ params }) => {
   // useEffect to fetch
   useEffect(() => {
     const gettingRecords = async () => {
-      const response = await getBasketValue(basketName, adminId);
-      setInvestmentVal(response[0].basketInvestAmt);
-      setTransType(response[0].transactionType);
+      const { status, data } = await getBasketValue(basketName, adminId);
+      if (status === 200) {
+        setInvestmentVal(data[0]?.basketInvestAmt);
+        setTransType(data[0]?.transactionType);
+      } else {        
+        setTransType("NA");
+        setMessage(data.messages);
+      }
     };
     gettingRecords();
   }, []);
+  console.log(investmentVal)
 
   // useEffect for getting records after basket save clicked
   const [saved, setSaved] = useState("");
@@ -63,9 +69,14 @@ const UpdateBasket = ({ params }) => {
   // useffect for add record, update record, delete record
   useEffect(() => {
     const fetchData = async () => {
-      const response = await getSpecificBasket(basketName);
-      setRecords(response || []);
-      setBasketCategory(response[0]?.basketCategory || "");
+      const { status, data } = await getSpecificBasket(basketName);
+      if (status === 200) {
+        setRecords(data);
+        setBasketCategory(data[0]?.basketCategory);
+      } else {
+        setRecords([]);
+        setBasketCategory("");
+      }
     };
     fetchData();
   }, [handleFetch]);
@@ -98,9 +109,9 @@ const UpdateBasket = ({ params }) => {
     }
 
     // condition to set msg5
-    if (records?.length !== 0) {
-      setMessage(msg5);
-    }
+    // if (records?.length !== 0) {
+    //   setMessage(msg5);
+    // }
   }, [records]);
 
   // getting investment amount
@@ -108,7 +119,7 @@ const UpdateBasket = ({ params }) => {
   const basketVal = segreagatorWoComma(total);
 
   const msg1 = "Enter Basket Name and Investment Amount";
-  const msg2 = "Add scripts to the basket";
+  const msg2 = "Update basket details as necessary";
   const msg3 = "Basket name exists!";
   const msg4 = "Basket Saved Successfully!";
   const msg5 = `Basket Value is lesser than Investment Amount`;
@@ -238,6 +249,7 @@ const UpdateBasket = ({ params }) => {
                       mainBasketName={mainBasketName}
                       investmentVal={investmentVal}
                       basketVal={basketVal}
+                      setMessage={setMessage}
                     />
                   ))
                 ) : (
@@ -276,7 +288,7 @@ const UpdateBasket = ({ params }) => {
         )}
 
         {/* Conditional rendering based on comparison and records.length */}
-        {comparison && investmentVal !== "" ? (
+        {comparison && Number(investmentVal) > 0 ? (
           <div className="flex justify-center space-x-2">
             {/* <Button onClick={handleMapping} className='mr-8'>Map to Customer</Button> */}
             <div>

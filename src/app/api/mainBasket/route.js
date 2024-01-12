@@ -13,23 +13,21 @@ export const deleteBasket = async(basketName, adminId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
                 "adminId" : adminId,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/full-basket/delete`, requestOptions);
+        const status = response.status;
 
-        if(response.status === 200){
-            return true;
-        }
-        else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = await decrypt(jsonData.payload);
+        return {status, data};
     }
     catch(error)
     {
-        console.log(error);
+        errorLogger(error);
     }
 }
 
@@ -114,11 +112,11 @@ export const deleteRecordMainAPI = async(recId, basketName, adminId ) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "recId": recId,
                 "basketName": String(basketName),
                 "adminName": adminId,         
-            })
+            }))
         };
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/delete`, requestOptions);

@@ -3,13 +3,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { Button, Label, Modal, TextInput, Tooltip } from "flowbite-react";
+import { Alert, Button, Label, Modal, TextInput, Tooltip } from "flowbite-react";
 import { basketNameCheck, cloneBasket, getSpecificBasket } from "@/app/api/basket/route";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import Breadcrumbs from "@/components/page/breadcrumb";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 import ValiditySelector from "@/utils/validitySelector";
 import BasketType from "@/components/page/basketType";
+import { HiInformationCircle } from "react-icons/hi";
 
 const ViewTable = ({ params }) => {
   const basketName = params.id.split("%20").join(" ");
@@ -35,32 +36,40 @@ const ViewTable = ({ params }) => {
   // useEffect to fetch the table records
   useEffect(() => {
     const gettingRecords = async () => {
-      const response = await getSpecificBasket(basketName);
-      setRecords(response);
+      const {status, data} = await getSpecificBasket(basketName);
+      if (status === 200) {
+        setRecords(data);
+        console.log(records[0]?.basketCategory)
+      }
+      else {
+        setMessage(data.messages);
+        setRecords([]);
+      }
     };
     gettingRecords();
   }, []);
 
   // useEffect to fetch the table records after deletion or when res changes
-  useEffect(() => {
-    const gettingRecords = async () => {
-      if (res === "loading") {
-        // Fetch the records after a brief delay to allow the deletion to complete on the server
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-      const response = await getSpecificBasket(basketName);
-      setRecords(response);
-    };
-    gettingRecords();
-  }, [res, params.id]);
+  // useEffect(() => {
+  //   const gettingRecords = async () => {
+  //     if (res === "loading") {
+  //       // Fetch the records after a brief delay to allow the deletion to complete on the server
+  //       await new Promise((resolve) => setTimeout(resolve, 1000));
+  //     }
+  //     const response = await getSpecificBasket(basketName);
+  //     setRecords(response);
+  //   };
+  //   gettingRecords();
+  // }, [res, params.id]);
 
   const ids = [
     { "View Baskets": "/admin/baskets/view" },
-    { [`${basketName} : ${records[0]?.basketCategory}`]: "" },
+    { [`${basketName} : ${records[0]?.basketCategory}`]: `` },
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     const response = await cloneBasket(
       basketName,
       input,
@@ -73,8 +82,8 @@ const ViewTable = ({ params }) => {
       router.push("/admin/baskets/view");
     }
     else {
-      setMessage("Unable to clone basket");
-    }
+      setError(true);
+      setMessage("Failed to clone basket");    }
   };
 
   const checkBasketAlreadyExists = async (input) => {
@@ -194,6 +203,7 @@ const ViewTable = ({ params }) => {
                   maxLength={20}
                   className="border-red-500"
                   autoFocus
+                  autoComplete="off"
                   // value={""}
                   onChange={(e) => {
                     let inputValue = e.target.value;
@@ -270,7 +280,7 @@ const ViewTable = ({ params }) => {
       <div className="flex mt-6">
         <div className={"overflow-y-scroll border h-[calc(100vh-250px)]"}>
           <table className="table-fixed w-full ">
-            <thead className="sticky top-0  bg-gray-50">
+            <thead className="border-b sticky top-0 bg-gray-50">
               <tr>
                 <th
                   className="text-left font-medium text-sm p-2"
@@ -351,6 +361,21 @@ const ViewTable = ({ params }) => {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="absolute bottom-4 w-96">
+        {
+          message 
+          ? 
+          <Alert
+            color={"warning"}
+            rounded
+            className="h-12"
+            icon={HiInformationCircle}
+          >
+            <span className="w-4 h-4">{message}</span>
+          </Alert>
+          : ""
+        }
       </div>
     </div>
   );

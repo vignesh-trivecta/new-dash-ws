@@ -67,18 +67,15 @@ export const getBasketList = async(filteredBasket) => {
                 response = await fetch(`http://${DOMAIN}:${PORT}/view/basketlist`, requestOptions);
                 break;
         }
-        
-        if(response.ok){
-            const jsonData = await response.json();
-            return jsonData;
-        }
-        else {
-            return [];
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error)
     {
-        console.log(error);
+        errorLogger(error);
     }
 }
 
@@ -109,19 +106,20 @@ export const getSpecificBasket = async(basketName) => {
 
 // API call to clone a basket
 export const cloneBasket = async (basketName, newBasketName, adminId, modelBasket, basketValidity) => {
+    console.log(basketName, newBasketName, adminId, modelBasket, basketValidity)
     try {
         const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
                 "newBasketName": newBasketName,
                 "adminId": adminId,
                 "basketModel": modelBasket,
                 "basketValidity": basketValidity
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/clone`, requestOptions);
 
@@ -133,7 +131,7 @@ export const cloneBasket = async (basketName, newBasketName, adminId, modelBaske
         }
     }
     catch(error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -266,7 +264,6 @@ export const getCustomers = async() => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/details`, requestOptions);
-
         const status = response.status;
 
         const jsonData = await response.json();
@@ -286,19 +283,17 @@ export const getBasketValue = async(basketName, adminId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
                 "adminId": adminId,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/details`, requestOptions);
+        const status = response.status;
 
-        if(response.status === 200) {
-            const data = await response.json();
-            return data;
-        } else {
-            return [];
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
         return [];

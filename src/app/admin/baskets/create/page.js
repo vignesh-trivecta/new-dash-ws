@@ -169,6 +169,7 @@ const CreateBasket = () => {
               </div>
               <input
                 type="text"
+                autoComplete="off"
                 value={basketName}
                 onChange={(e) => {
                   if ((e.target.value.length) > 20) {

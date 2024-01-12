@@ -208,6 +208,7 @@ const LoginAuth = () => {
                       setErrorMsg("");
                     }}
                     onBlur={handleBlur}
+                    autoComplete="off"
                     defaultValue={values.username}
                     placeholder="Username"
                     aria-label="username"
@@ -230,6 +231,7 @@ const LoginAuth = () => {
                         type="text"
                         name="password"
                         onChange={handleChange}
+                        autoComplete="off"
                         onClickCapture={() => {
                           setErrorMsg("");
                         }}
@@ -271,6 +273,7 @@ const LoginAuth = () => {
                         className="w-full h-10 pl-3 pr-8 text-gray-700 placeholder-gray-500 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring focus:ring-blue-300"
                         type="password"
                         name="password"
+                        autoComplete="off"
                         onChange={handleChange}
                         onClickCapture={() => {
                           setErrorMsg("");
@@ -356,6 +359,7 @@ const LoginAuth = () => {
                     defaultValue={values.captcha}
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    autoComplete="off"
                     onClickCapture={() => {
                       setErrorMsg("");
                     }}
