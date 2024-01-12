@@ -194,6 +194,7 @@ const ViewTable = ({ params }) => {
                   maxLength={20}
                   className="border-red-500"
                   autoFocus
+                  autoComplete="off"
                   // value={""}
                   onChange={(e) => {
                     let inputValue = e.target.value;
