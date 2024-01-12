@@ -74,6 +74,7 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
               maxLength={20}
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
               displayValue={selected}
+              autoComplete="off"
               onChange={(event) => {
                 const inputValue = event?.target?.value;                  
                 setQuery(inputValue);
