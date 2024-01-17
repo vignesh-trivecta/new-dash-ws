@@ -54,7 +54,7 @@ const OrderBook = () => {
     await loadingTimer; // Wait for the loading timer to complete
 
     if (reportType === "Market") { // Live market data endpoint
-      const {status, responseJson} = await handleLiveReportsFetch(
+      const {status, data} = await handleLiveReportsFetch(
         "orderbook",
         customerId,
         startDate,
@@ -62,16 +62,16 @@ const OrderBook = () => {
         broker
       );
 
-      console.log({status, responseJson});
+      console.log({status, data});
 
-      const { mainDatas, tooltipDatas} = orderDataParser(responseJson.orderbook);
+      const { mainDatas, tooltipDatas} = orderDataParser(data.orderbook);
       setTableData(mainDatas);
       setTooltipData(tooltipDatas);
       dispatch(setStatus(status === 200 ? true : false));
-      dispatch(setMessage(responseJson.message));
+      dispatch(setMessage(data.message));
     }
     else if (reportType === "Post") { // DB data endpoint
-      const {status, responseJson} = await handleDbReportsFetch(
+      const {status, data} = await handleDbReportsFetch(
         "orderbook",
         customerId,
         startDate,
@@ -79,7 +79,7 @@ const OrderBook = () => {
         broker
       )
       
-      const { mainDatas, tooltipDatas} = orderDataParser(responseJson);
+      const { mainDatas, tooltipDatas} = orderDataParser(data);
       setTableData(mainDatas);
       setTooltipData(tooltipDatas);
       dispatch(setStatus(status === 200 ? true : false));

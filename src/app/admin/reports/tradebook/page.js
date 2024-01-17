@@ -55,7 +55,7 @@ const TradeBook = () => {
     await loadingTimer; // Wait for the loading timer to complete
 
     if (reportType === "Market") { // Live market data endpoint
-      const {status, responseJson} = await handleLiveReportsFetch(
+      const {status, data} = await handleLiveReportsFetch(
         "tradebook",
         customerId,
         startDate,
@@ -63,14 +63,14 @@ const TradeBook = () => {
         broker
       );
 
-      const { mainDatas, tooltipDatas} = tradeDataParser(responseJson.tradeBook);
+      const { mainDatas, tooltipDatas} = tradeDataParser(data.tradeBook);
       setTableData(mainDatas);
       setTooltipData(tooltipDatas);
       dispatch(setStatus(status === 200 ? true : false));
-      dispatch(setMessage(responseJson.message));
+      dispatch(setMessage(data.message));
     }
     else if (reportType === "Post") { // DB data endpoint
-      const {status, responseJson} = await handleDbReportsFetch(
+      const {status, data} = await handleDbReportsFetch(
         "tradebook",
         customerId,
         startDate,
@@ -78,7 +78,7 @@ const TradeBook = () => {
         broker
       )
 
-      const { mainDatas, tooltipDatas} = tradeDataParser(responseJson);
+      const { mainDatas, tooltipDatas} = tradeDataParser(data);
       setTableData(mainDatas);
       setTooltipData(tooltipDatas);
       dispatch(setStatus(status === 200 ? true : false));

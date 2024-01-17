@@ -1,3 +1,7 @@
+import { decrypt } from "@/utils/aesDecryptor";
+import { encrypt } from "@/utils/aesEncryptor";
+import { errorLogger } from "@/utils/errorLogger";
+
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
 const PORT_AXIS = process.env.NEXT_PUBLIC_AXIS_CLIENT_LOGIN_PORT;
@@ -11,23 +15,23 @@ export const getBroker = async (customerId) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: encrypt(JSON.stringify({
         customerId: customerId,
-      }),
+      }))
     };
     const response = await fetch(
       `http://${DOMAIN}:${PORT}/client/broker-info`,
       requestOptions
     );
+    const status = response.status;
 
-    if (response.status === 200) {
-      const responseText = await response.json();
-      return responseText.customerBroker;
-    } else {
-      return false;
-    }
+    const jsonData = await response.json();
+    const data = decrypt(jsonData.payload);
+    console.log(status, data)
+    return { status, data };
+
   } catch (error) {
-    return false;
+    errorLogger(error);
   }
 };
 
@@ -43,14 +47,14 @@ export const isMarketOpen = async () => {
     }
   
     const response = await fetch(`http://${DOMAIN}:${PORT}/market/check`, requestOptions);
+    const status = response.status;
 
-    if (response.status === 200) {
-      const responseText = await response.json();
-      return responseText.marketStatus;
-    }
-    else return null;
+    const jsonData = await response.json();
+    const data = decrypt(jsonData.payload);
+    return { status, data };
+
   } catch (error) {
-    return null;  
+    errorLogger(error) 
   }
 }
 
@@ -71,11 +75,11 @@ export const handleDbReportsFetch = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: encrypt(JSON.stringify({
         customerId: customerId.split(" ")[0],
         fromDate: startDate?.toISOString().split('T')[0],
         toDate: endDate?.toISOString().split('T')[0],
-      }),
+      }))
     };
 
     let reqUrl;
@@ -85,16 +89,15 @@ export const handleDbReportsFetch = async (
       `http://${DOMAIN}:${PORT}/${reqUrl}/${requestName}`,
       requestOptions
     );
-
-    let responseJson = "";
     const status = response.status;
-    if (status === 200) {
-     responseJson = await response.json();
-    }
-    
-    return {status, responseJson};
+
+    const jsonData = await response.json();
+    const data = decrypt(jsonData.payload);
+    console.log(status, data);
+    return { status, data };
     
   } catch (error) {
+    errorLogger(error);
     return {status: 500, responseJson: []};
   }
 };
@@ -115,11 +118,11 @@ export const handleLiveReportsFetch = async (
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: encrypt(JSON.stringify({
         customerId: customerId.split(' ')[0],
         fromDate: startDate.toISOString().split('T')[0],
         toDate: endDate.toISOString().split('T')[0],
-      }),
+      }))
     };
     
     let reqUrl, port;
@@ -130,16 +133,15 @@ export const handleLiveReportsFetch = async (
       `http://${DOMAIN}:${port}/${reqUrl}/${requestName}`,
       requestOptions
     );
-
-    console.log(response);
-
     const status = response.status;
-    const responseJson = await response.json();
-    console.log(status, responseJson)
-    return {status, responseJson};
+
+    const jsonData = await response.json();
+    const data = decrypt(jsonData.payload);
+    return { status, data };
 
   } catch (error) {
-    return {status: 500, responseJson:{ [requestName]: [], message: "Server Error! Try after some time"}};
+    errorLogger(error);
+    return {status: 500, data:{ [requestName]: [], message: "Server Error! Try after some time"}};
   }
 };
 
