@@ -102,8 +102,8 @@ const Communication = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const customersData = await getCustomers();
-      setCustomers(customersData);
+      const { status, data } = await getCustomers();
+      setCustomers(data);
     };
     fetchData();
   }, [])
