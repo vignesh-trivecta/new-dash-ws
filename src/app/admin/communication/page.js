@@ -22,6 +22,7 @@ const Communication = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [info, setInfo] = useState("");
+  const [alertGreen, setAlertGreen] = useState(false);
 
   // messages
   const msg1 = "Email sent successfully.";
@@ -56,9 +57,11 @@ const Communication = () => {
     e.preventDefault();
     setLoading(true);
     
-    const res = await sendCommunication(customerId, message);
-    setAlertMessage(res);
-    
+    const { status, data } = await sendCommunication(customerId, message);
+    if (status === 200) setAlertGreen(true);
+    else setAlertGreen(false);
+
+    setAlertMessage(data.messages);
     setLoading(false);
     setMessage("");
     setMsgChannel("");
@@ -200,7 +203,7 @@ const Communication = () => {
                 </Alert>
               :
                 <Alert
-                  color="warning"
+                  color={alertGreen ? "success" : "warning"}
                   rounded
                   className="h-12"
                   icon={HiInformationCircle}

@@ -1,3 +1,6 @@
+import { decrypt } from "@/utils/aesDecryptor";
+import { encrypt } from "@/utils/aesEncryptor";
+import { errorLogger } from "@/utils/errorLogger";
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
@@ -10,24 +13,20 @@ export const sendCommunication = async (customerId, message) => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "customerId": customerId.split(" ")[0],
                 "message": message,
-            })
+            }))
         }
         
         const response = await fetch(`http://${DOMAIN}:${PORT}/communication`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            const res = await response.text();
-            return res;
-        }
-        else {
-            const res = await response.json();
-            return res;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
 
     } catch (error) {
-        return "Failed to send email."
+        errorLogger(error);
     }
 }
