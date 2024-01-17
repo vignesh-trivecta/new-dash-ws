@@ -121,29 +121,25 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketData": basketData,
                 "adminId": adminId,
                 "customerId": customerId.split(" ")[0],
                 "brokerName": brokerName,
                 "groupName": selectedBasketGroup,
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/map/multiple`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.text();
-            return jsonData;
-        }
-        else {
-            const jsonData = await response.text();
-            return jsonData;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -156,26 +152,22 @@ export const unMapMultipleBaskets = async (selectedBasketGroup, customerId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "groupName": selectedBasketGroup,
                 "customerId": customerId.split(" ")[0],
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/multiple/unmap`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.text();
-            return jsonData;
-        }
-        else {
-            const jsonData = await response.text();
-            return jsonData;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -188,26 +180,22 @@ export const fetchByGroupAndSend = async (groupName, customerId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "groupName": groupName,
                 "customerId": customerId.split(" ")[0],
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/groupName`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.text();
-            return jsonData;
-        }
-        else {
-            const jsonData = await response.text();
-            return jsonData;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -221,17 +209,13 @@ export const getBasketGroups = async () => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/groupname`, requestOptions);
-        console.log(response)
+        const status = response.status;
 
-        if (response.status === 200) {
-            const res = await response.json();
-            return res;
-        }
-        else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     } catch (error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -243,24 +227,21 @@ export const fetchDetailsByGroupName = async (groupName) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "groupName": groupName,
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/groupName/details`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.json();
-            return jsonData;
-        }
-        else {
-            return null;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return null;
+        errorLogger(error);
     }
 }
 
@@ -272,24 +253,21 @@ export const fetchDetailsByCustomer = async (groupName, customerId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "groupName": groupName,
                 "customerId": customerId.split(" ")[0],
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/map/details/customer`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.json();
-            return jsonData;
-        }
-        else {
-            return null;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return null;
+        errorLogger(error);
     }
 }

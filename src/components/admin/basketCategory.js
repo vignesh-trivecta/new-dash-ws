@@ -37,15 +37,14 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
 
   // get the basket groups name list
   const fetchBasketGroups = async () => {    
-    const res = await getBasketGroups();
-    console.log(res)
-    setList(res);
+    const { status, data } = await getBasketGroups();
+    setList(data);
   }
 
   // to add a new category to the list of basket category names
   const addCategory = async (query) => {
-    const res = await addBasketCategory(query);
-    if (res) {
+    const { status, data } = await addBasketCategory(query);
+    if (status === 200) {
       setSelected(query);
     }
   }

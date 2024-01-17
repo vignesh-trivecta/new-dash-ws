@@ -63,9 +63,10 @@ const BasketMapping = () => {
   const router = useRouter();
 
   // messages
-  const msg1 = "Basket mapped to customer successfully.";
-  const msg2 = "Email sent successfully.";
-  const msg3 = "Basket Total is greater than Investment";
+  const msg1 = "Mapping Successful";
+  const msg2 = "Unmapping Successful";
+  const msg3 = "Weblink has been sent Successfully";
+  const msg4 = "Basket Total is greater than Investment";
 
   // handle selection
   const handleSelection = async (value) => {
@@ -82,86 +83,79 @@ const BasketMapping = () => {
   const handleMapClick = async () => {
     setSendingMap(true);
     if (buttonName === "Map") {
-      const response = await sendMultipleBaskets(
+      const { status, data } = await sendMultipleBaskets(
         basketData,
         adminId,
         customerId,
         broker,
         selectedBasketGroup
       );
-      if (response) {
-        setSendingMap(false);
-        setMessage(response);
+      if (status === 200) {
         setButtonName("UnMap");
         setEnableWeblink(false);
         fetchBasketGroups();
       }
       else {
-        setSendingMap(false);
-        setEnableWeblink(true);
-        setMessage("Server Error!");
         setButtonName("Map");
+        setEnableWeblink(true);
       }
-    } else {
-      const response = await unMapMultipleBaskets(selectedBasketGroup, customerId);
-      if (response) {
-        setSendingMap(false);
-        setMessage(response);
+      setSendingMap(false);
+      setMessage(data.messages);
+    } 
+    else {
+      const { status, data } = await unMapMultipleBaskets(selectedBasketGroup, customerId);
+      if (status === 200) {
         setButtonName("Map");
         setEnableWeblink(false);
         fetchBasketGroups();
       }
       else {
-        setSendingMap(false);
-        setEnableWeblink(true);
-        setMessage("Server Error!");
         setButtonName("UnMap");
+        setEnableWeblink(true);
       }
+      setSendingMap(false);
+      setMessage(data.messages);
     }
   };
 
   // handle Weblink click 
   const handleWebLinkClick = async () => {
     setSendingWeblink(true);
-    const response = await fetchByGroupAndSend(selectedBasketGroup, customerId);
-    if (response) {
+    const { status, data } = await fetchByGroupAndSend(selectedBasketGroup, customerId);
+    if (status) {
       setSendingWeblink(false);
-      setMessage(response);
-    }
-    else {
-      setSendingWeblink(false);
-      setMessage("Server Error!")
+      setMessage(data.messages);
     }
   }
   
   // fetch the list of baskets 
   const fetchBaskets = async () => {
-    const response = await getBasketList("MAP");
-    setRecords(response);
+    const { status, data } = await getBasketList("MAP");
+    setRecords(data);
   };
   
   // fetch the customer data list
   const fetchData = async () => {
-    const customersData = await getCustomers();
-    setCustomers(customersData);
+    const { status, data } = await getCustomers();
+    setCustomers(data);
   };
   
   // get the basket groups name list
   const fetchBasketGroups = async () => {    
-    const res = await getBasketGroups();
-    setBasketGroups(res);
+    const { status, data } = await getBasketGroups();
+    setBasketGroups(data);
   }
   
   // fetch the bakset-group data details
   const getBasketDetails = async () => {
-    const response = await fetchDetailsByGroupName(selectedBasketGroup);
-    setBasketDetails(response);
-    const total = response?.basketDetailsList?.reduce((acc, curr) => curr.basketActualValue  + acc, 0)
-    if (response !== null && response?.customerId !== null) {
-      setCustomerId(response.customerId);
+    const { status, data } = await fetchDetailsByGroupName(selectedBasketGroup);
+    setBasketDetails(data);
+    const total = data?.basketDetailsList?.reduce((acc, curr) => curr.basketActualValue  + acc, 0)
+    if (data !== null && data?.customerId !== null) {
+      setCustomerId(data.customerId);
       // setAliasName(selectedBasketGroup);
       setTotalBasketValue(total);
-      setBroker(response.customerBroker);
+      setBroker(data.customerBroker);
       setShowGNStaticData(true);
       setButtonName("UnMap");
       setEnableMap(false);
@@ -171,10 +165,10 @@ const BasketMapping = () => {
 
   // fetch the basket data for each customer
   const getCustomerBasketsData = async () => {
-    const response = await fetchDetailsByCustomer(selectedBasketGroup, customerId);
+    const { status, data } = await fetchDetailsByCustomer(selectedBasketGroup, customerId);
     
-    if (response !== null && response?.customerId !== null) {
-      setCustomerBasketsData(response?.basketDetailsList);
+    if (data !== null && data?.customerId !== null) {
+      setCustomerBasketsData(data?.basketDetailsList);
     }
     else {
       setCustomerBasketsData([]);
@@ -513,7 +507,7 @@ const BasketMapping = () => {
       </div>
       <div className="mt-2 flex justify-between">
         <div className="w-96">
-        {message === msg1 || message === msg2
+        {message === msg1 || message === msg2 || message === msg3
           ?
             <Alert
               color="success"

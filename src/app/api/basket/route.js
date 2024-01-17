@@ -106,7 +106,6 @@ export const getSpecificBasket = async(basketName) => {
 
 // API call to clone a basket
 export const cloneBasket = async (basketName, newBasketName, adminId, modelBasket, basketValidity) => {
-    console.log(basketName, newBasketName, adminId, modelBasket, basketValidity)
     try {
         const requestOptions = {
             method: 'POST',
@@ -331,22 +330,20 @@ export const addBasketCategory = async (query) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketCategory": query,
                 "basketDescription": "New basket name",
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/add/basket-category`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error) {
-        return false
+        errorLogger(error);
     }
 }
