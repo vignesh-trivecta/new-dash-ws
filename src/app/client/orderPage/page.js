@@ -39,10 +39,10 @@ const OrderPage = () => {
   const [isPageValid, setIsPageValid] = useState(true);
   
   const getBasketValidity = async () => {
-    const {data, status} = await checkPageValidity(basketData);
+    const { status, data } = await checkPageValidity(basketData);
     if (status !== 200) {
       setIsPageValid(false);
-      setMessage(data);
+      setMessage(data.messages);
     }
   }
 

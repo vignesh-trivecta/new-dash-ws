@@ -28,26 +28,27 @@ const Client = ({ params }) => {
   // function to verify the OTP entered by user
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await validateOtp(basketLink, otp);
-    if (response === 'server error') {
-      setMessage("Server error! Please try after some time.")
+    const { status, data } = await validateOtp(basketLink, otp);
+    if (status !== 200) {
+      setMessage(data.messages)
     }
-    else if (response) {
-      dispatch(setBasketData(response));
+    else if (status === 200) {
+      dispatch(setBasketData(data));
       router.push('/client/basket');
-    }
-    else {
-      setMessage("Invalid OTP");
     }
   }
 
   // function to generate new OTP
   const otpGeneration = async () => {
-    const {data, code} = await generateOtp(basketLink);
-    if (code !== 200) {
+    setMessage("");
+    const { status, data } = await generateOtp(basketLink);
+    setMessage(data.messages);
+
+    if (status !== 200) {
       setError(true);
-      setMessage(data);
+      return;
     }
+    setError(false);
   }
 
   // useEffect that generates a new OTP whenever the page loads
