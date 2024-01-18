@@ -1,3 +1,5 @@
+import { decrypt } from "@/utils/aesDecryptor";
+import { errorLogger } from "@/utils/errorLogger";
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT = process.env.NEXT_PUBLIC_PRICE_UPDATER_PORT;
@@ -25,6 +27,7 @@ export const executeScheduleTasks = async (broker) => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${port}/${reqUrl}`, requestOptions);
+        console.log(response);
 
         const res = await response.text();
         const status = response.status
@@ -40,12 +43,14 @@ export const executeScheduleTasks = async (broker) => {
 export const callToUploadDoc = async () => {
     try {
       const response = await fetch(`http://${DOMAIN}:${PORT}/excel/update`);
-
-      const res = await response.text();
       const status = response.status
-      return {res, status};
+
+      const jsonData = await response.json();
+      const data = decrypt(jsonData.payload);
+      return {status, data};
   
     } catch (error) {
+        errorLogger(error);
         return {res: "Error in Uploading file", status: 500};
     }
   };

@@ -15,9 +15,9 @@ const BodEod = () => {
   const [status, setStatus] = useState(false);
 
   const uploadDoc = async () => {
-    const {res, status} = await callToUploadDoc();
+    const {status, data} = await callToUploadDoc();
         
-    setMessage(res);
+    setMessage(data.messages);
     if (status === 200) {
       setStatus(true);
     }
@@ -28,7 +28,8 @@ const BodEod = () => {
 
   const handleClick = async (broker) => {
     setMessage("");
-    setStatus(false);
+    setStatus(false); 
+
 
     const {res, status} = await executeScheduleTasks(broker);
     
@@ -77,10 +78,10 @@ const BodEod = () => {
           <Alert
             color={status ? "success" : "warning"}
             rounded
-            className="h-12"
+            className="h-16"
             icon={status ? IoCheckmarkDoneCircle : HiInformationCircle}
           >
-            <span className="w-4 h-4">{message}</span>
+            <span>{message}</span>
           </Alert>
           : ""
         }
