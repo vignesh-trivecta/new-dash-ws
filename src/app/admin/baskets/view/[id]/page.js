@@ -39,7 +39,6 @@ const ViewTable = ({ params }) => {
       const {status, data} = await getSpecificBasket(basketName);
       if (status === 200) {
         setRecords(data);
-        console.log(records[0]?.basketCategory)
       }
       else {
         setMessage(data.messages);

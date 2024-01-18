@@ -27,7 +27,6 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
   // to get the basket category
   async function getCategory() {
     const {status, data} = await getBasketCategories();
-    console.log(data)
     if (status !== 200) {
       setList([]);
       return;

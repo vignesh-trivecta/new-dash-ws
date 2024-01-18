@@ -27,7 +27,6 @@ export const getBroker = async (customerId) => {
 
     const jsonData = await response.json();
     const data = decrypt(jsonData.payload);
-    console.log(status, data)
     return { status, data };
 
   } catch (error) {
@@ -93,7 +92,6 @@ export const handleDbReportsFetch = async (
 
     const jsonData = await response.json();
     const data = decrypt(jsonData.payload);
-    console.log(status, data);
     return { status, data };
     
   } catch (error) {

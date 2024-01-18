@@ -27,7 +27,6 @@ export const executeScheduleTasks = async (broker) => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${port}/${reqUrl}`, requestOptions);
-        console.log(response);
 
         const res = await response.text();
         const status = response.status

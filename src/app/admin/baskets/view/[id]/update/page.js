@@ -48,7 +48,6 @@ const UpdateBasket = ({ params }) => {
     };
     gettingRecords();
   }, []);
-  console.log(investmentVal)
 
   // useEffect for getting records after basket save clicked
   const [saved, setSaved] = useState("");

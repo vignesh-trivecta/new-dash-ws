@@ -1,3 +1,4 @@
+import { errorLogger } from "@/utils/errorLogger";
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT1 = process.env.NEXT_PUBLIC_ADMIN_LOGIN_PORT;
@@ -40,7 +41,7 @@ export const partnerLogin = async () => {
         const response = await fetch(`http://${DOMAIN}:${PORT3}/partner/login`, requestOptions);
         
     } catch (error) {
-        console.log(error);
+        errorLogger(error);
     }
 }
 

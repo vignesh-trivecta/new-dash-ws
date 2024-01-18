@@ -15,7 +15,6 @@ import { amountSplitter } from '@/utils/amountSplitter';
 
 const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, basketVal, basketName, basketCategory,  mainBasketName, records, setMainMessage }) => {
 
-    console.log(investmentVal)
     const pathname = usePathname();
     const baskCat = basketCategory ?? records[0]?.basketCategory;
     

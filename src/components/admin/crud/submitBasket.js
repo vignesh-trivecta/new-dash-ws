@@ -68,7 +68,6 @@ const SubmitBasket = ({
       setSaved(!saved);
       props.setOpenModal(undefined);
     } else { 
-      console.log(data);     
       setSaveMsg(data.messages);
       setSaved(!saved);
       props.setOpenModal(undefined);

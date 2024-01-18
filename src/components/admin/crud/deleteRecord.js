@@ -32,7 +32,6 @@ const DeleteRecord = ({ recId, mainBasketName, basketName, handleFetch, setHandl
         }
         else{
             const {status, data} = await deleteRecord(recId, basketName, adminId );
-            console.log(status)
             if (status === 200) {
                 setHandleFetch(!handleFetch);
             } else {

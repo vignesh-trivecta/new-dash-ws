@@ -62,8 +62,6 @@ const OrderBook = () => {
         broker
       );
 
-      console.log({status, data});
-
       const { mainDatas, tooltipDatas} = orderDataParser(data.orderbook);
       setTableData(mainDatas);
       setTooltipData(tooltipDatas);

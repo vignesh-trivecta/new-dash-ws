@@ -31,7 +31,6 @@ export const generateOtp = async(basketLink) => {
 
 // API call to post the OTP and validate
 export const validateOtp = async(basketLink, otp) => {
-    console.log(basketLink, otp)
     try{
         const requestOptions = {
             method: 'POST',
@@ -43,7 +42,6 @@ export const validateOtp = async(basketLink, otp) => {
             }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT2}/basket/` + basketLink, requestOptions);
-        console.log(response)
         const status = response.status;
 
         const jsonData = await response.json();
