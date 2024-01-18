@@ -4,14 +4,17 @@ import Link from 'next/link'
 import React from 'react'
 import { useSelector } from 'react-redux';
 
-const DeleteBasket = ({ handleFetch, setHandleFetch, basketName }) => {
+const DeleteBasket = ({ handleFetch, setHandleFetch, basketName, setMessage }) => {
 
     const adminId = useSelector((state) => state.user.username);
 
     const handleDelete = async() => {
-        const response = await deleteBasket( basketName, adminId );
-        if (response) {
+        const { status, data } = await deleteBasket( basketName, adminId );
+
+        if (status === 200) {
             setHandleFetch(!handleFetch);
+        } else {
+            setMessage(data.messages);
         }
     }
   return (

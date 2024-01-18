@@ -6,7 +6,7 @@ import { getBasketCategories } from "@/app/api/basket/route";
 import { BiFilterAlt } from "react-icons/bi";
 import ViewFilterBasketCategory from "../admin/viewFilterBasketCategory";
 
-const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBasketCategory, handleFetch, setHandleFetch, filteredBaskets, fetchBaskets}) => {
+const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBasketCategory, handleFetch, setHandleFetch, filteredBaskets, fetchBaskets, setMessage}) => {
     
     // local state
     const [basketCategoryList, setBasketCategoryList] = useState([]);
@@ -24,25 +24,27 @@ const ViewFilterComponent = ({basketType, setBasketType, basketCategory, setBask
         setBasketCategory("");
         setBasketType("");
         setSelected("");
+        filteredBaskets("");
         fetchBaskets();
+        setMessage("");
     }
 
     // function handling when filter button is clicked
     const handleFilter = async (e) => {
         e.preventDefault();
         // setHandleFetch(!handleFetch);
-        filteredBaskets();
+        filteredBaskets(basketType);
     }
 
     // useEffect to fetch basket category data to show in dropdown
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await getBasketCategories();
-            const result = response.map((obj) => obj.basketCategory);
-            setBasketCategoryList(result);
-        };
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const response = await getBasketCategories();
+    //         const result = response.map((obj) => obj.basketCategory);
+    //         setBasketCategoryList(result);
+    //     };
+    //     fetchData();
+    // }, []);
 
     return (
         <div>

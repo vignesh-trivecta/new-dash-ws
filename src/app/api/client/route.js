@@ -1,3 +1,6 @@
+import { decrypt } from "@/utils/aesDecryptor";
+import { encrypt } from "@/utils/aesEncryptor";
+import { errorLogger } from "@/utils/errorLogger";
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT1 = process.env.NEXT_PUBLIC_IIFL_INTEGR_PORT;
@@ -14,13 +17,15 @@ export const generateOtp = async(basketLink) => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${PORT2}/basket/` + basketLink, requestOptions);
-        
-        const data = await response.text();
-        const code = response.status;
-        return {data, code};
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return {data: "Otp generation failed", code: 500};
+        errorLogger(error);
+        return {status: 500, data: "Otp generation failed"};
     }
 }
 
@@ -32,22 +37,19 @@ export const validateOtp = async(basketLink, otp) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                "basketLink": basketLink,
-                "otp": otp,
-            })
+            body: encrypt(JSON.stringify({
+                "otp": Number(otp),
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT2}/basket/` + basketLink, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            const data = await response.json();
-            return data;
-        } else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return 'server error';
+        errorLogger(error);
     }
 }
 

@@ -1,3 +1,7 @@
+import { decrypt } from "@/utils/aesDecryptor";
+import { encrypt } from "@/utils/aesEncryptor";
+import { errorLogger } from "@/utils/errorLogger";
+
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
 
@@ -9,26 +13,23 @@ export const mapBasket = async(basketName, adminId, customerId, broker, quantity
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
                 "adminId": adminId,
                 "customerId": customerId,
                 "brokerName": broker,
                 "basketUnits": quantity
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/map`, requestOptions);
-        if(response.status === 200) {
-            const data = await response.text();
-            return data;
-        } else {
-            const data = await response.text();
-            return data;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        console.log(error);
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -40,26 +41,23 @@ export const unMapBasket = async(basketName, adminId, customerId, broker, quanti
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
                 "adminId": adminId,
                 "customerId": customerId,
                 "brokerName": broker,
                 "basketUnits": quantity
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/single/unmap`, requestOptions);
-        if(response.status === 200) {
-            const data = await response.text();
-            return data;
-        } else {
-            const data = await response.text();
-            return data;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        console.log(error);
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -71,27 +69,23 @@ export const sendWeblink = async(basketName, adminId, customerId, brokerName, ba
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
                 "adminId": adminId,
                 "customerId": customerId,
                 "brokerName": brokerName,
                 "basketUnits": basketUnits,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/send/weblink`, requestOptions);
+        const status = response.status;
 
-        if(response.status === 200){
-            const responseText = await response.text();
-            return responseText;
-        }
-        else{
-            const data = await response.text();
-            return data;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -103,22 +97,19 @@ export const getCustomerStatus = async (basketName) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketName,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/mappedstatus`, requestOptions);
+        const status = response.status;
 
-        if(response.status === 200){
-            const responseText = await response.json();
-            return responseText;
-        }
-        else{
-            return [];
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return [];
+        errorLogger(error);
     }
 }
 
@@ -130,29 +121,25 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketData": basketData,
                 "adminId": adminId,
                 "customerId": customerId.split(" ")[0],
                 "brokerName": brokerName,
                 "groupName": selectedBasketGroup,
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/map/multiple`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.text();
-            return jsonData;
-        }
-        else {
-            const jsonData = await response.text();
-            return jsonData;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -165,26 +152,22 @@ export const unMapMultipleBaskets = async (selectedBasketGroup, customerId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "groupName": selectedBasketGroup,
                 "customerId": customerId.split(" ")[0],
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/customer/multiple/unmap`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.text();
-            return jsonData;
-        }
-        else {
-            const jsonData = await response.text();
-            return jsonData;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -197,26 +180,22 @@ export const fetchByGroupAndSend = async (groupName, customerId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "groupName": groupName,
                 "customerId": customerId.split(" ")[0],
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/groupName`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.text();
-            return jsonData;
-        }
-        else {
-            const jsonData = await response.text();
-            return jsonData;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -230,16 +209,13 @@ export const getBasketGroups = async () => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/groupname`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            const res = await response.json();
-            return res;
-        }
-        else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     } catch (error) {
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -251,24 +227,21 @@ export const fetchDetailsByGroupName = async (groupName) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "groupName": groupName,
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/groupName/details`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.json();
-            return jsonData;
-        }
-        else {
-            return null;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return null;
+        errorLogger(error);
     }
 }
 
@@ -280,24 +253,21 @@ export const fetchDetailsByCustomer = async (groupName, customerId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "groupName": groupName,
                 "customerId": customerId.split(" ")[0],
-            })
+            }))
         }
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/fetch/map/details/customer`, requestOptions);
-        
-        if(response.status == 200){
-            const jsonData = await response.json();
-            return jsonData;
-        }
-        else {
-            return null;
-        }
+        const status = response.status;
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     
     catch (error) {
-        return null;
+        errorLogger(error);
     }
 }

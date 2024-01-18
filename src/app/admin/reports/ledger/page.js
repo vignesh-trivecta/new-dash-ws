@@ -53,7 +53,7 @@ const Ledger = () => {
     await loadingTimer; // Wait for the loading timer to complete
 
     if (reportType === "Market") { // Live market data endpoint
-      const {status, responseJson} = await handleLiveReportsFetch(
+      const {status, data} = await handleLiveReportsFetch(
         "ledger",
         customerId,
         startDate,
@@ -61,18 +61,18 @@ const Ledger = () => {
         broker
       );
       dispatch(setStatus(status === 200 ? true : false));
-      setTableData(responseJson.ledger);
-      dispatch(setMessage(responseJson.message));
+      setTableData(data.ledger);
+      dispatch(setMessage(data.message));
     }
     else if (reportType === "Post") { // DB data endpoint
-      const {status, responseJson} = await handleDbReportsFetch(
+      const {status, data} = await handleDbReportsFetch(
         "ledger",
         customerId,
         startDate,
         endDate,
         broker
       );
-      setTableData(responseJson ?? []);
+      setTableData(data ?? []);
       dispatch(setStatus(status === 200 ? true : false));
       if (status === 200) {
         dispatch(setMessage("Success"));

@@ -42,12 +42,13 @@ const CustomerMapping = () => {
   const router = useRouter();
 
   // messages
-  const msg1 = "Basket mapped to customer successfully.";
-  const msg2 = "Email sent successfully.";
+  const msg1 = "Mapping Successful";
+  const msg2 = "Unmapping Successful";
+  const msg3 = "Weblink sent Successfully";
 
   const getStatus = async (value) => {
-    const statusResponse = await getCustomerStatus(value);
-    setStatus(statusResponse);
+    const { status, data } = await getCustomerStatus(value);
+    setStatus(data);
   }
 
   // handle basket selection
@@ -55,28 +56,43 @@ const CustomerMapping = () => {
     setEnableBroker(false);
     setBasketName(value);
 
-    const response = await getBasketValue(value, adminId);
+    const { status, data } = await getBasketValue(value, adminId);
     
-    setTransType(response[0]?.transactionType);
-    setBasketVal(response[0]?.basketActualValue);
-    setScripts(response[0]?.noOfScripts);
-    setBasketCategory(response[0]?.basketCategory);
+    setTransType(data[0]?.transactionType);
+    setBasketVal(data[0]?.basketActualValue);
+    setScripts(data[0]?.noOfScripts);
+    setBasketCategory(data[0]?.basketCategory);
     setEnableInputs(false);
 
     getStatus(value);
   };
 
+  // fetch basket datas
+  const fetchData = async () => {
+    const { status, data } = await getBasketList("MAP");
+    if (status === 200) {
+      setRecords(data);
+    } else {
+      setRecords([]);
+      setMessage(data.messages);
+    }
+  };
+  
+  // fetch customers data
+  const fetchCustomerData = async () => {
+    const { status, data } = await getCustomers();
+    if (status === 200) {
+      setCustomers(data)
+    } else {
+      setCustomers([]);
+      setMessage(data.messages);
+    }
+  }
+
   // useEffect to fetch the view table baskets
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await getBasketList("MAP");
-      setRecords(response);
-
-      const customersData = await getCustomers();
-      setCustomers(customersData);
-    };
-
     fetchData();
+    fetchCustomerData();
   }, []);
 
   
@@ -216,7 +232,7 @@ const CustomerMapping = () => {
               {customers?.map((data, index) => {
                 return (
                   <CustomerMappingTable
-                    data={data}
+                    datas={data}
                     index={index}
                     enableInputs={enableInputs}
                     basketName={basketName}
@@ -232,7 +248,7 @@ const CustomerMapping = () => {
           </table>
         </div>
         <div className="mt-2 w-96">
-          {message === msg1 || message === msg2
+          {message === msg1 || message === msg2 || message === msg3
             ?
               <Alert
                 color="success"

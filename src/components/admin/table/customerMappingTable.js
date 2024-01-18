@@ -6,7 +6,7 @@ import { segregate } from "@/utils/formatter/priceSegregator";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const CustomerMappingTable = ({
-  data,
+  datas,
   index,
   enableInputs,
   basketName,
@@ -16,8 +16,6 @@ const CustomerMappingTable = ({
   setMessage,
   status,
 }) => {
-
-  console.log(status)
 
   // redux
   const adminId = useSelector((state) => state.user.username);  
@@ -39,30 +37,35 @@ const CustomerMappingTable = ({
   // handle customer mapping
   const handleMapping = async (customerId) => {
     if ((basketName !== "" && broker !== "" && Number(investment) !== 0 && Number(quantity) !== 0)) {
-      const response = await mapBasket(
-        basketName,
-        adminId,
-        customerId,
-        broker,
-        quantity
-      );
-      setMessage(response)
-    } else {
-      setMessage("Enter necessary details");
+      if (Number(investment) > Number(total)) {
+        const { status, data } = await mapBasket(
+          basketName,
+          adminId,
+          customerId,
+          broker,
+          quantity
+        );
+        setMessage(data.messages);
+      } else {
+        setMessage("Investment amount is lesser than basket value");
+      }
     }
+    else {
+      setMessage("Enter necessary details");
+    }  
   };
 
   // handle customer un-mapping
   const handleUnmapping = async (customerId) => {
     if (broker !== "") {
-      const response = await unMapBasket(
+      const { status, data } = await unMapBasket(
         basketName,
         adminId,
         customerId,
         broker,
         quantity
       );
-      setMessage(response);
+      setMessage(data.messages);
     } else {
       setMessage("Choose a broker")
     }
@@ -80,8 +83,8 @@ const CustomerMappingTable = ({
     if ((basketName !== "" && broker !== "" && Number(investment) !== 0 && Number(quantity) !== 0)) {
       setWeblinkLoading(true);
       setMessage("")
-      const response = await sendWeblink(basketName, adminId, data.customerId, broker, quantity);
-      setMessage(response)
+      const { status, data } = await sendWeblink(basketName, adminId, datas.customerId, broker, quantity);
+      setMessage(data.messages);
       setWeblinkLoading(false);
     } else {
       setMessage("Enter necessary details");
@@ -109,7 +112,7 @@ const CustomerMappingTable = ({
 
     if (Number(total) > Number(investment)) {
       setHighlight(true);
-      setMessage("Basket Total is greater than Investment")
+      setMessage("Basket total is greater than Investment")
       // setEnableButtons(true);
       // setEnableMap(true);
       // setEnableWeblink(true);
@@ -126,7 +129,7 @@ const CustomerMappingTable = ({
       const brk = obj.brokerName;
       const map = obj.mapStatus;
       // const web = obj.webLinkStatus;
-      if ((customer == data.customerId) && (brk == broker) && (map)) {
+      if ((customer == datas.customerId) && (brk == broker) && (map)) {
         return true;
       }
     }).includes(true);
@@ -134,7 +137,7 @@ const CustomerMappingTable = ({
       const customer = obj.customerId;
       const brk = obj.brokerName;
       const web = obj.webLinkStatus;
-      if ((customer == data.customerId) && (brk == broker) && (web)) {
+      if ((customer == datas.customerId) && (brk == broker) && (web)) {
         return true;
       }
     }).includes(true);
@@ -149,10 +152,10 @@ const CustomerMappingTable = ({
         {index + 1}
       </td>
       <td className="text-sm text-left text-black p-2 break-words">
-        {data.customerId}
+        {datas.customerId}
       </td>
       <td className="text-sm text-left text-black break-words">
-        {data.name}
+        {datas.name}
       </td>
       <td className="text-sm text-center text-black">
         <select
@@ -309,7 +312,7 @@ const CustomerMappingTable = ({
             // disabled={enableMap}
             className=""
             onClick={() => {
-              handleMapping(data.customerId);
+              handleMapping(datas.customerId);
             }}
           >
             <svg
@@ -335,7 +338,7 @@ const CustomerMappingTable = ({
             // disabled={!enableMap}
             className=""
             onClick={() => {
-              handleUnmapping(data.customerId);
+              handleUnmapping(datas.customerId);
             }}
           >
             <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">

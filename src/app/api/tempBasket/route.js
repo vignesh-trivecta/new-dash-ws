@@ -1,4 +1,6 @@
+import { decrypt } from "@/utils/aesDecryptor";
 import { encrypt } from "@/utils/aesEncryptor";
+import { errorLogger } from "@/utils/errorLogger";
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
 const PORT = process.env.NEXT_PUBLIC_CORE_COMP_PORT;
@@ -11,25 +13,22 @@ export const getRecords = async(adminName, basketName) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(
+            body: encrypt(JSON.stringify(
                 {
                     "adminId": adminName,
                     "basketName": basketName
                 }
-            )
+            ))
         };
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp/list`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            const responseText = await response.text();
-            let data = JSON.parse(responseText);
-            return data;
-        } else {
-            return [];
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return {status, data};
     }
     catch(error){
-        console.log(error)
+        errorLogger(error);
     }
 }
 
@@ -42,7 +41,7 @@ export const addRecord = async(adminName, basketName, selectedStock, exchange, o
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: (JSON.stringify(
+            body: encrypt(JSON.stringify(
                 {
                     "adminId": adminName,
                     "basketName": String(basketName),
@@ -61,15 +60,18 @@ export const addRecord = async(adminName, basketName, selectedStock, exchange, o
         };
 
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            return true;
-        } else {
-            return false;
+        if (status === 201) {
+            return {status, messages: true};
+        } else {            
+            const jsonData = await response.json();
+            const data = decrypt(jsonData.payload);
+            return {status, messages: data.messages};
         }
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -82,7 +84,7 @@ export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, 
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "recId": recId,
                 "basketName": String(basketName),
                 "adminName": adminId,
@@ -96,15 +98,14 @@ export const updateRecordAPI = async(recId, basketName, adminId, selectedStock, 
                 "basketInvAmount": Number(val1),       
                 "basketActualValue" : Number(val2),
                 "limitPrice": limitPrice    
-            })
+            }))
         };
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp/up`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            return true;
-        } else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return {status, data};
     }
     catch(error){
         return false;
@@ -127,13 +128,10 @@ export const deleteRecord = async(recId, basketName, adminName) => {
                 })
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp/del`, requestOptions);
-
-        if (response.status === 200) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        const status = response.status;
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return {status, data};
     }
     catch(error){
         return false;

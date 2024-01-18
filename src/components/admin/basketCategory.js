@@ -26,24 +26,24 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
       
   // to get the basket category
   async function getCategory() {
-    const response = await getBasketCategories();
-    console.log(response)
-    if (response) {
-      setList(response);
+    const {status, data} = await getBasketCategories();
+    if (status !== 200) {
+      setList([]);
+      return;
     }
+    setList(data);
   }
 
   // get the basket groups name list
   const fetchBasketGroups = async () => {    
-    const res = await getBasketGroups();
-    console.log(res)
-    setList(res);
+    const { status, data } = await getBasketGroups();
+    setList(data);
   }
 
   // to add a new category to the list of basket category names
   const addCategory = async (query) => {
-    const res = await addBasketCategory(query);
-    if (res) {
+    const { status, data } = await addBasketCategory(query);
+    if (status === 200) {
       setSelected(query);
     }
   }

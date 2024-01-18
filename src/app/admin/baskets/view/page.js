@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
-import { Tooltip } from "flowbite-react";
+import { Alert, Tooltip } from "flowbite-react";
 import { getBasketList } from "@/app/api/basket/route";
 import DeleteBasket from "@/components/admin/crud/deleteBasket";
 import { segregate } from "@/utils/formatter/priceSegregator";
 import formatDate from "@/utils/formatter/format-date";
 import ViewFilterComponent from "@/components/page/viewFilterComp";
+import { HiInformationCircle } from "react-icons/hi";
 
 const Customers = () => {
   // local state
@@ -16,9 +17,10 @@ const Customers = () => {
   const [handleFetch, setHandleFetch] = useState(false);
   const [basketCategory, setBasketCategory] = useState("");
   const [basketType, setBasketType] = useState("ALL");
+  const [message, setMessage] = useState("");
 
-  // redux
-  const username = useSelector((state) => state.user.username);
+  // // redux
+  // const username = useSelector((state) => state.user.username);
 
   // sorting the records fetched from backend
   // records?.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn));
@@ -30,14 +32,25 @@ const Customers = () => {
 
 
   const filteredBaskets = async () => {
-    const response = await getBasketList(basketType);
+    const {status, data} = await getBasketList(basketType);
     // const result = response?.filter((obj) => obj?.basketCategory === basketCategory);
-    setRecords(response || []);
+    if (status === 200) {
+      setRecords(data)
+    } else {
+      setRecords([]);
+      setMessage(data.messages);
+    }
   }
 
   const fetchBaskets = async () => {
-    const response = await getBasketList(basketType);
-    setRecords(response || []);
+    const {status, data} = await getBasketList( );
+    if (status === 200) {
+      setRecords(data);
+      setMessage("");
+    } else {
+      setRecords([]);
+      setMessage(data.messages);
+    }
   };
 
   return (
@@ -76,13 +89,14 @@ const Customers = () => {
             setHandleFetch={setHandleFetch}
             filteredBaskets={filteredBaskets}
             fetchBaskets={fetchBaskets}
+            setMessage={setMessage}
           />
         </div>
       </div>
       <div className="flex mt-8">
         <div className={"overflow-y-scroll border h-[calc(100vh-250px)]"}>
           <table className="table-fixed w-full ">
-            <thead className="sticky top-0 bg-gray-50">
+            <thead className="border-b sticky top-0 bg-gray-50">
               <tr>
                 <th className="text-left font-medium text-sm p-2 w-10 md:w-12 lg:w-16 truncate">
                   S.No
@@ -208,6 +222,7 @@ const Customers = () => {
                                   handleFetch={handleFetch}
                                   setHandleFetch={setHandleFetch}
                                   basketName={record.basketName}
+                                  setMessage={setMessage}
                                 />
                               </Tooltip>
                             </div>
@@ -266,6 +281,21 @@ const Customers = () => {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="absolute bottom-4 w-96">
+        {
+          message 
+          ? 
+          <Alert
+            color={"warning"}
+            rounded
+            className="h-12"
+            icon={HiInformationCircle}
+          >
+            <span className="w-4 h-4">{message}</span>
+          </Alert>
+          : ""
+        }
       </div>
     </div>
   );

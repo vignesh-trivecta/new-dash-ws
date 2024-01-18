@@ -57,7 +57,7 @@ const Holding = () => {
     await loadingTimer; // Wait for the loading timer to complete
 
     if (reportType === "Market") { // Live market data endpoint
-      const {status, responseJson} = await handleLiveReportsFetch(
+      const {status, data} = await handleLiveReportsFetch(
         "holding",
         customerId,
         startDate,
@@ -66,18 +66,18 @@ const Holding = () => {
       );
       // setData(response);
       dispatch(setStatus(status === 200 ? true : false));
-      setTableData(responseJson.holding);
-      dispatch(setMessage(responseJson.message));
+      setTableData(data.holding);
+      dispatch(setMessage(data.message));
     }
     else if (reportType === "Post") { // DB data endpoint
-      const {status, responseJson} = await handleDbReportsFetch(
+      const {status, data} = await handleDbReportsFetch(
         "holding",
         customerId,
         startDate,
         endDate,
         broker
       );
-      setTableData(responseJson ?? []);
+      setTableData(data ?? []);
       dispatch(setStatus(status === 200 ? true : false));
       if (status === 200) {
         dispatch(setMessage("Success"));

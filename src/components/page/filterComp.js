@@ -111,9 +111,9 @@ const FilterComponent = () => {
     // endpoint which sets broker based on customer selection
     const handleCustomerSelection = async (e) => {
         setLocalCustomerId(e.target.value);
-        const response = await getBroker((e.target.value).split(' ')[0]);
-        if (response) {
-            setLocalBroker(response);
+        const { status, data } = await getBroker((e.target.value).split(' ')[0]);
+        if (status === 200) {
+            setLocalBroker(data.customerBroker);
         }
         else {
             setLocalBroker("");
@@ -123,10 +123,10 @@ const FilterComponent = () => {
     // useEffect to fetch data to show in table
     useEffect(() => {
         const fetchData = async () => {
-            const customersData = await getCustomers();
+            const { status, data } = await getCustomers();
             let arr = [];
-            for(let i=0; i<customersData?.length; i++) {
-                arr.push(customersData[i]?.customerId + " - " + customersData[i]?.name)
+            for(let i=0; i<data?.length; i++) {
+                arr.push(data[i]?.customerId + " - " + data[i]?.name)
             }
             setList(arr);
         };
@@ -154,8 +154,8 @@ const FilterComponent = () => {
 
     // checking whether today market is open or closed and setting date radio button based on that
     const isButtonDisabled = async () => {
-        const response = await isMarketOpen();
-        if (response === "Open") {
+        const { status, data } = await isMarketOpen();
+        if (data.marketStatus === "Open") {
             setIsTodayDisabled(false);
         }
         else {
