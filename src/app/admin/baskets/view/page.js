@@ -104,19 +104,19 @@ const Customers = () => {
                 <th className="text-left font-medium text-sm p-2 truncate">
                   Basket Name
                 </th>
-                <th className="text-left font-medium text-sm p-2 truncate">
+                <th className="text-left font-medium text-sm p-2 w-36 truncate">
                   Basket Category
                 </th>
-                <th className="text-left font-medium text-sm truncate">
+                <th className="text-left font-medium text-sm w-20 truncate">
                   # Scripts
                 </th>
-                <th className="text-left font-medium text-sm truncate">
+                <th className="text-left font-medium text-sm w-32 truncate">
                   Basket Value &#8377;
                 </th>
-                <th className="text-left font-medium text-sm truncate">
+                <th className="text-left font-medium text-sm w-32 truncate">
                   Created By
                 </th>
-                <th className="text-center font-medium text-sm truncate">
+                <th className="text-center font-medium text-sm w-32 truncate">
                   Created On
                 </th>
                 <th className="text-center font-medium text-sm truncate">
@@ -135,7 +135,7 @@ const Customers = () => {
                       <div className="ml-4">{index + 1}</div>
                     </th>
                     <td className="text-left">
-                      <div className="text-sm text-black p-2 truncate">
+                      <div className="text-sm text-black p-2 w-auto">
                         {record.basketName}
                       </div>
                     </td>
@@ -145,7 +145,7 @@ const Customers = () => {
                       </div>
                     </td>
                     <td className="text-left">
-                      <div className="text-sm text-black p-2 ml-2">
+                      <div className="text-sm text-black p-2 ml-4">
                         {record.totalNoOrders}
                       </div>
                     </td>
