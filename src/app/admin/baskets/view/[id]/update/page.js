@@ -121,9 +121,8 @@ const UpdateBasket = ({ params }) => {
   const msg2 = "Update basket details as necessary";
   const msg3 = "Basket name exists!";
   const msg4 = "Basket Saved Successfully!";
-  const msg5 = `Basket Value is lesser than Investment Amount`;
-  const msg6 =
-    "Basket Value is higher than Investment Amount. Delete some scripts!";
+  const msg5 = "Basket Value is lesser than Investment Amount";
+  const msg6 = "Basket Value is higher than Investment Amount. Delete some scripts!";
 
   return (
     <div className="container mx-auto mt-4" style={{ width: "95%" }}>

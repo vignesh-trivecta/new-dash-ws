@@ -81,6 +81,12 @@ const UpdateRecord = ({
   // handling update button click to update the records
   const handleUpdate = (e) => {
     e.preventDefault();
+
+    if (limitPrice == 0) {
+      setMessage("Limit price should be greater than 0");
+      return;
+  }
+
     const localtransType = toggle;
     const postDataAPI = async () => {
       let lprice = limitPrice;
@@ -149,6 +155,11 @@ const UpdateRecord = ({
     const fetchPrice = async () => {
       const data = await getEquityPrice(localStock, "NSE");
       setLocalPrice(data);
+      if (localStock !== instrumentName) {
+        setLimitPrice(data);
+      } else {
+        setLimitPrice(lp);
+      }
     };
     fetchPrice();
   };
@@ -228,8 +239,14 @@ const UpdateRecord = ({
   }, [fetch]);
 
   useEffect(() => {
-    handlePriceChange(localWeightage);
-    setLimitPrice(localPrice);
+    // handlePriceChange(localWeightage);
+    // if (!limitPrice) {
+    //   setLimitPrice(localPrice);
+    // }
+    if (localStock !== instrumentName) {
+      setLocalQuantity("");
+      setLocalWeightage("");
+    }
   }, [localPrice]);
 
   return (
@@ -507,7 +524,7 @@ const UpdateRecord = ({
                   id="quantity"
                   name="quantity"
                   type="number"
-                  value={localQuantity || lquantity}
+                  value={localQuantity ?? lquantity}
                   onChange={(e) => handleOnChange(e)}
                   className="absolute pl-8 p-2 w-full border border-gray-200 rounded-md text-right"
                 />
@@ -522,7 +539,15 @@ const UpdateRecord = ({
                     id="limitInput" 
                     name="limitInput" 
                     value={limitPrice} 
-                    onChange={(e) => setLimitPrice(e.target.value ?? undefined)} 
+                    onChange={(e) => {
+                      const input = e?.target?.value;
+                      setLimitPrice(input);
+                      if (input == 0) {
+                          setMessage("Limit price should be greater than 0");
+                      } else {
+                          setMessage("");
+                      }
+                    }} 
                     type="number" 
                     className={`text-right absolute ml-1 w-40 rounded-md border border-gray-200 ${localOrderType === "MARKET" ? "bg-gray-50" : ""}`}
                   />       

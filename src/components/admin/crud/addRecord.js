@@ -43,6 +43,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
         setExchange(exchange);
         const data = await getEquityPrice(selectedStock, exchange);
         setPrice(data);
+        setLimitPrice(data);
     }
     
     //function to get the quantity of stocks based on weightage
@@ -67,6 +68,8 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
             // check whether input value is between 1 - 100
             if (inputValue > 100 || inputValue < 1 ) {
                 setMessage("Weightage must be between 1-100")
+            } else {
+                setMessage("");
             }
         } else if (id === "quantity") {
             setQuantity(inputValue);
@@ -89,14 +92,21 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
     }, [fetch])
 
     useEffect(() => {
-        if (weightage !== "") {
-            handleChange();
-        }
+        // if (weightage !== "") {
+        //     handleChange("weightage");
+        // }
+        setWeightage("");
+        setQuantity("");
     }, [price])
     
     // function to submit the modal values and add record to the table
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (limitPrice == 0 && orderType === "LIMIT") {
+            setMessage("Limit price should be greater than 0");
+            return;
+        }
 
         const postData = async() => {
             let data;
@@ -118,9 +128,13 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                 }
             }
             else {
+                let limit = limitPrice;
+                if (orderType === "MARKET") {
+                    limit = 0;
+                }
                 const newVal = amountSplitter(basketVal)
                 const newBasketName = mainBasketName.split("%20").join(" ");
-                const {status, data} = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, newVal, baskCat);
+                const {status, data} = await AddRecordMainAPI(adminName, newBasketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limit, investmentVal, newVal, baskCat);
                 setHandleFetch(!handleFetch);
                 if (status === 200) {
                     props.setOpenModal(undefined);
@@ -254,7 +268,7 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                         {/* Order Type element */}
                         <Label value="Order Type" className='col-start-1 row-start-4 text-sm'/>
                         <div className='col-start-2'>
-                            <input required id="market" name="orderType" type='radio' value="MARKET" defaultChecked={orderType === "MARKET"} onClick={() => (setOrderType("MARKET"))} />
+                            <input required id="market" name="orderType" type='radio' value="MARKET" defaultChecked={orderType === "MARKET"} onClick={() => {setOrderType("MARKET"); setMessage("");}} />
                             <label htmlFor='market' className='ml-2 text-sm'>MARKET</label>
                             <input required id="limit" name="orderType" type='radio' value="LIMIT" className='ml-2' defaultChecked={orderType === "LIMIT"} onClick={() => (setOrderType("LIMIT"))} />
                             <label htmlFor='limit' className='ml-2 text-sm'>LIMIT</label>
@@ -268,8 +282,16 @@ const AddRecord = ({ handleFetch, setHandleFetch, transType, investmentVal, bask
                                 disabled={orderType === "MARKET"}
                                 id="limitInput" 
                                 name="limitInput" 
-                                value={limitPrice || price} 
-                                onChange={(e) => setLimitPrice(e.target.value)} 
+                                value={limitPrice ?? price} 
+                                onChange={(e) => {
+                                    const input = e?.target?.value;
+                                    setLimitPrice(input);
+                                    if (input == 0 && orderType === "LIMIT") {
+                                        setMessage("Limit price should be greater than 0");
+                                    } else {
+                                        setMessage("");
+                                    }
+                                }} 
                                 type="number" 
                                 className={`text-right absolute ml-1 w-40 rounded-md border border-gray-200 ${orderType === "MARKET" ? "bg-gray-50" : ""}`}
                             />       

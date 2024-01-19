@@ -32,7 +32,7 @@ export const deleteBasket = async(basketName, adminId) => {
 }
 
 // API call to add a record in Main table
-export const AddRecordMainAPI = async( adminId, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limitPrice, investmentVal, basketVal, basketCategory ) => {
+export const AddRecordMainAPI = async( adminId, basketName, selectedStock, exchange, orderType, transType, quantity, weightage, price, limit, investmentVal, basketVal, basketCategory ) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -49,7 +49,7 @@ export const AddRecordMainAPI = async( adminId, basketName, selectedStock, excha
                 "quantityValue": quantity,
                 "weightValue": Number(weightage),
                 "priceValue": price,
-                "limitPrice": limitPrice , 
+                "limitPrice": limit , 
                 "basketInvestAmt": Number(investmentVal),       
                 "basketActualValue" : basketVal,
                 "basketCategory": basketCategory,
