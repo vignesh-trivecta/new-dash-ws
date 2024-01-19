@@ -339,9 +339,7 @@ export const addBasketCategory = async (query) => {
         const response = await fetch(`http://${DOMAIN}:${PORT}/add/basket-category`, requestOptions);
         const status = response.status;
 
-        const jsonData = await response.json();
-        const data = decrypt(jsonData.payload);
-        return { status, data };
+        return { status };
     }
     catch(error) {
         errorLogger(error);

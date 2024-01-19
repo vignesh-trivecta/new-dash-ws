@@ -42,7 +42,7 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
 
   // to add a new category to the list of basket category names
   const addCategory = async (query) => {
-    const { status, data } = await addBasketCategory(query);
+    const { status } = await addBasketCategory(query);
     if (status === 200) {
       setSelected(query);
     }
