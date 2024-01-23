@@ -111,13 +111,10 @@ const BasketPage = () => {
 
     // if-else after customer login over
     if (status === 200) {
-      setUrl(data);
+      setUrl(data.url);
     } else {
       setDisableButton(true);
-      setMessage(
-        `${basketData?.customerBroker}` +
-          "Server Error! Please try after some time."
-      );
+      setMessage(data.messages);
     }
   };
 

@@ -56,7 +56,6 @@ export const validateOtp = async(basketLink, otp) => {
 // API call to make when client confirms the basket shown to them
 // mock of IIFL login
 export const clientConfirmsBasket = async(basketData) => {
-    console.log("enter")
     try{
         const requestOptions = {
             method: 'POST',
