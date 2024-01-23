@@ -31,9 +31,9 @@ const BodEod = () => {
     setStatus(false); 
 
 
-    const {res, status} = await executeScheduleTasks(broker);
+    const {data, status} = await executeScheduleTasks(broker);
     
-    setMessage(res);
+    setMessage(data.messages);
     if (status === 200) {
       setStatus(true);
     }

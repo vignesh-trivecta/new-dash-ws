@@ -10,7 +10,6 @@ import { clientLogin } from "@/app/api/login/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 
 const PlaceOrder = () => {
-
   
   // url search params
   const searchParams = useSearchParams();
@@ -30,36 +29,37 @@ const PlaceOrder = () => {
 
   // IIFL order placement function
   const placeIiflOrders = async () => {
-    const res = await clientLogin(customerId);
-    if (res) {
-      const response = await clientConfirmsBasket(basketData);
-      if(response){
-        setData(response);
+    // const res = await clientLogin(customerId);
+    // if (res) {
+      const { status, data } = await clientConfirmsBasket(basketData);
+      console.log(status, data);
+      if(status === 200){
+        setData(data);
         setStatus(true);
       }
       else {
-        setStatus(false);
         setSpinner(false);
+        setStatus(false);
       }
-    }
+    // }
   }
 
   // AXIS order placement function using SSO ID
   const placeAxisOrders = async () => {
-    const response = await postAxisOrders(
+    const { status, data } = await postAxisOrders(
       customerId,
       ssoId,
       basketName,
       customerName,
       basketData.rows
     );
-    if (response) {
-      setData(response);
+    if (status === 200) {
+      setData(data);
       setStatus(true);
     }
     else {
-      setStatus(false);
       setSpinner(false);
+      setStatus(false);
     }
   };
     

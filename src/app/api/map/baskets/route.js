@@ -135,6 +135,7 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
 
         const jsonData = await response.json();
         const data = decrypt(jsonData.payload);
+        console.log(data)
         return { status, data };
     }
     

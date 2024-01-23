@@ -56,32 +56,29 @@ export const validateOtp = async(basketLink, otp) => {
 // API call to make when client confirms the basket shown to them
 // mock of IIFL login
 export const clientConfirmsBasket = async(basketData) => {
+    console.log("enter")
     try{
         const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "basketName": basketData.basketName,
                 "customerName": basketData.customerName,
                 "customerId": basketData.customerId,
                 "rows": basketData.rows,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT1}/place/order`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            const responseText = await response.text();
-            let data = JSON.parse(responseText);
-            return data;
-        } else {
-            const errorText = await response.text();
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -93,21 +90,19 @@ export const getAxisUrl = async (customerId) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt (JSON.stringify({
                 "customerId": customerId,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT3}/axis/client/login`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            const responseText = await response.json();
-            return responseText.url;
-        } else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -119,25 +114,23 @@ export const postAxisOrders = async (customerId, ssoId, basketName, customerName
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt (JSON.stringify({
                 "customerId": customerId,
                 "ssoId": ssoId,
                 "basketName": basketName,
                 "customerName": customerName,
                 "rows": basketData
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT3}/axis/client/tokens`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            const responseText = await response.json();
-            return responseText.body;
-        } else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }
 
@@ -149,23 +142,21 @@ export const directOrderPlacement = async (customerId, basketName, customerName,
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt (JSON.stringify({
                 "customerId": customerId,
                 "basketName": basketName,
                 "customerName": customerName,
                 "rows": basketData
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT3}/axis/client/direct-order-placement`, requestOptions);
+        const status = response.status;
 
-        if (response.status === 200) {
-            const responseText = await response.json();
-            return responseText;
-        } else {
-            return false;
-        }
+        const jsonData = await response.json();
+        const data = decrypt(jsonData.payload);
+        return { status, data };
     }
     catch(error){
-        return false;
+        errorLogger(error);
     }
 }

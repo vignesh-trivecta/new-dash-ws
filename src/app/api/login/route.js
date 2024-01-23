@@ -1,3 +1,5 @@
+import { decrypt } from "@/utils/aesDecryptor";
+import { encrypt } from "@/utils/aesEncryptor";
 import { errorLogger } from "@/utils/errorLogger";
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN;
@@ -47,24 +49,30 @@ export const partnerLogin = async () => {
 
 // API call to login the client to IIFL programtically
 export const clientLogin = async(customerId) => {
+    console.log(customerId)
     try{
         const requestOptions = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                 "customerId": customerId,
-            })
+            }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT2}/client/login`, requestOptions);
+        console.log(response)
+        const status = response?.status;
+        console.log(status)
 
-        if(response.status === 200) {
-            return true;
-        } 
-        return false;
+        const jsonData = await response?.json();
+        console.log(jsonData)
+        const data = decrypt(jsonData?.payload);
+        console.log(status, data);
+        return { status, data };
     }
     catch(error){
-        return false;
+        console.log("enter")
+        errorLogger(error);
     }
 }

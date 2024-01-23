@@ -107,15 +107,15 @@ const BasketPage = () => {
 
   const getAndSetUrl = async () => {
     // login the customer to AXIS
-    const response = await getAxisUrl(basketData.customerId);
+    const { status, data } = await getAxisUrl(basketData.customerId);
 
     // if-else after customer login over
-    if (response) {
-      setUrl(response);
+    if (status === 200) {
+      setUrl(data);
     } else {
       setDisableButton(true);
       setMessage(
-        `${basketData.customerBroker}` +
+        `${basketData?.customerBroker}` +
           "Server Error! Please try after some time."
       );
     }

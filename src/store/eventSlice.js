@@ -17,6 +17,9 @@ const evnetSlice = createSlice({
         setBasketState: (state, action) => {
             state.basketState = action.payload;
         },
+        setCheckedStatus: (state, action) => {
+            
+        }
     }
 });
 

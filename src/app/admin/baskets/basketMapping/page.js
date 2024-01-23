@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { HiInformationCircle } from "react-icons/hi";
@@ -22,6 +22,8 @@ const BasketMapping = () => {
   // broker inputs
   const brokers = [{ name: "AXIS" }, { name: "IIFL" }];
   const customersList = [];
+
+  const inputRef = useRef("");
 
   // redux
   const dispatch = useDispatch();
@@ -50,10 +52,21 @@ const BasketMapping = () => {
   const [selectedBasketGroup, setSelectedBasketGroup] = useState("");
   const [showGNStaticData, setShowGNStaticData] = useState(false);
   const [customerBasketsData, setCustomerBasketsData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState();
   const [sendingMap, setSendingMap] = useState(false);
   const [sendingWeblink, setSendingWeblink] = useState(false);
   const [buttonName, setButtonName] = useState("Map");
+  const [reset, setReset] = useState(false);
+  const [inputName, setInputName] = useState("");
+
+  const handleResetClick = () => {
+    // Toggle the reset state
+    setReset((prevReset) => !prevReset);
+    setTotalBasketValue(0);
+    setErrorMsg("");
+    setInputName("");
+  };
+
 
   // modal state variables
   const [openModal, setOpenModal] = useState();
@@ -67,6 +80,7 @@ const BasketMapping = () => {
   const msg2 = "Unmapping Successful";
   const msg3 = "Weblink has been sent Successfully";
   const msg4 = "Basket Total is greater than Investment";
+  const msg5 = "Basket already exists";
 
   // handle selection
   const handleSelection = async (value) => {
@@ -106,8 +120,14 @@ const BasketMapping = () => {
       const { status, data } = await unMapMultipleBaskets(selectedBasketGroup, customerId);
       if (status === 200) {
         setButtonName("Map");
+        setInputName("");
+        handleResetClick();
         setEnableWeblink(false);
         fetchBasketGroups();
+        setCustomerId("");
+        setBroker("");
+        setInvestment(0);
+        setSelectedBasketGroup("");
       }
       else {
         setButtonName("UnMap");
@@ -202,7 +222,7 @@ const BasketMapping = () => {
     }
     
     if (Number(totalBasketValue) > Number(investment)) {
-      setMessage(msg3);
+      setMessage(msg4);
       setEnableMap(true);
       if (showGNStaticData) {
         setEnableMap(false);
@@ -368,7 +388,18 @@ const BasketMapping = () => {
               setSelected={setSelectedBasketGroup}
               isDisabled={true}
               pageName={"basketMapping"}
+              setErrorMsg={setErrorMsg}
+              customerId={customerId}
+              broker={broker}
+              investment={investment}
+              setEnableMap={setEnableMap}
+              setEnableWeblink={setEnableWeblink}
+              inputName={inputName}
+              setInputName={setInputName}
             />
+          </div>
+          <div className="text-red-500 text-xs absolute top-52">
+            {errorMsg ? errorMsg : ""}
           </div>
         </div>
 
@@ -376,7 +407,7 @@ const BasketMapping = () => {
         {/* Buttons group */}
         <div className="mt-4">
           <Button isProcessing={sendingMap} size={'sm'} disabled={enableMap} onClick={handleMapClick}>
-            {buttonName}
+            <div className="w-10 flex justify-center">{buttonName}</div>
           </Button>
         </div>
 
@@ -426,7 +457,8 @@ const BasketMapping = () => {
               setCustomerId("");
               setBroker("");
               setMessage("");
-              setButtonName("Map  ");
+              setButtonName("Map");
+              handleResetClick();
             }} 
           >
             Reset
@@ -435,7 +467,7 @@ const BasketMapping = () => {
       </div>
 
       {/* Customer Details table */}
-      <div className="flex flex-col mt-2">
+      <div className="flex flex-col mt-8">
         <div className={"overflow-y-scroll border h-[calc(100vh-320px)]"}>
           <table className="table-fixed w-full overflow-y-scroll overflow-x-scroll">
             <thead className="border-b sticky top-0 bg-gray-50">
@@ -486,6 +518,7 @@ const BasketMapping = () => {
                         setTotal={setTotal}
                         basketDetails={basketDetails.basketDetailsList}
                         customerBasketsData={customerBasketsData}
+                        reset={reset}
                       />
                     );
                   }))

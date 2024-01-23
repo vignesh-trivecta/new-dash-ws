@@ -7,7 +7,7 @@ import { addBasketCategory, getBasketCategories } from "@/app/api/basket/route";
 import { getBasketGroups } from "@/app/api/map/baskets/route";
 import { Tooltip } from "flowbite-react";
 
-export default function BasketCategory({selected, setSelected, isDisabled,  pageName}) {
+export default function BasketCategory({selected, setSelected, isDisabled,  pageName, setErrorMsg, customerId, broker, investment, setEnableMap, setEnableWeblink, inputName, setInputName}) {
 
   const [list, setList] = useState([]);
   const [query, setQuery] = useState("");
@@ -59,6 +59,36 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
 
   return (
     <div className="">
+      { (customerId && broker && investment)
+        ?
+          <input
+            defaultValue={inputName} 
+            maxLength={20}
+            autoComplete="off"
+            className="w-full py-2 pl-2 pr-10 text-sm text-gray-900"
+            onChange={(e) => {
+              const inputValue = e?.target?.value;
+              setInputName(inputValue);
+              if (inputValue?.toUpperCase() == filteredList(inputValue)?.find((obj) => obj?.groupName === inputValue)?.groupName?.toUpperCase()) {
+                setErrorMsg("Basket name already exists");
+                setEnableMap(true);
+                setEnableWeblink(true);
+              }
+              else {
+                setErrorMsg("");
+                if (inputValue.length >= 1) {
+                  setEnableMap(false);
+                  setEnableWeblink(false);
+                } else {
+                  setEnableMap(true);
+                  setEnableWeblink(true);
+                }
+              }
+            }
+          }
+        />
+        :
+
       <Combobox 
         value={selected} 
         disabled={!isDisabled}
@@ -148,6 +178,7 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
           </Transition>
         </div>
       </Combobox>
+      }
     </div>
   );
 }

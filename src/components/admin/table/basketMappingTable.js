@@ -21,7 +21,8 @@ const BasketMappingTable = ({
   setBasketData,
   total,
   setTotal,
-  customerBasketsData
+  customerBasketsData,
+  reset
 }) => {
   
   // broker inputs
@@ -43,6 +44,13 @@ const checkSimilarity = () => {
   const doBasketNamesIntersect = customerBasketsData?.some((item) => item.basketName === data?.basketName);
   return doBasketNamesIntersect;
 }
+
+useEffect(() => {
+  // Reset the checkbox state when the reset prop changes
+  setChecked(false);
+  setEnableRow(false);
+  setQuantity(0);
+}, [reset]);
 
 useEffect(() => {
   const result = checkSimilarity();

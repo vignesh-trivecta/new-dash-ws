@@ -27,13 +27,14 @@ export const executeScheduleTasks = async (broker) => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${port}/${reqUrl}`, requestOptions);
-
-        const res = await response.text();
         const status = response.status
-        return {res, status};
+
+        const jsonData = await response.json();
+        const data = decrypt(jsonData?.payload);
+        return {data, status};
 
     } catch (error) {
-        return {res: "Error executing scheduled tasks", status: 500};
+        errorLogger(error);
     }
 }
 

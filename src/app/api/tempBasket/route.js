@@ -121,11 +121,11 @@ export const deleteRecord = async(recId, basketName, adminName) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
+            body: encrypt(JSON.stringify({
                   "recId": recId,
                   "basketName": basketName,
                   "adminName": adminName
-                })
+                }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT}/basket/temp/del`, requestOptions);
         const status = response.status;
