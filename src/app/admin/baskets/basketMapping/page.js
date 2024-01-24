@@ -63,6 +63,7 @@ const BasketMapping = () => {
     // Toggle the reset state
     setReset((prevReset) => !prevReset);
     setTotalBasketValue(0);
+    setTotal(0);
     setErrorMsg("");
     setInputName("");
   };
@@ -89,6 +90,7 @@ const BasketMapping = () => {
     setInvestment(0);
     // setAliasName("");
     setTotalBasketValue(0);
+    setTotal(0);
     setCustomerBasketsData([]);
     setCheckedBaskets([]);
   };
@@ -102,7 +104,7 @@ const BasketMapping = () => {
         adminId,
         customerId,
         broker,
-        selectedBasketGroup
+        inputName
       );
       if (status === 200) {
         setButtonName("UnMap");
@@ -170,7 +172,7 @@ const BasketMapping = () => {
   const getBasketDetails = async () => {
     const { status, data } = await fetchDetailsByGroupName(selectedBasketGroup);
     setBasketDetails(data);
-    const total = data?.basketDetailsList?.reduce((acc, curr) => curr.basketActualValue  + acc, 0)
+    const total = data?.basketDetailsList?.reduce((acc, curr) => curr.basketActualValue  + acc, 0);
     if (data !== null && data?.customerId !== null) {
       setCustomerId(data.customerId);
       // setAliasName(selectedBasketGroup);

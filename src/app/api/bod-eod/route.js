@@ -18,7 +18,6 @@ export const executeScheduleTasks = async (broker) => {
         port = PORT_IIFL;
         reqUrl = "execute";
     }
-    
     try {
         const requestOptions = {
             method: "GET",
@@ -27,7 +26,7 @@ export const executeScheduleTasks = async (broker) => {
             }
         }
         const response = await fetch(`http://${DOMAIN}:${port}/${reqUrl}`, requestOptions);
-        const status = response.status
+        const status = response.status;
 
         const jsonData = await response.json();
         const data = decrypt(jsonData?.payload);

@@ -114,7 +114,7 @@ export const getCustomerStatus = async (basketName) => {
 }
 
 // API endpoint to map the multiple baskets to a customer
-export const sendMultipleBaskets = async (basketData, adminId, customerId, brokerName, selectedBasketGroup) => {
+export const sendMultipleBaskets = async (basketData, adminId, customerId, brokerName, inputName) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -126,7 +126,7 @@ export const sendMultipleBaskets = async (basketData, adminId, customerId, broke
                 "adminId": adminId,
                 "customerId": customerId.split(" ")[0],
                 "brokerName": brokerName,
-                "groupName": selectedBasketGroup,
+                "groupName": inputName,
             }))
         }
 
