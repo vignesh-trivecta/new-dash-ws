@@ -19,12 +19,13 @@ import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import BasketCategory from "@/components/admin/basketCategory";
 
 const BasketMapping = () => {
+
   // broker inputs
   const brokers = [{ name: "AXIS" }, { name: "IIFL" }];
   const customersList = [];
-
+  
   const inputRef = useRef("");
-
+  
   // redux
   const dispatch = useDispatch();
   const adminId = useSelector((state) => state.user.username);
@@ -58,6 +59,8 @@ const BasketMapping = () => {
   const [buttonName, setButtonName] = useState("Map");
   const [reset, setReset] = useState(false);
   const [inputName, setInputName] = useState("");
+  
+  console.log(message)
 
   const handleResetClick = () => {
     // Toggle the reset state
@@ -218,14 +221,26 @@ const BasketMapping = () => {
 
   useEffect(() => {
 
-    if (Number(totalBasketValue) === 0 || Number(investment) === NaN || selectedBasketGroup === '') {
+    if (errorMsg != "") {
       setEnableMap(true);
+      setEnableWeblink(true);
       return;
     }
     
-    if (Number(totalBasketValue) > Number(investment)) {
+    if (Number(totalBasketValue) === 0 || Number(investment) === NaN || inputName === '') {
+      setEnableMap(true);
+      setEnableWeblink(true);
+      if (selectedBasketGroup) {
+        setEnableMap(false);
+        setEnableWeblink(false);
+      }
+      return;
+    }
+    
+    if (Number(totalBasketValue) > Number(investment) && Number(totalBasketValue) != 0) {
       setMessage(msg4);
       setEnableMap(true);
+      setEnableWeblink(true);
       if (showGNStaticData) {
         setEnableMap(false);
         setEnableWeblink(false);
@@ -233,10 +248,10 @@ const BasketMapping = () => {
       }
       return;
     }
-    
-
+        
     setEnableMap(false);
-  }, [investment, totalBasketValue, selectedBasketGroup]);
+    setEnableWeblink(false);
+  }, [investment, totalBasketValue, inputName]);
 
   useEffect(() => {
     const result = Object.values(total).reduce((acc, curr) => {
@@ -345,7 +360,7 @@ const BasketMapping = () => {
             disabled={showGNStaticData}
             value={segregate(investment)}
             onChange={(e) => {
-              setMessage("");
+              // setMessage("");
               // Remove commas from the input value before updating state
               const newValue = e.target.value.replace(/,/g, "");
               setInvestment(newValue);
