@@ -173,7 +173,7 @@ export const unMapMultipleBaskets = async (selectedBasketGroup, customerId) => {
 
 
 // API endpoint to select a basket group name and send weblink
-export const fetchByGroupAndSend = async (groupName, customerId) => {
+export const fetchByGroupAndSend = async (basket, customerId) => {
     try{
         const requestOptions = {
             method: 'POST',
@@ -181,7 +181,7 @@ export const fetchByGroupAndSend = async (groupName, customerId) => {
                 'Content-Type': 'application/json'
             },
             body: encrypt(JSON.stringify({
-                "groupName": groupName,
+                "groupName": basket,
                 "customerId": customerId.split(" ")[0],
             }))
         }

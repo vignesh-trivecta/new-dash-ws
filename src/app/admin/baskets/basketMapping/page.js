@@ -140,7 +140,8 @@ const BasketMapping = () => {
   // handle Weblink click 
   const handleWebLinkClick = async () => {
     setSendingWeblink(true);
-    const { status, data } = await fetchByGroupAndSend(selectedBasketGroup, customerId);
+    const basket = selectedBasketGroup ? selectedBasketGroup : inputName;
+    const { status, data } = await fetchByGroupAndSend(basket, customerId);
     if (status) {
       setSendingWeblink(false);
       setMessage(data.messages);
