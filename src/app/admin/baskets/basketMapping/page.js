@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { HiInformationCircle } from "react-icons/hi";
@@ -14,7 +14,6 @@ import BasketMappingTable from "@/components/admin/table/basketMappingTable";
 import { fetchByGroupAndSend, fetchDetailsByCustomer, fetchDetailsByGroupName, getBasketGroups, sendMultipleBaskets, unMapMultipleBaskets } from "@/app/api/map/baskets/route";
 import { segreagatorWoComma } from "@/utils/formatter/segregatorWoComma";
 import StaticBasketMappingTable from "@/components/admin/table/staticBasketMappingTable";
-import { FcRefresh } from "react-icons/fc";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import BasketCategory from "@/components/admin/basketCategory";
 
@@ -22,9 +21,6 @@ const BasketMapping = () => {
 
   // broker inputs
   const brokers = [{ name: "AXIS" }, { name: "IIFL" }];
-  const customersList = [];
-  
-  const inputRef = useRef("");
   
   // redux
   const dispatch = useDispatch();
@@ -60,8 +56,6 @@ const BasketMapping = () => {
   const [reset, setReset] = useState(false);
   const [inputName, setInputName] = useState("");
   
-  console.log(message)
-
   const handleResetClick = () => {
     // Toggle the reset state
     setReset((prevReset) => !prevReset);

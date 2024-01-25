@@ -32,7 +32,6 @@ const PlaceOrder = () => {
     // const res = await clientLogin(customerId);
     // if (res) {
       const { status, data } = await clientConfirmsBasket(basketData);
-      console.log(status, data);
       if(status === 200){
         setData(data);
         setStatus(true);

@@ -49,7 +49,6 @@ export const partnerLogin = async () => {
 
 // API call to login the client to IIFL programtically
 export const clientLogin = async(customerId) => {
-    console.log(customerId)
     try{
         const requestOptions = {
             method: 'POST',
@@ -61,18 +60,13 @@ export const clientLogin = async(customerId) => {
             }))
         }
         const response = await fetch(`http://${DOMAIN}:${PORT2}/client/login`, requestOptions);
-        console.log(response)
         const status = response?.status;
-        console.log(status)
 
         const jsonData = await response?.json();
-        console.log(jsonData)
         const data = decrypt(jsonData?.payload);
-        console.log(status, data);
         return { status, data };
     }
     catch(error){
-        console.log("enter")
         errorLogger(error);
     }
 }
