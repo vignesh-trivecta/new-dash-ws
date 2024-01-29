@@ -55,7 +55,7 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
     else {
       fetchBasketGroups();
     }
-  }, [selected]);
+  }, [selected, inputName]);
 
   return (
     <div className="">
@@ -109,7 +109,7 @@ export default function BasketCategory({selected, setSelected, isDisabled,  page
                 const inputValue = event?.target?.value;                  
                 setQuery(inputValue);
                 if (pageName !== "create") {
-                  setSelected(inputValue);
+                  setInputName(inputValue);
                 }
               }}
             />

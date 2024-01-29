@@ -116,7 +116,7 @@ const BasketMapping = () => {
       setMessage(data.messages);
     } 
     else {
-      const { status, data } = await unMapMultipleBaskets(selectedBasketGroup, customerId);
+      const { status, data } = await unMapMultipleBaskets(inputName, customerId);
       if (status === 200) {
         setButtonName("Map");
         setInputName("");
