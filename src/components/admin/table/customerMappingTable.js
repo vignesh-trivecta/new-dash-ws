@@ -80,7 +80,7 @@ const CustomerMappingTable = ({
 
   // handle weblink
   const handleWeblink = async () => {
-    if ((basketName !== "" && broker !== "" && Number(investment) !== 0 && Number(quantity) !== 0)) {
+    if ((basketName !== "" && broker !== "")) {
       setWeblinkLoading(true);
       setMessage("")
       const { status, data } = await sendWeblink(basketName, adminId, datas.customerId, broker, quantity);
